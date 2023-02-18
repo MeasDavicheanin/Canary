@@ -6,11 +6,13 @@ import android.os.Bundle;
 
 import com.cmput301w23t47.canary.R;
 
-public class ScanQRCodeActivity extends AppCompatActivity {
+public class ScanQRCodeActivity extends CameraBaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scan_qrcode);
     }
+
+
 }
