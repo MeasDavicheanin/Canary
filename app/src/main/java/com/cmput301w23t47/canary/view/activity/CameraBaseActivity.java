@@ -20,11 +20,14 @@ import static androidx.camera.view.CameraController.COORDINATE_SYSTEM_VIEW_REFER
 
 import android.Manifest;
 import android.content.pm.PackageManager;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.camera.mlkit.vision.MlKitAnalyzer;
 import androidx.camera.view.LifecycleCameraController;
 import androidx.camera.view.PreviewView;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import com.cmput301w23t47.canary.databinding.ActivityScanQrcodeBinding;
@@ -35,7 +38,6 @@ import com.google.mlkit.vision.barcode.BarcodeScannerOptions;
 import com.google.mlkit.vision.barcode.BarcodeScanning;
 import com.google.mlkit.vision.barcode.common.Barcode;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -51,6 +53,7 @@ abstract public class CameraBaseActivity extends AppCompatActivity {
 
     protected ActivityScanQrcodeBinding binding;
     protected BarcodeScanner qrScanner;
+    protected int REQUEST_CODE_PERMISSIONS = 10;
 
     /**
      * Checks if the app has permission to access the camera.
@@ -60,8 +63,15 @@ abstract public class CameraBaseActivity extends AppCompatActivity {
         if (arePermissionsGranted()) {
             openCamera();
         } else {
-
+            askPermissions();
         }
+    }
+
+    /**
+     * Asks the user for required permissions
+     */
+    protected void askPermissions() {
+        ActivityCompat.requestPermissions(this, CAM_PERMISSIONS, REQUEST_CODE_PERMISSIONS);
     }
 
     /**
@@ -81,44 +91,22 @@ abstract public class CameraBaseActivity extends AppCompatActivity {
     /**
      * Turns on the camera
      */
-    protected void openCamera() {
-        LifecycleCameraController camController = new LifecycleCameraController(getBaseContext());
-        PreviewView preview = binding.cameraView;
-        // Add the option to detect all types of QR Codes
-        BarcodeScannerOptions options = new BarcodeScannerOptions.Builder()
-                .setBarcodeFormats(Barcode.FORMAT_ALL_FORMATS)
-                .build();
-        qrScanner = BarcodeScanning.getClient(options);
-        camController.setImageAnalysisAnalyzer(ContextCompat.getMainExecutor(this),
-                getQrCodeAnalyzer(preview));
+    abstract protected void openCamera();
 
-    }
-
-    /**
-     * Gets the analyzer for the images
-     * @return MlKitAnalyzer the analyzer object
-     */
-    protected MlKitAnalyzer getQrCodeAnalyzer(PreviewView preview) {
-        return new MlKitAnalyzer(
-                Arrays.asList(qrScanner), COORDINATE_SYSTEM_VIEW_REFERENCED, ContextCompat.getMainExecutor(this),
-                result -> {
-                    List<Barcode> qrResList = result.getValue(qrScanner);
-                    if (qrResList == null || qrResList.size() == 0 || qrResList.get(0) == null) {
-                        // if there is no result
-//                                preview.getOverlay().clear();
-//                                // TODO: Understand
-//                                preview.setOnTouchListener((view, motionEvent) -> {
-//                                    return false;
-//                                });
-                        return;
-                    }
-
-                    QrCodeVm qrVm = new QrCodeVm(qrResList.get(0));
-//                            QrCodeDrawable qrCodeDrawable = new QrCodeDrawable();
-                    preview.setOnTouchListener(qrVm::qrCodePressCallback);
-                    preview.getOverlay().clear();
-//                            preview.getOverlay().add(qrCodeDrawable);
-                }
-        );
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == REQUEST_CODE_PERMISSIONS) {
+            if (arePermissionsGranted()) {
+                openCamera();
+            } else {
+                // show error if permissions not granted
+                Toast.makeText(this,
+                        "Permissions not granted by the user.",
+                        Toast.LENGTH_SHORT).show();
+                // TODO: Verify how this works
+                finish();
+            }
+        }
     }
 }
