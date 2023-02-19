@@ -20,6 +20,8 @@ import static androidx.camera.view.CameraController.COORDINATE_SYSTEM_VIEW_REFER
 
 import android.Manifest;
 import android.content.pm.PackageManager;
+import android.os.Bundle;
+import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -31,15 +33,8 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import com.cmput301w23t47.canary.databinding.ActivityScanQrcodeBinding;
-import com.cmput301w23t47.canary.view.drawable.QrCodeDrawable;
-import com.cmput301w23t47.canary.view.model.QrCodeVm;
 import com.google.mlkit.vision.barcode.BarcodeScanner;
-import com.google.mlkit.vision.barcode.BarcodeScannerOptions;
-import com.google.mlkit.vision.barcode.BarcodeScanning;
-import com.google.mlkit.vision.barcode.common.Barcode;
-
-import java.util.Arrays;
-import java.util.List;
+import java.util.concurrent.ExecutorService;
 
 
 /**
@@ -52,8 +47,23 @@ abstract public class CameraBaseActivity extends AppCompatActivity {
     protected static final String[] CAM_PERMISSIONS = {Manifest.permission.CAMERA};
 
     protected ActivityScanQrcodeBinding binding;
+
     protected BarcodeScanner qrScanner;
+    protected ExecutorService cameraExecutor;
+
     protected int REQUEST_CODE_PERMISSIONS = 10;
+
+    protected static final String TAG = "CameraBaseActivity";
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        binding = ActivityScanQrcodeBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
+        init();
+    }
+
+    abstract protected void init();
 
     /**
      * Checks if the app has permission to access the camera.
@@ -61,8 +71,10 @@ abstract public class CameraBaseActivity extends AppCompatActivity {
      */
     protected void checkPermissions() {
         if (arePermissionsGranted()) {
+            Log.d(TAG, "checkPermissions: Success");
             openCamera();
         } else {
+            Log.d(TAG, "checkPermissions: Fail Asking");
             askPermissions();
         }
     }
@@ -81,7 +93,7 @@ abstract public class CameraBaseActivity extends AppCompatActivity {
     protected boolean arePermissionsGranted() {
         // determine if all the permissions have been granted or not
         for (String perm : CAM_PERMISSIONS) {
-            if (!(ContextCompat.checkSelfPermission(getBaseContext(), perm) == PackageManager.PERMISSION_GRANTED)) {
+            if (ContextCompat.checkSelfPermission(this, perm) != PackageManager.PERMISSION_GRANTED) {
                 return false;
             }
         }

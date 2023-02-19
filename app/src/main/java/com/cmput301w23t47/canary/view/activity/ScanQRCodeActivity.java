@@ -19,15 +19,16 @@ package com.cmput301w23t47.canary.view.activity;
 
 import static androidx.camera.view.CameraController.COORDINATE_SYSTEM_VIEW_REFERENCED;
 
-import androidx.appcompat.app.AppCompatActivity;
+import android.app.Activity;
+import android.content.Intent;
+import android.util.Log;
+
 import androidx.camera.mlkit.vision.MlKitAnalyzer;
 import androidx.camera.view.LifecycleCameraController;
 import androidx.camera.view.PreviewView;
 import androidx.core.content.ContextCompat;
 
-import android.os.Bundle;
-
-import com.cmput301w23t47.canary.R;
+import com.cmput301w23t47.canary.view.contract.QrCodeContract;
 import com.cmput301w23t47.canary.view.model.QrCodeVm;
 import com.google.mlkit.vision.barcode.BarcodeScannerOptions;
 import com.google.mlkit.vision.barcode.BarcodeScanning;
@@ -35,6 +36,7 @@ import com.google.mlkit.vision.barcode.common.Barcode;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.Executors;
 
 /**
  * Activity for Scanning QR Code
@@ -42,6 +44,21 @@ import java.util.List;
  * @author Meharpreet Singh Nanda
  */
 public class ScanQRCodeActivity extends CameraBaseActivity {
+    @Override
+    protected void init() {
+        checkPermissions();
+        cameraExecutor = Executors.newSingleThreadExecutor();
+    }
+
+    /**
+     * Free resources
+     */
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        cameraExecutor.shutdown();
+        qrScanner.close();
+    }
 
     /**
      * Turns on the camera
@@ -57,6 +74,9 @@ public class ScanQRCodeActivity extends CameraBaseActivity {
         qrScanner = BarcodeScanning.getClient(options);
         camController.setImageAnalysisAnalyzer(ContextCompat.getMainExecutor(this),
                 getQrCodeAnalyzer(preview));
+
+        camController.bindToLifecycle(this);
+        preview.setController(camController);
     }
 
     /**
@@ -77,12 +97,17 @@ public class ScanQRCodeActivity extends CameraBaseActivity {
 //                                });
                         return;
                     }
-
-                    QrCodeVm qrVm = new QrCodeVm(qrResList.get(0));
+                    Barcode qr = qrResList.get(0);
+                    QrCodeVm qrVm = new QrCodeVm(qr);
+                    Log.d(TAG, "getQrCodeAnalyzer: raw " + qrResList.get(0).getRawValue());
+                    Log.d(TAG, "getQrCodeAnalyzer:  bytes" + qrResList.get(0).getRawBytes().toString());
 //                            QrCodeDrawable qrCodeDrawable = new QrCodeDrawable();
                     preview.setOnTouchListener(qrVm::qrCodePressCallback);
                     preview.getOverlay().clear();
-//                            preview.getOverlay().add(qrCodeDrawable);
+                    Intent intent = new Intent();
+                    intent.putExtra(QrCodeContract.RESPONSE_TAG, qr.getRawValue());
+                    setResult(Activity.RESULT_OK, intent);
+                    finish();
                 }
         );
     }
