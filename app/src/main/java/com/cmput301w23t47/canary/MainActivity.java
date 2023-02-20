@@ -4,9 +4,13 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.os.Parcelable;
 
+import com.cmput301w23t47.canary.controller.QrCodeUtil;
 import com.cmput301w23t47.canary.databinding.ActivityMainBinding;
 import com.cmput301w23t47.canary.view.contract.QrCodeContract;
+
+import java.security.MessageDigest;
 
 /**
  * Main Acitvity
@@ -41,8 +45,21 @@ public class MainActivity extends AppCompatActivity {
                 this::receivedQrCode);
     }
 
+    /**
+     * Receives the QR Code scanned
+     * @param qrCodeVal (String): The raw value of the scanned QR Code
+     */
     private void receivedQrCode(String qrCodeVal) {
-        binding.textView.setText(qrCodeVal);
+        if (qrCodeVal == null) {
+            // value not received
+            return;
+        }
+        byte[] qrHash = QrCodeUtil.getHashForQr(qrCodeVal);
+        StringBuilder str = new StringBuilder();
+        for (int i = 0; i < qrHash.length; i++) {
+            str.append(qrHash[i]);
+        }
+        binding.textView.setText(qrCodeVal + "\n " + str);
     }
 
     /**
