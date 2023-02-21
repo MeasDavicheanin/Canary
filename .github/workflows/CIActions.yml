@@ -2,10 +2,10 @@
 name: Canary CI
 on:
   pull_request:
-    - "**"
+    - '**'
   push:
     branches:
-      - "**"
+      - '**'
 
 jobs:
   build:
