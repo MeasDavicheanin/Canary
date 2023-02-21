@@ -1,8 +1,6 @@
 # Reference: https://proandroiddev.com/android-ci-cd-pipeline-with-github-actions-demystifying-github-actions-83258e76a18f
 name: Canary CI
 on:
-  pull_request:
-    - '**'
   push:
     branches:
       - '**'
