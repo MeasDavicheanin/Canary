@@ -12,8 +12,8 @@ public class PlayerQRCode {
     private QRCode qrCode;
 
     //I think this should be stored in the qrcode class
-    // Location of the QR
-    //private Location location;
+    //Location of the QR
+    private Location location;
 
 
     // name of the QR

@@ -6,6 +6,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.cmput301w23t47.canary.model.PlayerQRCode;
 import com.cmput301w23t47.canary.model.QRCode;
 
 import java.util.List;
@@ -17,11 +18,11 @@ import java.util.List;
  */
 public class MapQRLocationListAdapter extends RecyclerView.Adapter<MapQRLocationListAdapter.ViewHolder>{
 
-    private List<QRCode> mQRList;
+    private List<PlayerQRCode> mQRList;
     //This is the constructor for the MapQRLocationListAdapter
     //the argument is a list of QRCode objects
     //so pass the world qr list
-    public MapQRLocationListAdapter(List<QRCode> QRList) {
+    public MapQRLocationListAdapter(List<PlayerQRCode> QRList) {
         mQRList = QRList;
     }
 

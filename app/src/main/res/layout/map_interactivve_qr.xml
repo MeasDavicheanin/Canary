@@ -20,26 +20,32 @@
         android:layout_width="match_parent"
         android:layout_height="18dp"
         android:text="TextView"
+        app:layout_constraintBottom_toTopOf="@+id/map_range_search_edittext_dropdown"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/mapView_qr_interactive_player_search" />
 
     <EditText
         android:id="@+id/map_range_search_edittext_dropdown"
-        android:layout_width="284dp"
-        android:layout_height="32dp"
+        android:layout_width="285dp"
+        android:layout_height="39dp"
+        android:layout_marginTop="20dp"
         android:ems="10"
-        android:hint="Enter search Radius"
+        android:hint="@string/edit_text_search_range"
         android:inputType="textPersonName"
-        android:textSize="14dp"
+        android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="parent"
-        tools:layout_editor_absoluteY="618dp" />
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/mapView_qr_interactive_player_search" />
 
     <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView"
         android:layout_width="match_parent"
-        android:layout_height="164dp"
+        android:layout_height="wrap_content"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/map_range_search_edittext_dropdown" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
