@@ -32,5 +32,30 @@ public class QRCodeVMList {
         QRListEle.remove(qrCodeVMElement);
     }
 
+    public List<QRCodeVMElement> getQRCodeVMList() {
+        return QRListEle;
+    }
+
+    public int size() {
+        return QRListEle.size();
+    }
+
+    public QRCodeVMElement get(int index) {
+        return QRListEle.get(index);
+    }
+
+    public void set(int index, QRCodeVMElement qrCodeVMElement) {
+        QRListEle.set(index, qrCodeVMElement);
+    }
+
+    public void remove(int index) {
+        QRListEle.remove(index);
+    }
+    public void clear() {
+        QRListEle.clear();
+    }
+    public void setQRListEle(List<QRCodeVMElement> QRListEle) {
+        this.QRListEle = QRListEle;
+    }
 
 }

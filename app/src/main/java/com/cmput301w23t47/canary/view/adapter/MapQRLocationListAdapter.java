@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.cmput301w23t47.canary.model.PlayerQRCode;
 import com.cmput301w23t47.canary.model.QRCode;
+import com.cmput301w23t47.canary.viewmodel.QRCodeVMList;
 
 import java.util.List;
 
@@ -18,7 +19,7 @@ import java.util.List;
  */
 public class MapQRLocationListAdapter extends RecyclerView.Adapter<MapQRLocationListAdapter.ViewHolder>{
 
-    private List<PlayerQRCode> mQRList;
+    private QRCodeVMList mQRList = new QRCodeVMList()
     //This is the constructor for the MapQRLocationListAdapter
     //the argument is a list of QRCode objects
     //so pass the world qr list
