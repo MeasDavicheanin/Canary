@@ -22,7 +22,7 @@ public class MapQRLocationListAdapter extends RecyclerView.Adapter<MapQRLocation
     //This is the constructor for the MapQRLocationListAdapter
     //the argument is a list of QRCode objects
     //so pass the world qr list
-    public MapQRLocationListAdapter(List<PlayerQRCode> QRList) {
+    public MapQRLocationListAdapter(List<QRCode> QRList) {
         mQRList = QRList;
     }
 

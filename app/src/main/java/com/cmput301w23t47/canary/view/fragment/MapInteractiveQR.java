@@ -12,7 +12,7 @@ import java.util.List;
  */
 public class MapInteractiveQR {
 
-    private List<PlayerQRCode> QRList = new ArrayList<>();
+    private List<QRCode> QRList = new ArrayList<>();
 
     public MapInteractiveQR() {
         // TODO Auto-generated constructor stub

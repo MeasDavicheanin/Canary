@@ -11,8 +11,7 @@ public class PlayerQRCode {
     // QR Code scanned
     private QRCode qrCode;
 
-    //I think this should be stored in the qrcode class
-    //Location of the QR
+    //Location of the QR stored in latitude and longitude
     private Location location;
 
 
@@ -20,4 +19,45 @@ public class PlayerQRCode {
     private String name;
     // Snapshot of the QR
     private Snapshot snapshot;
+
+
+    public Player getPlayer() {
+        return player;
+    }
+
+    public void setPlayer(Player player) {
+        this.player = player;
+    }
+
+    public QRCode getQrCode() {
+        return qrCode;
+    }
+
+    public void setQrCode(QRCode qrCode) {
+        this.qrCode = qrCode;
+    }
+
+    public Location getLocation() {
+        return location;
+    }
+
+    public void setLocation(Location location) {
+        this.location = location;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Snapshot getSnapshot() {
+        return snapshot;
+    }
+
+    public void setSnapshot(Snapshot snapshot) {
+        this.snapshot = snapshot;
+    }
 }
