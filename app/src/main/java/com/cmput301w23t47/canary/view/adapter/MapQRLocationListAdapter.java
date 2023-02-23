@@ -1,13 +1,15 @@
 package com.cmput301w23t47.canary.view.adapter;
 
+import android.content.Context;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.cmput301w23t47.canary.model.PlayerQRCode;
 import com.cmput301w23t47.canary.model.QRCode;
+import com.cmput301w23t47.canary.view.fragment.MapInteractiveQRViewHolder;
 import com.cmput301w23t47.canary.viewmodel.QRCodeVMList;
 
 import java.util.List;
@@ -17,41 +19,24 @@ import java.util.List;
  * should have multiple accessible qr codes
  *
  */
-public class MapQRLocationListAdapter extends RecyclerView.Adapter<MapQRLocationListAdapter.ViewHolder>{
+public class MapQRLocationListAdapter extends RecyclerView.Adapter<MapInteractiveQRViewHolder>{
 
-    private QRCodeVMList mQRList = new QRCodeVMList()
-    //This is the constructor for the MapQRLocationListAdapter
-    //the argument is a list of QRCode objects
-    //so pass the world qr list
-    public MapQRLocationListAdapter(List<QRCode> QRList) {
-        mQRList = QRList;
-    }
-
-
+    Context context;
+    QRCodeVMList qrCodeList;
+    @NonNull
     @Override
-    public MapQRLocationListAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return null;
+    public MapInteractiveQRViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        return new MapInteractiveQRViewHolder(LayoutInflater.from(context).inflate(R.layout.qr_code_list_item, parent, false))
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull MapInteractiveQRViewHolder holder, int position) {
 
     }
 
     @Override
     public int getItemCount() {
-        return mQRList.size();
+        return 0;
     }
-
-    public class ViewHolder extends RecyclerView.ViewHolder {
-        public ViewHolder(View itemView) {
-            super(itemView);
-
-            //Here we will need to set the textviews to the correct values
-            //I dont know what the qr qill be yet though
-        }
-    }
-
-
 
 }
