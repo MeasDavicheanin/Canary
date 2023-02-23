@@ -1,5 +1,6 @@
 package com.cmput301w23t47.canary.view.adapter;
 
+import com.cmput301w23t47.canary.R;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,20 +24,29 @@ public class MapQRLocationListAdapter extends RecyclerView.Adapter<MapInteractiv
 
     Context context;
     QRCodeVMList qrCodeList;
+
+    public MapQRLocationListAdapter(Context context, QRCodeVMList qrCodeList) {
+        this.context = context;
+        this.qrCodeList = qrCodeList;
+    }
+
     @NonNull
     @Override
     public MapInteractiveQRViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new MapInteractiveQRViewHolder(LayoutInflater.from(context).inflate(R.layout.qr_code_list_item, parent, false))
+        return new MapInteractiveQRViewHolder(LayoutInflater.from(context).inflate(R.layout.map_qr_recylcer_inlist, parent, false));
     }
 
     @Override
     public void onBindViewHolder(@NonNull MapInteractiveQRViewHolder holder, int position) {
-
+        holder.imageView.setImageResource(qrCodeList.get(position).getPlayerPicture());
+        holder.qrtextname.setText(qrCodeList.get(position).getQRname());
+        holder.qrtextdate.setText(qrCodeList.get(position).getQRdate());
+        //holder.qrtextpoint.setText(qrCodeList.get(position).getQRpoint());
     }
 
     @Override
     public int getItemCount() {
-        return 0;
+        return qrCodeList.size();
     }
 
 }

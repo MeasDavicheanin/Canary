@@ -15,18 +15,18 @@ import com.cmput301w23t47.canary.R;
  */
 public class MapInteractiveQRViewHolder extends RecyclerView.ViewHolder {
 
-    ImageView imageView;
-    TextView qrtextview;
-    TextView qrtextview2;
-    TextView qrtextview3;
+    public ImageView imageView;
+    public TextView qrtextname;
+    public TextView qrtextdate;
+    public TextView qrtextpoint;
 
 
-    public MapInteractiveQRViewHolder(@NonNull @org.jetbrains.annotations.NotNull View itemView) {
+    public MapInteractiveQRViewHolder(@NonNull View itemView) {
         super(itemView);
         imageView = itemView.findViewById(R.id.qr_image_list);
-        qrtextview = itemView.findViewById(R.id.qr_name_list);
-        qrtextview2 = itemView.findViewById(R.id.qr_date_found_list);
-        qrtextview3 = itemView.findViewById(R.id.qr_point_total_list);
+        qrtextname = itemView.findViewById(R.id.qr_name_list);
+        qrtextdate = itemView.findViewById(R.id.qr_date_found_list);
+        qrtextpoint = itemView.findViewById(R.id.qr_point_total_list);
     }
 
 
