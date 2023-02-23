@@ -64,7 +64,7 @@
             app:cardCornerRadius="30dp">
 
             <TextView
-                android:id="@+id/QRCodeScanDate"
+                android:id="@+id/QRCodeScanDateTime"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="50dp"
@@ -125,7 +125,7 @@
             android:text="Snapshot" />
 
         <ImageView
-            android:id="@+id/qrCodeImage"
+            android:id="@+id/QRCodeImage"
             android:layout_width="263dp"
             android:layout_height="153dp"
             android:layout_marginLeft="50dp"
