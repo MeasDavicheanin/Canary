@@ -1,0 +1,25 @@
+# Reference: https://proandroiddev.com/android-ci-cd-pipeline-with-github-actions-demystifying-github-actions-83258e76a18f
+name: Canary CI
+on:
+  push:
+    branches:
+      - '**'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '11'
+          cache: gradle
+      - name: Setup Gradle
+        uses: gradle/gradle-build-action@v2
+      - name: Build Canary
+        run: ./gradlew build
+      - name: Unit Tests
+        run: ./gradlew test
