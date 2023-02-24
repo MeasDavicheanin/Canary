@@ -12,6 +12,47 @@ public class PlayerQRCode {
     private Location location;
     // name of the QR
     private String name;
+
+    public Player getPlayer() {
+        return player;
+    }
+
+    public void setPlayer(Player player) {
+        this.player = player;
+    }
+
+    public QRCode getQrCode() {
+        return qrCode;
+    }
+
+    public void setQrCode(QRCode qrCode) {
+        this.qrCode = qrCode;
+    }
+
+    public Location getLocation() {
+        return location;
+    }
+
+    public void setLocation(Location location) {
+        this.location = location;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Snapshot getSnapshot() {
+        return snapshot;
+    }
+
+    public void setSnapshot(Snapshot snapshot) {
+        this.snapshot = snapshot;
+    }
+
     // Snapshot of the QR
     private Snapshot snapshot;
 }
