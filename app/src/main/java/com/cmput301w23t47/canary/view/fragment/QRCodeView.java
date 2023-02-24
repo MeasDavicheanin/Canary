@@ -1,10 +1,10 @@
 package com.cmput301w23t47.canary.view.fragment;
 
+import android.location.Location;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
-import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,16 +13,13 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.cmput301w23t47.canary.R;
-import com.cmput301w23t47.canary.model.Location;
-import com.cmput301w23t47.canary.model.PlayerQRCode;
+import com.cmput301w23t47.canary.model.PlayerQrCode;
 import com.cmput301w23t47.canary.model.Snapshot;
-
-import org.w3c.dom.Text;
 
 
 public class QRCodeView extends Fragment {
 
-    private PlayerQRCode currentPlayerQRCode;
+    private PlayerQrCode currentPlayerQRCode;
     private TextView currentQRCodeName;
     private TextView currentQRCodeScore;
     private TextView currentQRCodeScanDateTime;
@@ -30,7 +27,7 @@ public class QRCodeView extends Fragment {
     private ImageView currentQRCodeImage;
     ListView commentsListView;
 
-    public QRCodeView(PlayerQRCode currentPlayerQRCode) {
+    public QRCodeView(PlayerQrCode currentPlayerQRCode) {
         this.currentPlayerQRCode = currentPlayerQRCode;
     }
 
