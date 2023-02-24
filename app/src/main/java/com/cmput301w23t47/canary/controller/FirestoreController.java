@@ -5,10 +5,9 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
-import com.cmput301w23t47.canary.MainActivity;
 import com.cmput301w23t47.canary.callback.UpdatePlayerCallback;
 import com.cmput301w23t47.canary.model.Player;
-import com.cmput301w23t47.canary.repository.PlayerQRCodeRepository;
+import com.cmput301w23t47.canary.repository.PlayerQrCodeRepository;
 import com.cmput301w23t47.canary.repository.PlayerRepository;
 import com.cmput301w23t47.canary.repository.QrCodeRepository;
 import com.google.android.gms.tasks.Task;
@@ -17,7 +16,6 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
 /**
@@ -68,7 +66,7 @@ public class FirestoreController {
             PlayerRepository playerRepository = waitForTask(playerTask, PlayerRepository.class);
             Log.d(TAG, "getPlayer: " + playerRepository.toString());
             // Get associated QR Repos
-            for (PlayerQRCodeRepository playerQrCodesRepo : playerRepository.getQrCodes()) {
+            for (PlayerQrCodeRepository playerQrCodesRepo : playerRepository.getQrCodes()) {
                 QrCodeRepository qrCodeRepo = waitForTask(playerQrCodesRepo.getQrCode().get(), QrCodeRepository.class);
                 playerQrCodesRepo.setParsedQrCode(qrCodeRepo.getParsedQrCode());
             }

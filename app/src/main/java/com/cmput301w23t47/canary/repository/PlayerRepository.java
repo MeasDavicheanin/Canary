@@ -4,7 +4,6 @@ import androidx.annotation.NonNull;
 
 import com.cmput301w23t47.canary.model.Player;
 import com.cmput301w23t47.canary.model.PlayerQrCode;
-import com.cmput301w23t47.canary.model.QrCode;
 import com.google.firebase.firestore.DocumentId;
 
 import java.util.ArrayList;
@@ -23,7 +22,7 @@ public class PlayerRepository {
     private String firstName;
     // lastname of the player
     private String lastName;
-    private ArrayList<PlayerQRCodeRepository> qrCodes;
+    private ArrayList<PlayerQrCodeRepository> qrCodes;
 
     // Default Constructor
     public PlayerRepository() {
@@ -33,7 +32,7 @@ public class PlayerRepository {
     public Player getParsedPlayer() {
         Player player = new Player(username, firstName, lastName);
         ArrayList<PlayerQrCode> playerQrCodes = new ArrayList<>();
-        for (PlayerQRCodeRepository qrRepo : qrCodes) {
+        for (PlayerQrCodeRepository qrRepo : qrCodes) {
             playerQrCodes.add(qrRepo.getParsedPlayerQrCode());
         }
         player.setQrCodes(playerQrCodes);
@@ -72,11 +71,11 @@ public class PlayerRepository {
         this.lastName = lastName;
     }
 
-    public ArrayList<PlayerQRCodeRepository> getQrCodes() {
+    public ArrayList<PlayerQrCodeRepository> getQrCodes() {
         return qrCodes;
     }
 
-    public void setQrCodes(ArrayList<PlayerQRCodeRepository> qrCodes) {
+    public void setQrCodes(ArrayList<PlayerQrCodeRepository> qrCodes) {
         this.qrCodes = qrCodes;
     }
 
