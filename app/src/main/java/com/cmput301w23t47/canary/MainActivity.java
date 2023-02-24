@@ -4,16 +4,14 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
-import android.os.Parcelable;
 
 import com.cmput301w23t47.canary.callback.UpdatePlayerCallback;
-import com.cmput301w23t47.canary.controller.FirestoreController;
+import com.cmput301w23t47.canary.controller.NavbarController;
 import com.cmput301w23t47.canary.controller.QrCodeUtil;
 import com.cmput301w23t47.canary.databinding.ActivityMainBinding;
 import com.cmput301w23t47.canary.model.Player;
 import com.cmput301w23t47.canary.view.contract.QrCodeContract;
 
-import java.security.MessageDigest;
 
 /**
  * Main Acitvity
@@ -43,9 +41,24 @@ public class MainActivity extends AppCompatActivity implements UpdatePlayerCallb
             launchScanQrActivity();
         });
 
+        initNavbar();
+
         // register contract for QR Activity
         qrActivityLauncher = registerForActivityResult(new QrCodeContract(),
                 this::receivedQrCode);
+    }
+
+    /**
+     * Initializes the navbar
+     */
+    private void initNavbar() {
+        // configure selected option
+        binding.bottomNavigationLayout.bottomNavigation.setSelectedItemId(R.id.page_home);
+        // add listener for navbar
+        binding.bottomNavigationLayout.bottomNavigation.setOnItemSelectedListener(item -> {
+            NavbarController.handleSelection(item, this);
+            return true;
+        });
     }
 
     /**
@@ -79,5 +92,6 @@ public class MainActivity extends AppCompatActivity implements UpdatePlayerCallb
     public void updatePlayer(Player player) {
         binding.textView.setText(String.format("%s %s %d", player.getFirstName(),
                 player.getLastName(), player.getQrCodes().size()));
+
     }
 }
