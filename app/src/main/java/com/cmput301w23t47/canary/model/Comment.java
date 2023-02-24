@@ -7,7 +7,7 @@ public class Comment {
     // Player who added the comment
     private Player player;
     // The Qr code that is commented
-    private QrCode qrCode;
+    private QRCode qrCode;
     // The message in the comment
     private String message;
 }

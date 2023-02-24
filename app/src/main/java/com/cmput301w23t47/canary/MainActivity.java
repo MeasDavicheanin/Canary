@@ -6,11 +6,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.os.Parcelable;
 
-import com.cmput301w23t47.canary.callback.UpdatePlayerCallback;
-import com.cmput301w23t47.canary.controller.FirestoreController;
 import com.cmput301w23t47.canary.controller.QrCodeUtil;
 import com.cmput301w23t47.canary.databinding.ActivityMainBinding;
-import com.cmput301w23t47.canary.model.Player;
 import com.cmput301w23t47.canary.view.contract.QrCodeContract;
 
 import java.security.MessageDigest;
@@ -19,7 +16,7 @@ import java.security.MessageDigest;
  * Main Acitvity
  * @author Meharpreet Singh Nanda
  */
-public class MainActivity extends AppCompatActivity implements UpdatePlayerCallback {
+public class MainActivity extends AppCompatActivity {
     private ActivityMainBinding binding;
     int i = 0;
 
@@ -72,12 +69,6 @@ public class MainActivity extends AppCompatActivity implements UpdatePlayerCallb
         qrActivityLauncher.launch(null);
     }
 
-    /**
-     * Call back for updated player
-     * @param player The player object
-     */
-    public void updatePlayer(Player player) {
-        binding.textView.setText(String.format("%s %s %d", player.getFirstName(),
-                player.getLastName(), player.getQrCodes().size()));
-    }
+
+
 }
