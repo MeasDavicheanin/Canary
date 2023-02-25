@@ -23,10 +23,6 @@ public class LeaderboardFragment extends Fragment {
 
     public LeaderboardFragment() {}
 
-    public LeaderboardFragment(Leaderboard leaderboard) {
-        this.leaderboard = leaderboard;
-    }
-
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
@@ -35,8 +31,8 @@ public class LeaderboardFragment extends Fragment {
      * @return A new instance of fragment LeaderboardFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static LeaderboardFragment newInstance(Leaderboard leaderboard) {
-        LeaderboardFragment fragment = new LeaderboardFragment(leaderboard);
+    public static LeaderboardFragment newInstance() {
+        LeaderboardFragment fragment = new LeaderboardFragment();
         return fragment;
     }
 

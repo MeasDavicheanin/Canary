@@ -10,6 +10,10 @@ import com.cmput301w23t47.canary.R;
  * Controller for handling the navigation from the bottom navbar
  */
 public class NavbarController {
+    public interface NavigateToPage {
+        void navigateToLeaderboard();
+    }
+
     // Tag used for debugging
     private static final String TAG = "NavbarController";
 
@@ -19,7 +23,7 @@ public class NavbarController {
      * @param selectedItem  the selected item
      * @param activity      the current activity
      */
-    public static void handleSelection(MenuItem selectedItem, Activity activity) {
+    public static void handleSelection(MenuItem selectedItem, NavigateToPage navigator) {
         switch (selectedItem.getItemId()) {
             case R.id.page_home:
                 Log.d(TAG, "handleSelection: home");

@@ -9,43 +9,44 @@ import com.cmput301w23t47.canary.callback.UpdatePlayerCallback;
 import com.cmput301w23t47.canary.controller.NavbarController;
 import com.cmput301w23t47.canary.controller.QrCodeUtil;
 import com.cmput301w23t47.canary.databinding.ActivityMainBinding;
+import com.cmput301w23t47.canary.model.Leaderboard;
 import com.cmput301w23t47.canary.model.Player;
 import com.cmput301w23t47.canary.view.contract.QrCodeContract;
+import com.cmput301w23t47.canary.view.fragment.HomeFragment;
+import com.cmput301w23t47.canary.view.fragment.LeaderboardFragment;
 
 
 /**
  * Main Acitvity
  * @author Meharpreet Singh Nanda
  */
-public class MainActivity extends AppCompatActivity implements UpdatePlayerCallback {
+public class MainActivity extends AppCompatActivity implements
+//        UpdatePlayerCallback,
+        NavbarController.NavigateToPage {
+
     private ActivityMainBinding binding;
     int i = 0;
 
     private ActivityResultLauncher<Object> qrActivityLauncher;
+    private HomeFragment homeFragment;
+    private LeaderboardFragment leaderboardFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-
-        init();
+        init(savedInstanceState);
     }
 
     /**
      * Initialization for activity
      */
-    private void init() {
-        // add listener for scanQr button
-        binding.scanQr.setOnClickListener(view -> {
-            launchScanQrActivity();
-        });
-
+    private void init(Bundle savedInstanceState) {
         initNavbar();
-
-        // register contract for QR Activity
-        qrActivityLauncher = registerForActivityResult(new QrCodeContract(),
-                this::receivedQrCode);
+        if (savedInstanceState == null) {
+            navigateToHome();
+        }
     }
 
     /**
@@ -62,36 +63,27 @@ public class MainActivity extends AppCompatActivity implements UpdatePlayerCallb
     }
 
     /**
-     * Receives the QR Code scanned
-     * @param qrCodeVal (String): The raw value of the scanned QR Code
+     * Navigates to the leaderboard page
      */
-    private void receivedQrCode(String qrCodeVal) {
-        if (qrCodeVal == null) {
-            // value not received
-            return;
+    public void navigateToHome() {
+        if (homeFragment == null) {
+            homeFragment = HomeFragment.newInstance();
         }
-        byte[] qrHash = QrCodeUtil.getHashForQr(qrCodeVal);
-        StringBuilder str = new StringBuilder();
-        for (int i = 0; i < qrHash.length; i++) {
-            str.append(qrHash[i]);
-        }
-        binding.textView.setText(qrCodeVal + "\n " + str);
+        getSupportFragmentManager().beginTransaction()
+                .setReorderingAllowed(true)
+                .add(R.id.fragment_container_view, homeFragment, null)
+                .commit();
     }
 
     /**
-     * Launches the Scan Qr Activity
+     * Navigates to the leaderboard page
      */
-    private void launchScanQrActivity() {
-        qrActivityLauncher.launch(null);
+    @Override
+    public void navigateToLeaderboard() {
+        if (leaderboardFragment == null) {
+            leaderboardFragment = LeaderboardFragment.newInstance();
+        }
     }
 
-    /**
-     * Call back for updated player
-     * @param player The player object
-     */
-    public void updatePlayer(Player player) {
-        binding.textView.setText(String.format("%s %s %d", player.getFirstName(),
-                player.getLastName(), player.getQrCodes().size()));
 
-    }
 }
