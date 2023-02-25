@@ -1,4 +1,8 @@
 <resources>
     <string name="app_name">Canary</string>
     <string name="scanQr">Scan QR</string>
+    <string name="leaderboard">Leaderboard</string>
+    <string name="by_score">By Score</string>
+    <string name="by_qr_scanned">By QR Scanned</string>
+    <string name="by_highest_scoring_qr">By Highest Scoring QR</string>
 </resources>
