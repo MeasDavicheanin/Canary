@@ -9,5 +9,4 @@ public class GenWordsTest {
        String word = genWords.getWord();
        assert(word.length() > 0);
     }
-    // @Test for uniquness of words
 }
