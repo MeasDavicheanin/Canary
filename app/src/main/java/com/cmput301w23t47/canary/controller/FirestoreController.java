@@ -13,6 +13,9 @@ import com.cmput301w23t47.canary.model.Player;
 import com.cmput301w23t47.canary.repository.PlayerQrCodeRepository;
 import com.cmput301w23t47.canary.repository.PlayerRepository;
 import com.cmput301w23t47.canary.repository.QrCodeRepository;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.firestore.CollectionReference;
@@ -20,8 +23,10 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
-
 import java.util.ArrayList;
+import com.google.firebase.installations.FirebaseInstallations;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
 /**
@@ -59,6 +64,49 @@ public class FirestoreController {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public void setPlayer(Player player){
+        FirebaseInstallations firebaseInstallations = FirebaseInstallations.getInstance();
+        firebaseInstallations.getId().addOnSuccessListener(new OnSuccessListener<String>() {
+            @Override
+            public void onSuccess(String installationId) {
+                players.document(installationId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if (task.isSuccessful()) {
+                            DocumentSnapshot document = task.getResult();
+                            if (document.exists()) {
+                                Log.d(TAG, "Player document already exists");
+                            } else {
+                                Map<String, Object> playerData = new HashMap<>();
+                                playerData.put("UniquePlayerID", installationId);
+                                playerData.put("username", player.getUsername());
+                                playerData.put("firstName" , player.getFirstName());
+                                playerData.put("lastName", player.getLastName());
+                                players.document(installationId).set(playerData)
+                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                            @Override
+                                            public void onSuccess(Void unused) {
+                                                Log.d(TAG, "Player document created successfully");
+                                            }
+                                        })
+                                        .addOnFailureListener(new OnFailureListener() {
+                                            @Override
+                                            public void onFailure(@NonNull Exception e) {
+                                                Log.w(TAG, "Error creating player document", e);
+                                            }
+                                        });
+                            }
+                        } else {
+                            // Handle errors here
+                            Log.w(TAG, "Error getting document", task.getException());
+                        }
+                    }
+                });
+            }
+        });
+
     }
 
     /**
