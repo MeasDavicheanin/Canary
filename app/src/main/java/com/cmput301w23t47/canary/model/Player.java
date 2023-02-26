@@ -16,8 +16,7 @@ public class Player {
     private ArrayList<PlayerQrCode> qrCodes;
     // score of the player
     private long score = 0;
-    // highest scoring qr of player
-    private QrCode highestScoringQr;
+
 
     public Player(String username, String firstName, String lastName) {
         this.username = username;
@@ -70,13 +69,5 @@ public class Player {
 
     public void setScore(long score) {
         this.score = score;
-    }
-
-    public QrCode getHighestScoringQr() {
-        return highestScoringQr;
-    }
-
-    public void setHighestScoringQr(QrCode highestScoringQr) {
-        this.highestScoringQr = highestScoringQr;
     }
 }

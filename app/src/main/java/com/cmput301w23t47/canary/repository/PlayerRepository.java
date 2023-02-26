@@ -22,6 +22,9 @@ public class PlayerRepository {
     private String firstName;
     // lastname of the player
     private String lastName;
+    // score of player
+    private long score;
+    //
     private ArrayList<PlayerQrCodeRepository> qrCodes;
 
     // Default Constructor

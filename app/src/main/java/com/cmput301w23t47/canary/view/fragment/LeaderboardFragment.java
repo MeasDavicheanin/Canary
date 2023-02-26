@@ -5,11 +5,13 @@ import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.cmput301w23t47.canary.callback.UpdateLeaderboardCallback;
+import com.cmput301w23t47.canary.controller.FirestoreController;
 import com.cmput301w23t47.canary.databinding.FragmentLeaderboardBinding;
 import com.cmput301w23t47.canary.model.Leaderboard;
 
@@ -28,6 +30,7 @@ public class LeaderboardFragment extends Fragment implements
 
     private FragmentLeaderboardBinding binding;
     private ProgressDialog progressDialog;
+    private FirestoreController firestoreController;
 
     public LeaderboardFragment() {}
 
@@ -56,11 +59,13 @@ public class LeaderboardFragment extends Fragment implements
     }
 
     private void init() {
+        firestoreController = new FirestoreController();
     }
 
     @Override
     public void onHiddenChanged(boolean hidden) {
         if (!hidden && leaderboard == null) {
+            firestoreController.getLeaderboard(this);
             initProgressBar();
         }
     }
@@ -89,6 +94,6 @@ public class LeaderboardFragment extends Fragment implements
     }
 
     private void fillLeaderboardInfo() {
-
+        Log.d(TAG, "fillLeaderboardInfo: Leaderboard available");
     }
 }
