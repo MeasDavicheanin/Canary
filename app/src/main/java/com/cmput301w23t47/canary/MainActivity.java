@@ -2,6 +2,8 @@ package com.cmput301w23t47.canary;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.os.Bundle;
 
@@ -27,9 +29,10 @@ public class MainActivity extends AppCompatActivity implements
     private ActivityMainBinding binding;
     int i = 0;
 
-    private ActivityResultLauncher<Object> qrActivityLauncher;
+
     private HomeFragment homeFragment;
     private LeaderboardFragment leaderboardFragment;
+    private Fragment activeFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,36 +46,59 @@ public class MainActivity extends AppCompatActivity implements
      * Initialization for activity
      */
     private void init(Bundle savedInstanceState) {
+        initFragmentStack();
         initNavbar();
-        if (savedInstanceState == null) {
-            navigateToHome();
+    }
+
+    /**
+     * Initializes the fragment stack
+     */
+    private void initFragmentStack() {
+        if (homeFragment == null) {
+            homeFragment = new HomeFragment();
+            leaderboardFragment = new LeaderboardFragment();
         }
+        getSupportFragmentManager().beginTransaction()
+                .setReorderingAllowed(true)
+                .add(R.id.fragment_container_view, homeFragment, HomeFragment.TAG)
+                .add(R.id.fragment_container_view, leaderboardFragment, LeaderboardFragment.TAG)
+                .hide(leaderboardFragment)
+                .commit();
+        activeFragment = homeFragment;
     }
 
     /**
      * Initializes the navbar
      */
     private void initNavbar() {
-        // configure selected option
-        binding.bottomNavigationLayout.bottomNavigation.setSelectedItemId(R.id.page_home);
         // add listener for navbar
         binding.bottomNavigationLayout.bottomNavigation.setOnItemSelectedListener(item -> {
             NavbarController.handleSelection(item, this);
             return true;
         });
+        // ignore if option reselected
+        binding.bottomNavigationLayout.bottomNavigation.setOnItemReselectedListener(item -> {});
+        // configure selected option; calls the itemSelectedCallback function
+        binding.bottomNavigationLayout.bottomNavigation.setSelectedItemId(R.id.page_home);
     }
 
     /**
      * Navigates to the leaderboard page
      */
+    @Override
     public void navigateToHome() {
-        if (homeFragment == null) {
-            homeFragment = HomeFragment.newInstance();
-        }
         getSupportFragmentManager().beginTransaction()
                 .setReorderingAllowed(true)
-                .add(R.id.fragment_container_view, homeFragment, null)
+                .hide(activeFragment)
+                .show(homeFragment)
                 .commit();
+        activeFragment = homeFragment;
+    }
+
+
+    @Override
+    public void navigateToSearch() {
+
     }
 
     /**
@@ -80,9 +106,22 @@ public class MainActivity extends AppCompatActivity implements
      */
     @Override
     public void navigateToLeaderboard() {
-        if (leaderboardFragment == null) {
-            leaderboardFragment = LeaderboardFragment.newInstance();
-        }
+        getSupportFragmentManager().beginTransaction()
+                .setReorderingAllowed(true)
+                .hide(activeFragment)
+                .show(leaderboardFragment)
+                .commit();
+        activeFragment = leaderboardFragment;
+    }
+
+    @Override
+    public void navigateToPlayers() {
+
+    }
+
+    @Override
+    public void navigateToProfile() {
+
     }
 
 

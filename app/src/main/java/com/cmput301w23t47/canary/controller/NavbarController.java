@@ -11,7 +11,11 @@ import com.cmput301w23t47.canary.R;
  */
 public class NavbarController {
     public interface NavigateToPage {
+        void navigateToHome();
+        void navigateToSearch();
         void navigateToLeaderboard();
+        void navigateToPlayers();
+        void navigateToProfile();
     }
 
     // Tag used for debugging
@@ -26,13 +30,13 @@ public class NavbarController {
     public static void handleSelection(MenuItem selectedItem, NavigateToPage navigator) {
         switch (selectedItem.getItemId()) {
             case R.id.page_home:
-                Log.d(TAG, "handleSelection: home");
+                navigator.navigateToHome();
                 break;
             case R.id.page_search:
                 Log.d(TAG, "handleSelection: search");
                 break;
             case R.id.page_rank:
-                Log.d(TAG, "handleSelection: rank");
+                navigator.navigateToLeaderboard();
                 break;
             case R.id.page_players:
                 Log.d(TAG, "handleSelection: player");

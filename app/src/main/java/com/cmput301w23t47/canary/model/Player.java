@@ -14,6 +14,10 @@ public class Player {
     private String lastName;
     // list of QR codes scanned by user
     private ArrayList<PlayerQrCode> qrCodes;
+    // score of the player
+    private long score = 0;
+    // highest scoring qr of player
+    private QrCode highestScoringQr;
 
     public Player(String username, String firstName, String lastName) {
         this.username = username;
@@ -58,5 +62,21 @@ public class Player {
 
     public void setQrCodes(ArrayList<PlayerQrCode> qrCodes) {
         this.qrCodes = qrCodes;
+    }
+
+    public long getScore() {
+        return score;
+    }
+
+    public void setScore(long score) {
+        this.score = score;
+    }
+
+    public QrCode getHighestScoringQr() {
+        return highestScoringQr;
+    }
+
+    public void setHighestScoringQr(QrCode highestScoringQr) {
+        this.highestScoringQr = highestScoringQr;
     }
 }
