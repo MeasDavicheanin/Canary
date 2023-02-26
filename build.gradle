@@ -2,13 +2,14 @@
 plugins {
     id 'com.android.application' version '7.4.0' apply false
     id 'com.android.library' version '7.4.0' apply false
+    id 'com.google.android.libraries.mapsplatform.secrets-gradle-plugin'
+    id 'com.google.gms.google-services'
 }
 allprojects {
     repositories {
-        google()
         jcenter()
         maven {
-            "https://maven.google.com"
+           url "https://maven.google.com"
         }
     }
 }
