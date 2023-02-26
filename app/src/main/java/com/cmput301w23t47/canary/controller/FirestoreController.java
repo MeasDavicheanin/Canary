@@ -8,6 +8,7 @@ import androidx.annotation.NonNull;
 import com.cmput301w23t47.canary.callback.UpdateLeaderboardCallback;
 import com.cmput301w23t47.canary.callback.UpdatePlayerCallback;
 import com.cmput301w23t47.canary.model.Leaderboard;
+import com.cmput301w23t47.canary.model.LeaderboardPlayer;
 import com.cmput301w23t47.canary.model.Player;
 import com.cmput301w23t47.canary.repository.PlayerQrCodeRepository;
 import com.cmput301w23t47.canary.repository.PlayerRepository;
@@ -20,10 +21,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
-import org.checkerframework.checker.units.qual.A;
-
 import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 /**
@@ -99,7 +97,7 @@ public class FirestoreController {
             // Get Player ranks
             ArrayList<PlayerRepository> playersRepoList = getAllPlayers();
             // map the players into leaderboardPlayer
-            ArrayList<Leaderboard.LeaderboardPlayer> playerList =
+            ArrayList<LeaderboardPlayer> playerList =
                     LeaderboardController.getLeaderboardPlayerList(playersRepoList);
             leaderboard.setPlayers(playerList);
 

@@ -1,6 +1,6 @@
 package com.cmput301w23t47.canary.model;
 
-import androidx.annotation.NonNull;
+import com.cmput301w23t47.canary.controller.LeaderboardController;
 
 import java.util.ArrayList;
 import java.util.Locale;
@@ -9,41 +9,7 @@ import java.util.Locale;
  * Class for Leaderboard
  */
 public class Leaderboard {
-    /**
-     * Class for recording the players in the leaderboard
-     */
-    public static class LeaderboardPlayer {
-        // the username of player
-        private String username;
-        // the score of player
-        private long score;
-        // the score of maximum scoring QR for player
-        private long maxScoreQr;
-
-        /**
-         * Constructor for LeaderboardPlayer
-         */
-        public LeaderboardPlayer(String username, long score, long maxScoreQr) {
-            this.username = username;
-            this.score = score;
-            this.maxScoreQr = maxScoreQr;
-        }
-
-        public String getUsername() {
-            return username;
-        }
-
-        public long getScore() {
-            return score;
-        }
-
-        public long getMaxScoreQr() {
-            return maxScoreQr;
-        }
-    }
-
-    public Leaderboard() {}
-
+    /*Attributes*/
     // the username for player with max QRs
     private String maxQrPlayer;
     // the # of QRs for the winner
@@ -53,8 +19,16 @@ public class Leaderboard {
     // the score of winner
     private long maxScore;
     // list of all players to determine ranking
-    private ArrayList<LeaderboardPlayer> players;
+    private ArrayList<LeaderboardPlayer> players; // absent from Firestore
+    // player with max score
+    private ArrayList<LeaderboardPlayer> byScore; // absent from Firestore
+    // player with max qr
+    private ArrayList<LeaderboardPlayer> byHighestScoringQr; // absent from Firestore
 
+    public Leaderboard() {}
+
+
+    /*Getters and Setters*/
     public String getMaxQrPlayer() {
         return maxQrPlayer;
     }
@@ -91,8 +65,22 @@ public class Leaderboard {
         return players;
     }
 
+    /**
+     * Sets the player list; Also sets the player with max score and QR
+     * @param players the list of players
+     */
     public void setPlayers(ArrayList<LeaderboardPlayer> players) {
         this.players = players;
+        this.byScore = LeaderboardController.getPlayersSortedByScore(players);
+        this.byHighestScoringQr = LeaderboardController.getPlayersSortedByMaxQr(players);
+    }
+
+    public ArrayList<LeaderboardPlayer> getByScore() {
+        return byScore;
+    }
+
+    public ArrayList<LeaderboardPlayer> getByHighestScoringQr() {
+        return byHighestScoringQr;
     }
 
     @Override

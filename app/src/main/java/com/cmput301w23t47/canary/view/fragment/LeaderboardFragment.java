@@ -12,8 +12,10 @@ import android.view.ViewGroup;
 
 import com.cmput301w23t47.canary.callback.UpdateLeaderboardCallback;
 import com.cmput301w23t47.canary.controller.FirestoreController;
+import com.cmput301w23t47.canary.controller.LeaderboardController;
 import com.cmput301w23t47.canary.databinding.FragmentLeaderboardBinding;
 import com.cmput301w23t47.canary.model.Leaderboard;
+import com.cmput301w23t47.canary.model.LeaderboardPlayer;
 
 import java.util.Locale;
 
@@ -29,12 +31,17 @@ public class LeaderboardFragment extends Fragment implements
     private static final String progressBarMessage = "Should take only a moment...";
 
     private Leaderboard leaderboard;
+    private String playerUsername = "";
 
     private FragmentLeaderboardBinding binding;
     private ProgressDialog progressDialog;
     private FirestoreController firestoreController;
 
     public LeaderboardFragment() {}
+
+    public LeaderboardFragment(String playerUsername) {
+        this.playerUsername = playerUsername;
+    }
 
     /**
      * Use this factory method to create a new instance of
@@ -62,6 +69,8 @@ public class LeaderboardFragment extends Fragment implements
 
     private void init() {
         firestoreController = new FirestoreController();
+        progressDialog = new ProgressDialog(getContext());
+        firestoreController.getLeaderboard(this);
     }
 
     @Override
@@ -73,9 +82,6 @@ public class LeaderboardFragment extends Fragment implements
     }
 
     private void initProgressBar() {
-        if (progressDialog == null) {
-            progressDialog = new ProgressDialog(getContext());
-        }
         progressDialog.setTitle(progressBarTitle);
         progressDialog.setMessage(progressBarMessage);
         progressDialog.show();
@@ -100,7 +106,14 @@ public class LeaderboardFragment extends Fragment implements
                 leaderboard.getMaxScorePlayer(), leaderboard.getMaxScore()));
         binding.qrScannedLeaderboardVal.setText(String.format(Locale.CANADA, "%s: %d QR",
                 leaderboard.getMaxQrPlayer(), leaderboard.getMaxQr()));
+
         // set personal ranking
+        int playerScoreRank = LeaderboardController.getRankForPlayer(playerUsername, leaderboard.getByScore());
+        int playerMaxQrRank = LeaderboardController.getRankForPlayer(playerUsername, leaderboard.getByHighestScoringQr());
+        binding.scoreRankVal.setText(String.format(Locale.CANADA, "%d Out of %d",
+                playerScoreRank, leaderboard.getByScore().size()));
+        binding.highestScoringQrRankVal.setText(String.format(Locale.CANADA, "%d Out of %d",
+                playerMaxQrRank, leaderboard.getByHighestScoringQr().size()));
     }
 
 }

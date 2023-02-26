@@ -2,11 +2,10 @@ package com.cmput301w23t47.canary.repository;
 
 import androidx.annotation.NonNull;
 
-import com.cmput301w23t47.canary.model.Leaderboard;
+import com.cmput301w23t47.canary.model.LeaderboardPlayer;
 import com.cmput301w23t47.canary.model.Player;
 import com.cmput301w23t47.canary.model.PlayerQrCode;
 import com.google.firebase.firestore.DocumentId;
-import com.google.firebase.firestore.DocumentReference;
 
 import java.util.ArrayList;
 import java.util.Locale;
@@ -102,8 +101,8 @@ public class PlayerRepository {
         this.maxScoreQr = maxScoreQr;
     }
 
-    public Leaderboard.LeaderboardPlayer getLeaderboardPlayer() {
-        return new Leaderboard.LeaderboardPlayer(username, score, maxScoreQr);
+    public LeaderboardPlayer getLeaderboardPlayer() {
+        return new LeaderboardPlayer(username, score, maxScoreQr);
     }
 
     @NonNull

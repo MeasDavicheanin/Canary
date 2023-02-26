@@ -34,6 +34,9 @@ public class MainActivity extends AppCompatActivity implements
     private LeaderboardFragment leaderboardFragment;
     private Fragment activeFragment;
 
+    // TODO: Get the actual username
+    private String playerUsername = "jamesk";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,7 +59,7 @@ public class MainActivity extends AppCompatActivity implements
     private void initFragmentStack() {
         if (homeFragment == null) {
             homeFragment = new HomeFragment();
-            leaderboardFragment = new LeaderboardFragment();
+            leaderboardFragment = new LeaderboardFragment(playerUsername);
         }
         getSupportFragmentManager().beginTransaction()
                 .setReorderingAllowed(true)
