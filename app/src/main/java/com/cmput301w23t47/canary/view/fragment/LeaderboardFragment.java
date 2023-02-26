@@ -16,7 +16,9 @@ import com.cmput301w23t47.canary.controller.LeaderboardController;
 import com.cmput301w23t47.canary.databinding.FragmentLeaderboardBinding;
 import com.cmput301w23t47.canary.model.Leaderboard;
 import com.cmput301w23t47.canary.model.LeaderboardPlayer;
+import com.cmput301w23t47.canary.view.adapter.LeaderboardRankListAdapter;
 
+import java.util.ArrayList;
 import java.util.Locale;
 
 /**
@@ -36,6 +38,7 @@ public class LeaderboardFragment extends Fragment implements
     private FragmentLeaderboardBinding binding;
     private ProgressDialog progressDialog;
     private FirestoreController firestoreController;
+    private LeaderboardRankListAdapter leaderboardRankListAdapter;
 
     public LeaderboardFragment() {}
 
@@ -71,6 +74,8 @@ public class LeaderboardFragment extends Fragment implements
         firestoreController = new FirestoreController();
         progressDialog = new ProgressDialog(getContext());
         firestoreController.getLeaderboard(this);
+        leaderboardRankListAdapter = new LeaderboardRankListAdapter(getContext(), new ArrayList<>());
+        binding.rankingList.setAdapter(leaderboardRankListAdapter);
     }
 
     @Override
@@ -114,6 +119,12 @@ public class LeaderboardFragment extends Fragment implements
                 playerScoreRank, leaderboard.getByScore().size()));
         binding.highestScoringQrRankVal.setText(String.format(Locale.CANADA, "%d Out of %d",
                 playerMaxQrRank, leaderboard.getByHighestScoringQr().size()));
+
+        // update ranking list
+        ArrayList<LeaderboardPlayer> rankPlayers = leaderboardRankListAdapter.getPlayersList();
+        rankPlayers.clear();
+        rankPlayers.addAll(leaderboard.getByScore());
+        leaderboardRankListAdapter.notifyDataSetChanged();
     }
 
 }
