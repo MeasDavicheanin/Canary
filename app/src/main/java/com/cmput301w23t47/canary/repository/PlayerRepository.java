@@ -2,6 +2,7 @@ package com.cmput301w23t47.canary.repository;
 
 import androidx.annotation.NonNull;
 
+import com.cmput301w23t47.canary.model.LeaderboardPlayer;
 import com.cmput301w23t47.canary.model.Player;
 import com.cmput301w23t47.canary.model.PlayerQrCode;
 import com.google.firebase.firestore.DocumentId;
@@ -22,7 +23,12 @@ public class PlayerRepository {
     private String firstName;
     // lastname of the player
     private String lastName;
+    // score of player
+    private long score;
+    // QR with max score
+    private long maxScoreQr;
     private ArrayList<PlayerQrCodeRepository> qrCodes;
+
 
     // Default Constructor
     public PlayerRepository() {
@@ -77,6 +83,26 @@ public class PlayerRepository {
 
     public void setQrCodes(ArrayList<PlayerQrCodeRepository> qrCodes) {
         this.qrCodes = qrCodes;
+    }
+
+    public long getScore() {
+        return score;
+    }
+
+    public void setScore(long score) {
+        this.score = score;
+    }
+
+    public long getMaxScoreQr() {
+        return maxScoreQr;
+    }
+
+    public void setMaxScoreQr(long maxScoreQr) {
+        this.maxScoreQr = maxScoreQr;
+    }
+
+    public LeaderboardPlayer getLeaderboardPlayer() {
+        return new LeaderboardPlayer(username, score, maxScoreQr);
     }
 
     @NonNull

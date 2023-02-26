@@ -5,7 +5,10 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import com.cmput301w23t47.canary.callback.UpdateLeaderboardCallback;
 import com.cmput301w23t47.canary.callback.UpdatePlayerCallback;
+import com.cmput301w23t47.canary.model.Leaderboard;
+import com.cmput301w23t47.canary.model.LeaderboardPlayer;
 import com.cmput301w23t47.canary.model.Player;
 import com.cmput301w23t47.canary.repository.PlayerQrCodeRepository;
 import com.cmput301w23t47.canary.repository.PlayerRepository;
@@ -18,8 +21,10 @@ import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+import java.util.ArrayList;
 import com.google.firebase.installations.FirebaseInstallations;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
@@ -33,6 +38,7 @@ public class FirestoreController {
     private final CollectionReference players = db.collection("Player");
     private final CollectionReference qrCodes = db.collection("QRCode");
     private final CollectionReference leaderboard = db.collection("Leaderboard");
+    private final String globalLeaderboardDocument = "Global";
 
     private static final String TAG = "Firestore Controller";
 
@@ -125,4 +131,46 @@ public class FirestoreController {
             });
         }).start();
     }
+
+    /**
+     * Gets Leaderboard from db
+     * Calls the callback function when result  is ready
+     */
+    public void getLeaderboard(UpdateLeaderboardCallback callback) {
+        Handler handler = new Handler();
+        new Thread(() -> {
+            // get Player Repo
+            Task<DocumentSnapshot> lbTask = leaderboard.document(globalLeaderboardDocument).get();
+            Leaderboard leaderboard = waitForTask(lbTask, Leaderboard.class);
+            // Get Player ranks
+            ArrayList<PlayerRepository> playersRepoList = getAllPlayers();
+            // map the players into leaderboardPlayer
+            ArrayList<LeaderboardPlayer> playerList =
+                    LeaderboardController.getLeaderboardPlayerList(playersRepoList);
+            leaderboard.setPlayers(playerList);
+
+            handler.post(() -> {
+                callback.updateLeaderboard(leaderboard);
+            });
+        }).start();
+    }
+
+    /**
+     * Gets the repo model of all players
+     * @return ArrayList of all Player Repo models
+     */
+    private ArrayList<PlayerRepository> getAllPlayers() {
+        ArrayList<PlayerRepository> playersList = new ArrayList<>();
+        Task<QuerySnapshot> allPlayersTask = players.get();
+        try {
+            QuerySnapshot playersQuery = Tasks.await(allPlayersTask);
+            for (QueryDocumentSnapshot playerDoc : playersQuery) {
+                playersList.add(playerDoc.toObject(PlayerRepository.class));
+            }
+        } catch (ExecutionException | InterruptedException e) {
+            e.printStackTrace();
+        }
+        return playersList;
+    }
+
 }
