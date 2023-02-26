@@ -15,6 +15,8 @@ import com.cmput301w23t47.canary.controller.FirestoreController;
 import com.cmput301w23t47.canary.databinding.FragmentLeaderboardBinding;
 import com.cmput301w23t47.canary.model.Leaderboard;
 
+import java.util.Locale;
+
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link LeaderboardFragment#newInstance} factory method to
@@ -85,15 +87,20 @@ public class LeaderboardFragment extends Fragment implements
         binding = null;
     }
 
-
     @Override
-    public void updatePlayer(Leaderboard leaderboard) {
+    public void updateLeaderboard(Leaderboard leaderboard) {
         this.leaderboard = leaderboard;
         progressDialog.dismiss();
         fillLeaderboardInfo();
     }
 
     private void fillLeaderboardInfo() {
-        Log.d(TAG, "fillLeaderboardInfo: Leaderboard available");
+        // set Global Leaderboard val
+        binding.scoreLeaderboardVal.setText(String.format(Locale.CANADA, "%s: %d Pt",
+                leaderboard.getMaxScorePlayer(), leaderboard.getMaxScore()));
+        binding.qrScannedLeaderboardVal.setText(String.format(Locale.CANADA, "%s: %d QR",
+                leaderboard.getMaxQrPlayer(), leaderboard.getMaxQr()));
+        // set personal ranking
     }
+
 }

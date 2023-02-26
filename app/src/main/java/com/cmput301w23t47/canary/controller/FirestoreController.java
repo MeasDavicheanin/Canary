@@ -17,7 +17,13 @@ import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
+import org.checkerframework.checker.units.qual.A;
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 /**
@@ -91,14 +97,34 @@ public class FirestoreController {
             Task<DocumentSnapshot> lbTask = leaderboard.document(globalLeaderboardDocument).get();
             Leaderboard leaderboard = waitForTask(lbTask, Leaderboard.class);
             // Get Player ranks
-//            for (PlayerQrCodeRepository playerQrCodesRepo : playerRepository.getQrCodes()) {
-//                QrCodeRepository qrCodeRepo = waitForTask(playerQrCodesRepo.getQrCode().get(), QrCodeRepository.class);
-//                playerQrCodesRepo.setParsedQrCode(qrCodeRepo.getParsedQrCode());
-//            }
-//            Player player = playerRepository.getParsedPlayer();
-//            handler.post(() -> {
-//                callback.updatePlayer(player);
-//            });
+            ArrayList<PlayerRepository> playersRepoList = getAllPlayers();
+            // map the players into leaderboardPlayer
+            ArrayList<Leaderboard.LeaderboardPlayer> playerList =
+                    LeaderboardController.getLeaderboardPlayerList(playersRepoList);
+            leaderboard.setPlayers(playerList);
+
+            handler.post(() -> {
+                callback.updateLeaderboard(leaderboard);
+            });
         }).start();
     }
+
+    /**
+     * Gets the repo model of all players
+     * @return ArrayList of all Player Repo models
+     */
+    private ArrayList<PlayerRepository> getAllPlayers() {
+        ArrayList<PlayerRepository> playersList = new ArrayList<>();
+        Task<QuerySnapshot> allPlayersTask = players.get();
+        try {
+            QuerySnapshot playersQuery = Tasks.await(allPlayersTask);
+            for (QueryDocumentSnapshot playerDoc : playersQuery) {
+                playersList.add(playerDoc.toObject(PlayerRepository.class));
+            }
+        } catch (ExecutionException | InterruptedException e) {
+            e.printStackTrace();
+        }
+        return playersList;
+    }
+
 }

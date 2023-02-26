@@ -12,7 +12,7 @@ public class Leaderboard {
     /**
      * Class for recording the players in the leaderboard
      */
-    public class LeaderboardPlayer {
+    public static class LeaderboardPlayer {
         // the username of player
         private String username;
         // the score of player
@@ -85,6 +85,14 @@ public class Leaderboard {
 
     public void setMaxScore(long maxScore) {
         this.maxScore = maxScore;
+    }
+
+    public ArrayList<LeaderboardPlayer> getPlayers() {
+        return players;
+    }
+
+    public void setPlayers(ArrayList<LeaderboardPlayer> players) {
+        this.players = players;
     }
 
     @Override
