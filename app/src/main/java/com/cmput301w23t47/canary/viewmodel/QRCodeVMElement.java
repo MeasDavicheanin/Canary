@@ -2,7 +2,7 @@ package com.cmput301w23t47.canary.viewmodel;
 
 import android.location.Location;
 
-import com.cmput301w23t47.canary.model.PlayerQRCode;
+import com.cmput301w23t47.canary.model.Player;
 import com.cmput301w23t47.canary.model.QRCode;
 import com.cmput301w23t47.canary.model.Snapshot;
 
@@ -35,22 +35,22 @@ public class QRCodeVMElement {
         this.playerPicture = playerPicture;
     }
 
-    public QRCodeVMElement(PlayerQRCode playerqrCode) {
-        QRCode temp = playerqrCode.getQrCode();
+    public QRCodeVMElement(Player Player) {
+        QRCode temp = Player.getQrCode();
 
-        this.QRname = playerqrCode.getName();
-        this.playerPictureLocation = playerqrCode.getLocation();
+        this.QRname = Player.getName();
+        this.playerPictureLocation = Player.getLocation();
         QrPoints = temp.getScore();
-        this.playerPicture = playerqrCode.getSnapshot();
+        this.playerPicture = Player.getSnapshot();
     }
 
-    public QRCodeVMElement changeCurrentData(PlayerQRCode playerqrCode) {
-        QRCode temp = playerqrCode.getQrCode();
+    public QRCodeVMElement changeCurrentData(Player Player) {
+        QRCode temp = Player.getQrCode();
 
-        this.QRname = playerqrCode.getName();
-        this.playerPictureLocation = playerqrCode.getLocation();
+        this.QRname = Player.getName();
+        this.playerPictureLocation = Player.getLocation();
         QrPoints = temp.getScore();
-        this.playerPicture = playerqrCode.getSnapshot();
+        this.playerPicture = Player.getSnapshot();
         return this;
     }
 
