@@ -5,21 +5,21 @@ import android.location.Location;
 /**
  * Class for the QR Code scanned by the Player
  */
-public class PlayerQRCode {
+public class PlayerQrCode {
     // Player who scanned the QR
     private Player player;
     // QR Code scanned
-    private QRCode qrCode;
+    private QrCode qrCode;
 
-    //Location of the QR stored in latitude and longitude
-    private Location location;
-
-
-    // name of the QR
-    private String name;
     // Snapshot of the QR
     private Snapshot snapshot;
 
+    public PlayerQrCode() {}
+
+    public PlayerQrCode(Player player, QrCode qrCode) {
+        this.player = player;
+        this.qrCode = qrCode;
+    }
 
     public Player getPlayer() {
         return player;
@@ -29,28 +29,12 @@ public class PlayerQRCode {
         this.player = player;
     }
 
-    public QRCode getQrCode() {
+    public QrCode getQrCode() {
         return qrCode;
     }
 
-    public void setQrCode(QRCode qrCode) {
+    public void setQrCode(QrCode qrCode) {
         this.qrCode = qrCode;
-    }
-
-    public Location getLocation() {
-        return location;
-    }
-
-    public void setLocation(Location location) {
-        this.location = location;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public Snapshot getSnapshot() {
@@ -60,4 +44,8 @@ public class PlayerQRCode {
     public void setSnapshot(Snapshot snapshot) {
         this.snapshot = snapshot;
     }
+
+    public String getName() {return qrCode.getName();}
+
+    public Location getLocation() {return qrCode.getLocation();}
 }
