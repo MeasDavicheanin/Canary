@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.cmput301w23t47.canary.viewmodel.QRCodeVMList;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -17,6 +18,17 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.libraries.maps.OnMapReadyCallback;
 
+import java.util.ArrayList;
+
+/**
+ * A simple {@link Fragment} subclass.
+ * Use the {@link fragment_maps_interactive#newInstance} factory method to
+ * create an instance of this fragment.
+ *
+ * Description
+ * - THIS IS THE MAP FRAGMENT THAT WILL BE USED FOR THE INTERACTIVE MAP
+ * - WILL NEED TO PASS THE LIST OF THINGS TO BE STORED TO THIS PLACE
+ */
 public class fragment_maps_interactive extends Fragment {
    
    private OnMapReadyCallback callback = new OnMapReadyCallback() {
@@ -38,12 +50,58 @@ public class fragment_maps_interactive extends Fragment {
       }
    };
    
+   /**
+    *
+    * @param inflater The LayoutInflater object that can be used to inflate
+    * any views in the fragment,
+    *
+    * @param container If non-null, this is the parent view that the fragment's
+    * UI should be attached to.  The fragment should not add the view itself,
+    * but this can be used to generate the LayoutParams of the view.
+    * @param savedInstanceState If non-null, this fragment is being re-constructed
+    * from a previous saved state as given here.
+    *
+    * @return view The View for the fragment's UI, or null.
+    *
+    * Description
+    * This method is called to have the fragment instantiate its user interface view.
+    * The fragment will initialize with the player location as the default location (marker)
+    * Issue of the map not loading is resolved by using the SupportMapFragment instead of the
+    * MapFragment.
+    *
+    * WILL NEED TO ADD THE OTHER PLAYER MARKERS LATER
+    */
    @Nullable
    @Override
    public View onCreateView(@NonNull LayoutInflater inflater,
                             @Nullable ViewGroup container,
                             @Nullable Bundle savedInstanceState) {
-      return inflater.inflate(R.layout.fragment_maps_interactive, container, false);
+      
+      //The bundle should hold the list of QR codes based on location
+      Bundle bundle = savedInstanceState;
+      
+      View view = inflater.inflate(R.layout.fragment_maps_interactive, container, false);
+      SupportMapFragment mapFragment =  (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
+      // this leaves a location marker on the map at the players position
+      mapFragment.getMapAsync(new  OnMapReadyCallback() {
+         @Override
+         public void onMapReady(@NonNull GoogleMap googleMap) {
+            googleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+               @Override
+               public void onMapClick(@NonNull LatLng latLng) {
+                  MarkerOptions markerOptions = new MarkerOptions();
+                  markerOptions.position(latLng);
+                  markerOptions.title("Player Location");
+                  googleMap.clear();
+                  googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 10));
+                  googleMap.addMarker(markerOptions);
+               }
+            });
+         }
+      }
+      
+      
+      return view;
    }
    
    @Override
