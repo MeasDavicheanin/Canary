@@ -47,9 +47,10 @@ public class QrDetails extends Fragment {
             noSnapshot();
         });
 
-        public void onCheckBoxClicked(View view) {
-            boolean checked = ((CheckBox) view).isChecked();
 
-        }
+    }
+    public void onCheckBoxClicked(View view) {
+        boolean checked = ((CheckBox) view).isChecked();
+
     }
 }

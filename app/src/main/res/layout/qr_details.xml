@@ -17,6 +17,7 @@
         android:background="#FFFFFF">
 
         <ImageView
+            android:contentDescription="profile photo"
             android:id="@+id/imageView3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -109,11 +110,9 @@
         android:id="@+id/no_snap"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background=""
         android:layout_gravity="center"
 
         android:text="Continue without snapshot"
-        app:iconTint="#ECE2E2"
         tools:layout_editor_absoluteX="68dp"
         tools:layout_editor_absoluteY="650dp" />
 
