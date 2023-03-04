@@ -5,7 +5,7 @@
     <uses-feature android:name="android.hardware.camera.any" />
     <uses-permission android:name="android.permission.CAMERA" />
     <!--This allows access to the precise device location
-        other version of this is called ACCESS_COARSE_LOCATION which is less accurate so I assumed we didn't want it (could mess up the map)
+        other version of this is called ACCESS_COARSE_LOCATION which is less accurate but need them both for fine location
     -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name = "android.permission.ACCESS_COARSE_LOCATION" />
