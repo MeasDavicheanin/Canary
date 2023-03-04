@@ -4,10 +4,8 @@
 
     <uses-feature android:name="android.hardware.camera.any" />
 
-
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
-
     <uses-permission android:name="android.permission.CAMERA" />
     <!--
 This allows access to the precise device location
@@ -26,8 +24,10 @@ This allows access to the precise device location
         android:supportsRtl="true"
         android:theme="@style/Theme.Canary"
         tools:targetApi="31">
-
-        <!--api key for google maps-->
+        <activity
+            android:name=".Map_Activity_Screen_map_and_list"
+            android:exported="false" />
+        <!-- api key for google maps -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="${MAPS_API_KEY}" />
