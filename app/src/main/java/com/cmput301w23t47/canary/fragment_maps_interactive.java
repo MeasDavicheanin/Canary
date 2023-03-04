@@ -17,10 +17,13 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.libraries.maps.OnMapReadyCallback;
+import com.google.type.LatLng;
 
 import java.util.ArrayList;
 
 /**
+ * THIS IS THE MAP FRAGMENT
+ * IT CAN BE ADD3ED TO THE MAP_ACTIVITY_SCREEN_MAP_AND_LIST
  * A simple {@link Fragment} subclass.
  * Use the {@link fragment_maps_interactive#newInstance} factory method to
  * create an instance of this fragment.
@@ -29,8 +32,11 @@ import java.util.ArrayList;
  * - THIS IS THE MAP FRAGMENT THAT WILL BE USED FOR THE INTERACTIVE MAP
  * - WILL NEED TO PASS THE LIST OF THINGS TO BE STORED TO THIS PLACE
  */
-public class fragment_maps_interactive extends Fragment {
-   
+public class fragment_maps_interactive extends Fragment{
+
+   ArrayList<LatLng> markers = new ArrayList<>();
+
+
    private OnMapReadyCallback callback = new OnMapReadyCallback() {
       
       /**
@@ -44,9 +50,9 @@ public class fragment_maps_interactive extends Fragment {
        */
       @Override
       public void onMapReady(GoogleMap googleMap) {
-         LatLng sydney = new LatLng(-34, 151);
-         googleMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-         googleMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+         //this makes a marker to be used //LatLng sydney = new LatLng(-34, 151);
+         //this places the marker on the map //googleMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
+         //this moves your camera to the position on the map //googleMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
       }
    };
    
@@ -78,29 +84,38 @@ public class fragment_maps_interactive extends Fragment {
                             @Nullable Bundle savedInstanceState) {
       
       //The bundle should hold the list of QR codes based on location
-      Bundle bundle = savedInstanceState;
-      
+      // INITIALIZE VIEW
       View view = inflater.inflate(R.layout.fragment_maps_interactive, container, false);
+      //initialize map fragment
       SupportMapFragment mapFragment =  (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
       // this leaves a location marker on the map at the players position
+      //async map
       mapFragment.getMapAsync(new  OnMapReadyCallback() {
          @Override
          public void onMapReady(@NonNull GoogleMap googleMap) {
+
             googleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
                @Override
                public void onMapClick(@NonNull LatLng latLng) {
+                  //when clicke on map
+                  //initialize marker options
                   MarkerOptions markerOptions = new MarkerOptions();
+                  //set position of marker
                   markerOptions.position(latLng);
+                  //set title of marker
                   markerOptions.title("Player Location");
+                  //remova all marker
                   googleMap.clear();
+                  //animating to zoom the marker
                   googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 10));
+                  //add marker on map
                   googleMap.addMarker(markerOptions);
                }
             });
          }
       }
       
-      
+      //return the view
       return view;
    }
    
