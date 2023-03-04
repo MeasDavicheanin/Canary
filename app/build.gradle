@@ -42,6 +42,7 @@ dependencies {
     implementation 'com.github.javafaker:javafaker:1.0.2'
     implementation platform('com.google.firebase:firebase-bom:31.2.2')
     implementation 'com.google.firebase:firebase-installations:17.0.0'
+    implementation 'com.google.android.libraries.maps:maps:3.1.0-beta'
     testImplementation 'junit:junit:4.13.2'
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.2'
 
@@ -72,4 +73,8 @@ dependencies {
 
     //Google map Implementation
     implementation 'com.google.android.gms:play-services-maps:18.1.0'
+    // I dont know if we need this
+    // but implementing anyways only thing that is being suggested that I dont have
+    //implementation 'com.google.android.gms:play-services-location:21.0.1'
+    //implementation 'com.google.android.gms:play-services-places:18.1.0'
 }
