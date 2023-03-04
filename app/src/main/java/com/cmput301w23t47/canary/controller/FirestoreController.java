@@ -79,6 +79,7 @@ public class FirestoreController {
                             if (document.exists()) {
                                 Log.d(TAG, "Player document already exists");
                             } else {
+                                player.setUniquePlayerId(installationId);
                                 Map<String, Object> playerData = new HashMap<>();
                                 playerData.put("UniquePlayerID", installationId);
                                 playerData.put("username", player.getUsername());
