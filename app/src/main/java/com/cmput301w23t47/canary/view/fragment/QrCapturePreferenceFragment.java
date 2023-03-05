@@ -4,8 +4,6 @@ package com.cmput301w23t47.canary;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.Adapter;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -15,7 +13,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 
-public class QrDetails extends Fragment {
+public class QrCapturePreferenceFragment extends Fragment {
 
     static void takeSnapshot() {
 
@@ -25,7 +23,7 @@ public class QrDetails extends Fragment {
 
     }
 
-    public QrDetails () {
+    public QrCapturePreferenceFragment() {
         super(R.layout.qr_details);
     }
 
