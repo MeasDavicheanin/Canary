@@ -16,6 +16,7 @@ import com.cmput301w23t47.canary.model.Player;
 import com.cmput301w23t47.canary.view.contract.QrCodeContract;
 import com.cmput301w23t47.canary.view.fragment.HomeFragment;
 import com.cmput301w23t47.canary.view.fragment.LeaderboardFragment;
+import com.cmput301w23t47.canary.view.fragment.SearchFragment;
 
 
 /**
@@ -32,6 +33,8 @@ public class MainActivity extends AppCompatActivity implements
 
     private HomeFragment homeFragment;
     private LeaderboardFragment leaderboardFragment;
+
+    private SearchFragment searchFragment;
     private Fragment activeFragment;
 
     // TODO: Get the actual username
@@ -101,7 +104,12 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void navigateToSearch() {
-
+        getSupportFragmentManager().beginTransaction()
+                .setReorderingAllowed(true)
+                .hide(activeFragment)
+                .show(searchFragment)
+                .commit();
+        activeFragment = searchFragment;
     }
 
     /**
