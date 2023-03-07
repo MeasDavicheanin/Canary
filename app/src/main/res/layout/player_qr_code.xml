@@ -37,14 +37,16 @@
         android:id="@+id/listQrCodeScore"
         android:layout_width="73dp"
         android:layout_height="44dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="4dp"
+        android:paddingLeft="5dp"
         android:text="350 Pt"
         android:textColor="@color/black"
         android:textSize="16sp"
-        android:paddingLeft="5dp"
         android:textStyle="bold"
         android:typeface="sans"
-        tools:layout_editor_absoluteX="274dp"
-        tools:layout_editor_absoluteY="16dp" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/listQrCodeScanDateTime"

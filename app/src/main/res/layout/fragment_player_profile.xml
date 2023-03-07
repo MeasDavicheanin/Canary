@@ -69,9 +69,10 @@
             android:background="@drawable/all_rounded_corners_lb"
 
             app:layout_constraintBottom_toTopOf="@+id/highestQrLayout"
+            app:layout_constraintEnd_toEndOf="@+id/highestQrLayout"
+            app:layout_constraintStart_toStartOf="@+id/highestQrLayout"
             app:layout_constraintTop_toBottomOf="@+id/playerLayout"
-            app:layout_constraintVertical_bias="0.0"
-            tools:layout_editor_absoluteX="22dp">
+            app:layout_constraintVertical_bias="0.0">
 
             <TextView
                 android:id="@+id/scoreTitle"
@@ -144,9 +145,11 @@
             android:layout_width="138dp"
             android:layout_height="77dp"
 
+            android:layout_marginStart="20dp"
+            android:layout_marginBottom="4dp"
             android:background="@drawable/all_rounded_corners_lb"
             app:layout_constraintBottom_toBottomOf="parent"
-            tools:layout_editor_absoluteX="22dp">
+            app:layout_constraintStart_toStartOf="parent">
 
             <TextView
                 android:id="@+id/highestQrTitle"
@@ -179,11 +182,12 @@
             android:id="@+id/lowestQrLayout"
             android:layout_width="138dp"
             android:layout_height="77dp"
+            android:layout_marginTop="21dp"
             android:background="@drawable/all_rounded_corners_lb"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.51"
             app:layout_constraintStart_toEndOf="@+id/highestQrLayout"
-            tools:layout_editor_absoluteY="245dp">
+            app:layout_constraintTop_toBottomOf="@+id/qrScannedLayout">
 
             <TextView
                 android:id="@+id/lowestQrTitle"
