@@ -28,5 +28,9 @@
         android:id="@+id/qrCapturePreferenceFragment"
         android:name="com.cmput301w23t47.canary.view.fragment.QrCapturePreferenceFragment"
         android:label="fragment_qr_capture_preference"
-        tools:layout="@layout/fragment_qr_capture_preference" />
+        tools:layout="@layout/fragment_qr_capture_preference" >
+        <argument
+            android:name="qrHash"
+            app:argType="string" />
+    </fragment>
 </navigation>

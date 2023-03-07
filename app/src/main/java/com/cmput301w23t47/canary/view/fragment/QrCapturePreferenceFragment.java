@@ -9,8 +9,10 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.cmput301w23t47.canary.R;
+import com.cmput301w23t47.canary.databinding.FragmentQrCapturePreferenceBinding;
 
 public class QrCapturePreferenceFragment extends Fragment {
+    private FragmentQrCapturePreferenceBinding binding;
 
     public QrCapturePreferenceFragment() {}
 
@@ -45,6 +47,7 @@ public class QrCapturePreferenceFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_qr_capture_preference, container, false);
+        binding = FragmentQrCapturePreferenceBinding.inflate(inflater, container, false);
+        return binding.getRoot();
     }
 }
