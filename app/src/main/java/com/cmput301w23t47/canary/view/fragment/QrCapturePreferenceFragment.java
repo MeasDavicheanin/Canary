@@ -1,8 +1,11 @@
 package com.cmput301w23t47.canary.view.fragment;
 
 import android.content.DialogInterface;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
@@ -22,6 +25,7 @@ import com.cmput301w23t47.canary.controller.RandomNameGenerator;
 import com.cmput301w23t47.canary.controller.ScoreCalculator;
 import com.cmput301w23t47.canary.databinding.FragmentQrCapturePreferenceBinding;
 import com.cmput301w23t47.canary.model.QrCode;
+import com.cmput301w23t47.canary.view.contract.SnapshotContract;
 
 import java.util.Locale;
 
@@ -33,9 +37,10 @@ public class QrCapturePreferenceFragment extends Fragment implements DoesResourc
 
     private FragmentQrCapturePreferenceBinding binding;
     AlertDialog.Builder builder;
+    private ActivityResultLauncher<Object> snapshotActivityLauncher;
 
     // controller for making qr related queries
-    private FirestorePlayerController firestorePlayerController = new FirestorePlayerController();
+    private final FirestorePlayerController firestorePlayerController = new FirestorePlayerController();
 
     private boolean saveLocation = true;
     private final QrCode qrCode = new QrCode();
@@ -68,6 +73,11 @@ public class QrCapturePreferenceFragment extends Fragment implements DoesResourc
         binding.saveLocationCheckbox.setOnClickListener(view -> {
             saveLocation = binding.saveLocationCheckbox.isChecked();
         });
+        snapshotActivityLauncher = registerForActivityResult(new SnapshotContract(), this::receiveSnapshot);
+
+        binding.takeSnap.setOnClickListener(view -> {
+            captureSnapshot();
+        });
 
         builder = new AlertDialog.Builder(getContext());
     }
@@ -97,5 +107,13 @@ public class QrCapturePreferenceFragment extends Fragment implements DoesResourc
     private void updateUi() {
         binding.qrName.setText(qrCode.getName());
         binding.qrScore.setText(String.format(Locale.CANADA, "%d", qrCode.getScore()));
+    }
+
+    private void receiveSnapshot(Bitmap image) {
+        Log.d(TAG, "receiveSnapshot: " +image.toString());
+    }
+
+    private void captureSnapshot() {
+        snapshotActivityLauncher.launch(null);
     }
 }

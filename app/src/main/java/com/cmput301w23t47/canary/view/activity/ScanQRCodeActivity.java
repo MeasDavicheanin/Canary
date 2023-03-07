@@ -21,6 +21,7 @@ import static androidx.camera.view.CameraController.COORDINATE_SYSTEM_VIEW_REFER
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.Bundle;
 import android.util.Log;
 
 import androidx.camera.mlkit.vision.MlKitAnalyzer;
@@ -28,14 +29,17 @@ import androidx.camera.view.LifecycleCameraController;
 import androidx.camera.view.PreviewView;
 import androidx.core.content.ContextCompat;
 
+import com.cmput301w23t47.canary.databinding.ActivityScanQrcodeBinding;
 import com.cmput301w23t47.canary.view.contract.QrCodeContract;
 import com.cmput301w23t47.canary.view.model.QrCodeVm;
+import com.google.mlkit.vision.barcode.BarcodeScanner;
 import com.google.mlkit.vision.barcode.BarcodeScannerOptions;
 import com.google.mlkit.vision.barcode.BarcodeScanning;
 import com.google.mlkit.vision.barcode.common.Barcode;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 /**
@@ -44,6 +48,19 @@ import java.util.concurrent.Executors;
  * @author Meharpreet Singh Nanda
  */
 public class ScanQRCodeActivity extends CameraBaseActivity {
+    protected ActivityScanQrcodeBinding binding;
+
+    protected BarcodeScanner qrScanner;
+    protected ExecutorService cameraExecutor;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        binding = ActivityScanQrcodeBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
+        init();
+    }
+
     @Override
     protected void init() {
         checkPermissions();

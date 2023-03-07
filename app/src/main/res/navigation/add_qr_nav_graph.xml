@@ -32,5 +32,8 @@
         <argument
             android:name="qrHash"
             app:argType="string" />
+        <action
+            android:id="@+id/action_qrCapturePreferenceFragment_to_captureSnapshotActivity"
+            app:destination="@id/captureSnapshotActivity" />
     </fragment>
 </navigation>
