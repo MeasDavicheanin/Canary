@@ -71,11 +71,10 @@ public class AddNewQrFragment extends Fragment {
             return;
         }
         // Get Preferences for QR
-
         qrHash = qrCodeVal;
-//        Navigation.findNavController(getView()).navigate(R.id.action_qrCapturePreference);
-        Navigation.findNavController(getView()).navigate(R.id.action_qrCapturePreference);
-//        Log.d(TAG, "receivedQrCode: QRRRR " + qrCodeVal);
+        // pass the obtained hash to the capture preference fragment
+        AddNewQrFragmentDirections.ActionQrCapturePreference action = AddNewQrFragmentDirections.actionQrCapturePreference(qrHash);
+        Navigation.findNavController(getView()).navigate(action);
     }
 
 }
