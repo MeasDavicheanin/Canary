@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/FirstFragment">
+
+    <fragment
+        android:id="@+id/FirstFragment"
+        android:name="com.cmput301w23t47.canary.view.fragment.AddNewQrFragment"
+        android:label="@string/first_fragment_label"
+        tools:layout="@layout/fragment_add_new_qr">
+        <action
+            android:id="@+id/action_scanQrCode"
+            app:destination="@id/scanQRCodeActivity" />
+        <action
+            android:id="@+id/action_qrCapturePreference"
+            app:destination="@id/qrCapturePreferenceFragment" />
+    </fragment>
+    <activity
+        android:id="@+id/scanQRCodeActivity"
+        android:name="com.cmput301w23t47.canary.view.activity.ScanQRCodeActivity"
+        android:label="ScanQRCodeActivity" />
+    <fragment
+        android:id="@+id/qrCapturePreferenceFragment"
+        android:name="com.cmput301w23t47.canary.QrCapturePreferenceFragment"
+        android:label="QrCapturePreferenceFragment" >
+        <action
+            android:id="@+id/action_captureSnapshot"
+            app:destination="@id/captureSnapshotActivity" />
+    </fragment>
+    <activity
+        android:id="@+id/captureSnapshotActivity"
+        android:name="com.cmput301w23t47.canary.view.activity.CaptureSnapshotActivity"
+        android:label="CaptureSnapshotActivity" />
+</navigation>

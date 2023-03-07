@@ -1,4 +1,4 @@
-package com.cmput301w23t47.canary;
+package com.cmput301w23t47.canary.view.activity;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -14,11 +14,13 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.cmput301w23t47.canary.R;
+
 /** CaptureSnapshot
  * @author Dhruvraj Singh
  */
 
-public class CaptureSnapshot extends AppCompatActivity {
+public class CaptureSnapshotActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {

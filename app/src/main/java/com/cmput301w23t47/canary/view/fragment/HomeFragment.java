@@ -4,11 +4,13 @@ import android.os.Bundle;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.cmput301w23t47.canary.R;
 import com.cmput301w23t47.canary.controller.QrCodeUtil;
 import com.cmput301w23t47.canary.databinding.FragmentHomeBinding;
 import com.cmput301w23t47.canary.view.contract.QrCodeContract;
@@ -89,7 +91,8 @@ public class HomeFragment extends Fragment {
      * Launches the Scan Qr Activity
      */
     private void launchScanQrActivity() {
-        qrActivityLauncher.launch(null);
+//        qrActivityLauncher.launch(null);
+        Navigation.findNavController(getView()).navigate(R.id.action_addNewQr);
     }
 //
 //    /**

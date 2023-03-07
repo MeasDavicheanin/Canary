@@ -4,6 +4,10 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+import androidx.navigation.ui.AppBarConfiguration;
+import androidx.navigation.ui.NavigationUI;
 
 import android.os.Bundle;
 
@@ -27,7 +31,7 @@ public class MainActivity extends AppCompatActivity implements
         NavbarController.NavigateToPage {
 
     private ActivityMainBinding binding;
-    int i = 0;
+    private AppBarConfiguration appBarConfiguration;
 
 
     private HomeFragment homeFragment;
@@ -42,6 +46,11 @@ public class MainActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
+        NavController navController = Navigation.findNavController(this, R.id.fragment_container_view_main);
+//        appBarConfiguration = new AppBarConfiguration.Builder(navController.getGraph()).build();
+//        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
+
         init(savedInstanceState);
     }
 
@@ -63,8 +72,8 @@ public class MainActivity extends AppCompatActivity implements
         }
         getSupportFragmentManager().beginTransaction()
                 .setReorderingAllowed(true)
-                .add(R.id.fragment_container_view, homeFragment, HomeFragment.TAG)
-                .add(R.id.fragment_container_view, leaderboardFragment, LeaderboardFragment.TAG)
+                .add(R.id.fragment_container_view_main, homeFragment, HomeFragment.TAG)
+                .add(R.id.fragment_container_view_main, leaderboardFragment, LeaderboardFragment.TAG)
                 .hide(leaderboardFragment)
                 .commit();
         activeFragment = homeFragment;
