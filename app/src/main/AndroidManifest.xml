@@ -39,7 +39,7 @@ This allows access to the precise device location
 
 
         <activity
-            android:name=".Map_Screen_map_list_search"
+            android:name=".Fragment_Map_Screen_map_list_search"
             android:exported="false" />
         <!-- api key for google maps -->
 

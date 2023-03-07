@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.fragment.app.Fragment;
 
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -25,7 +26,7 @@ import java.util.ArrayList;
 
 import static com.cmput301w23t47.canary.Constants.MAPVIEW_BUNDLE_KEY;
 
-public class Map_Screen_map_list_search extends AppCompatActivity implements OnMapReadyCallback {
+public class Fragment_Map_Screen_map_list_search extends Fragment implements OnMapReadyCallback {
 
     //widgets
     private static final String TAG = "Map_Activity_Screen_map_and_list";
@@ -39,24 +40,24 @@ public class Map_Screen_map_list_search extends AppCompatActivity implements OnM
     private Map_Adapter_RecyclerViews mMapAdapterRecyclerViews;
 
 
-    public static Map_Screen_map_list_search newInstance() {
-        return new Map_Screen_map_list_search();
+    public static Fragment_Map_Screen_map_list_search newInstance() {
+        return new Fragment_Map_Screen_map_list_search();
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mUserList = getArguments().getParcelableArrayList(getString(R.string.intent_user_list));
+            mUserList = getArguments().getParcelableArrayList(getString(R.string.intent_recycler_list_map));
         }
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_user_list, container, false);
+        View view = inflater.inflate(R.layout.fragment_map_screen_map_and_list, container, false);
         mUserListRecyclerView = view.findViewById(R.id.user_list_recycler_view);
-        mMapView = view.findViewById(R.id.user_list_map);
+        mMapView = view.findViewById(R.id.map_display);
 
         initUserListRecyclerView();
         initGoogleMap(savedInstanceState);
@@ -121,13 +122,6 @@ public class Map_Screen_map_list_search extends AppCompatActivity implements OnM
                 != PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
             return;
         }
         map.setMyLocationEnabled(true);

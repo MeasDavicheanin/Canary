@@ -3,23 +3,14 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/White">
+    android:background="@color/white">
 
     <LinearLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:weightSum="100"
-        android:background="@color/White">
-
-        <android.support.v7.widget.RecyclerView
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="50"
-            android:id="@+id/user_list_recycler_view">
-
-        </android.support.v7.widget.RecyclerView>
+        android:background="@color/white">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -28,11 +19,18 @@
             android:id="@+id/map_container">
 
             <com.google.android.gms.maps.MapView
-                xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/map_display"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:id="@+id/user_list_map" />
+                android:layout_height="match_parent" />
         </RelativeLayout>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/user_list_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="50">
+
+        </android.support.v7.widget.RecyclerView>
 
 
     </LinearLayout>
