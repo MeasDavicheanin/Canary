@@ -27,4 +27,13 @@ public class QrCodeUtil {
             return new byte[0];
         }
     }
+
+    public static String getHashStrForQr(String qrVal) {
+        byte[] qrHash = QrCodeUtil.getHashForQr(qrVal);
+        StringBuilder str = new StringBuilder();
+        for (int i = 0; i < qrHash.length; i++) {
+            str.append(qrHash[i]);
+        }
+        return str.toString();
+    }
 }

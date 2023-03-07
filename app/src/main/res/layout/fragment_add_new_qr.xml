@@ -9,20 +9,9 @@
         android:id="@+id/textViewAddQr"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Fragment Add New Qr"
+        android:text="Scan New QR. Press back!"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
-    <Button
-        android:id="@+id/scanQrAddQr"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textViewAddQr"
-        android:text="@string/scanQr"
-        />
 </androidx.constraintlayout.widget.ConstraintLayout>
