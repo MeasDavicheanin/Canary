@@ -1,6 +1,7 @@
 package com.cmput301w23t47.canary.view.fragment;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 
@@ -24,7 +25,10 @@ import com.cmput301w23t47.canary.controller.FirestoreQrController;
 import com.cmput301w23t47.canary.controller.RandomNameGenerator;
 import com.cmput301w23t47.canary.controller.ScoreCalculator;
 import com.cmput301w23t47.canary.databinding.FragmentQrCapturePreferenceBinding;
+import com.cmput301w23t47.canary.model.PlayerQrCode;
 import com.cmput301w23t47.canary.model.QrCode;
+import com.cmput301w23t47.canary.model.Snapshot;
+import com.cmput301w23t47.canary.view.contract.QrCodeContract;
 import com.cmput301w23t47.canary.view.contract.SnapshotContract;
 
 import java.util.Locale;
@@ -110,7 +114,23 @@ public class QrCapturePreferenceFragment extends Fragment implements DoesResourc
     }
 
     private void receiveSnapshot(Bitmap image) {
-        Log.d(TAG, "receiveSnapshot: " +image.toString());
+
+        returnFromActivity(image);
+    }
+
+    /**
+     * Persists the scanned QR to db
+     * @param snapshot The snapshot of qr
+     */
+    private void persistQr(Bitmap snapshot) {
+        PlayerQrCode playerQrCode = new PlayerQrCode(qrCode);
+    }
+
+    private void returnFromActivity(Bitmap image) {
+        PlayerQrCode playerQrCode = new PlayerQrCode(qrCode);
+        playerQrCode.setSnapshot(new Snapshot(image));
+        Intent intent = new Intent();
+        intent.putExtra(QrCodeContract.RESPONSE_TAG, playerQrCode);
     }
 
     private void captureSnapshot() {

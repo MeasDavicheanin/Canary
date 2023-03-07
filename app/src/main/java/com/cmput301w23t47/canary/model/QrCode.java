@@ -1,6 +1,7 @@
 package com.cmput301w23t47.canary.model;
 
 import android.location.Location;
+import android.os.Parcelable;
 
 import java.util.ArrayList;
 
@@ -16,7 +17,7 @@ public class QrCode {
     private Location location;
     // name of the QR
     private String name;
-    ArrayList<Comment> comments;
+    ArrayList<Comment> comments = new ArrayList<>();
 
     public QrCode(String hash, long score, Location location, String name) {
         this.hash = hash;

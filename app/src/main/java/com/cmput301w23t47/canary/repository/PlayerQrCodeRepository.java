@@ -23,10 +23,6 @@ public class PlayerQrCodeRepository {
         this.parsedPlayerQrCode.setQrCode(qrCode);
     }
 
-    public void setParsedPlayer(Player player) {
-        this.parsedPlayerQrCode.setPlayer(player);
-    }
-
     public PlayerQrCode getParsedPlayerQrCode() {
         return parsedPlayerQrCode;
     }

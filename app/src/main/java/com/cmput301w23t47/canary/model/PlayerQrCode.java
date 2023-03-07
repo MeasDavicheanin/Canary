@@ -1,13 +1,16 @@
 package com.cmput301w23t47.canary.model;
 
 import android.location.Location;
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import androidx.annotation.NonNull;
+
 
 /**
  * Class for the QR Code scanned by the Player
  */
-public class PlayerQrCode {
-    // Player who scanned the QR
-    private Player player;
+public class PlayerQrCode implements Parcelable {
     // QR Code scanned
     private QrCode qrCode;
 
@@ -16,17 +19,8 @@ public class PlayerQrCode {
 
     public PlayerQrCode() {}
 
-    public PlayerQrCode(Player player, QrCode qrCode) {
-        this.player = player;
+    public PlayerQrCode(QrCode qrCode) {
         this.qrCode = qrCode;
-    }
-
-    public Player getPlayer() {
-        return player;
-    }
-
-    public void setPlayer(Player player) {
-        this.player = player;
     }
 
     public QrCode getQrCode() {
@@ -48,4 +42,29 @@ public class PlayerQrCode {
     public String getName() {return qrCode.getName();}
 
     public Location getLocation() {return qrCode.getLocation();}
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(@NonNull Parcel parcel, int i) {
+
+    }
+
+    public static final Parcelable.Creator<PlayerQrCode> CREATOR
+            = new Parcelable.Creator<PlayerQrCode>() {
+        public PlayerQrCode createFromParcel(Parcel in) {
+            return new PlayerQrCode(in);
+        }
+
+        public PlayerQrCode[] newArray(int size) {
+            return new PlayerQrCode[size];
+        }
+    };
+
+    private PlayerQrCode(Parcel in) {
+
+    }
 }
