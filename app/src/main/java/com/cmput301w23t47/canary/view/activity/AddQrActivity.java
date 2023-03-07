@@ -30,7 +30,6 @@ public class AddQrActivity extends AppCompatActivity {
 
     private ActivityResultLauncher<Object> qrActivityLauncher;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,7 +42,6 @@ public class AddQrActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_add_qr);
         appBarConfiguration = new AppBarConfiguration.Builder(navController.getGraph()).build();
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
-        init();
     }
 
     @Override
@@ -52,25 +50,4 @@ public class AddQrActivity extends AppCompatActivity {
         return NavigationUI.navigateUp(navController, appBarConfiguration)
                 || super.onSupportNavigateUp();
     }
-
-    void init() {
-        // register contract for QR Activity and launch scan QR Activity
-        qrActivityLauncher = registerForActivityResult(new QrCodeContract(),
-                this::receivedQrCode);
-        qrActivityLauncher.launch(null);
-    }
-
-    /**
-     * Receives the QR Code scanned
-     * @param qrCodeVal (String): The raw value of the scanned QR Code
-     */
-    private void receivedQrCode(String qrCodeVal) {
-        if (qrCodeVal == null) {
-            // value not received
-            return;
-        }
-        // Get Preferences for QR
-
-    }
-
 }

@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.cmput301w23t47.canary.R;
@@ -23,6 +24,8 @@ public class AddNewQrFragment extends Fragment {
     private FragmentAddNewQrBinding binding;
 
     private ActivityResultLauncher<Object> qrActivityLauncher;
+
+    String qrHash = null;
 
     @Override
     public View onCreateView(
@@ -50,10 +53,12 @@ public class AddNewQrFragment extends Fragment {
         // register contract for QR Activity
         qrActivityLauncher = registerForActivityResult(new QrCodeContract(),
                 this::receivedQrCode);
-
-        binding.scanQrAddQr.setOnClickListener(view -> {
+        if (qrHash == null) {
             qrActivityLauncher.launch(null);
-        });
+        }
+//        binding.scanQrButton.setOnClickListener(view -> {
+//            Navigation.findNavController(getView()).navigate(R.id.action_addNewQrFragment_to_blankFragment);
+//        });
     }
 
     /**
@@ -67,6 +72,10 @@ public class AddNewQrFragment extends Fragment {
         }
         // Get Preferences for QR
 
+        qrHash = qrCodeVal;
+//        Navigation.findNavController(getView()).navigate(R.id.action_qrCapturePreference);
+        Navigation.findNavController(getView()).navigate(R.id.action_qrCapturePreference);
+//        Log.d(TAG, "receivedQrCode: QRRRR " + qrCodeVal);
     }
 
 }
