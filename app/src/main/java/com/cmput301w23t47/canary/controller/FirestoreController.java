@@ -34,11 +34,11 @@ import java.util.concurrent.ExecutionException;
  * Objects are singleton
  */
 public class FirestoreController {
-    private final FirebaseFirestore db = FirebaseFirestore.getInstance();
-    private final CollectionReference players = db.collection("Player");
-    private final CollectionReference qrCodes = db.collection("QRCode");
-    private final CollectionReference leaderboard = db.collection("Leaderboard");
-    private final String globalLeaderboardDocument = "Global";
+    protected final FirebaseFirestore db = FirebaseFirestore.getInstance();
+    protected final CollectionReference players = db.collection("Player");
+    protected final CollectionReference qrCodes = db.collection("QRCode");
+    protected final CollectionReference leaderboard = db.collection("Leaderboard");
+    protected final String globalLeaderboardDocument = "Global";
 
     private static final String TAG = "Firestore Controller";
 
@@ -56,7 +56,7 @@ public class FirestoreController {
         return instance;
     }
 
-    private <TResult> TResult waitForTask(Task<DocumentSnapshot> snapshotTask, @NonNull Class<TResult> classType) {
+    protected  <TResult> TResult waitForTask(Task<DocumentSnapshot> snapshotTask, @NonNull Class<TResult> classType) {
         try {
             DocumentSnapshot doc = Tasks.await(snapshotTask);
             return doc.toObject(classType);
@@ -64,6 +64,18 @@ public class FirestoreController {
             e.printStackTrace();
         }
         return null;
+    }
+
+    /**
+     * Waits for the query snapshot task to complete
+     * @param querySnapshotTask the query snapshot object
+     */
+    protected void waitForQuery(Task<QuerySnapshot> querySnapshotTask) {
+        try {
+            Tasks.await(querySnapshotTask);
+        } catch (ExecutionException | InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     public void setPlayer(Player player){
@@ -173,4 +185,16 @@ public class FirestoreController {
         return playersList;
     }
 
+    /**
+     * Determines if qr with the given hash exists
+     * @param qrHash the hash of the qr to find
+     * @return true if the given qr Exists
+     * @apiNote do not call from the UI thread
+     */
+    protected boolean doesQrWithHashExist(String qrHash) {
+        // determine if qr with the given hash exists
+        Task<QuerySnapshot> qrCodeQuery = qrCodes.whereEqualTo("hash", qrHash).get();
+        waitForQuery(qrCodeQuery);
+        return !qrCodeQuery.getResult().isEmpty();
+    }
 }

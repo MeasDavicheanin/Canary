@@ -11,12 +11,20 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.cmput301w23t47.canary.R;
+import com.cmput301w23t47.canary.controller.FirestoreQrController;
 import com.cmput301w23t47.canary.databinding.FragmentQrCapturePreferenceBinding;
 
+/**
+ * Continues without saving location if permission denied
+ */
 public class QrCapturePreferenceFragment extends Fragment {
     private FragmentQrCapturePreferenceBinding binding;
 
+    // controller for making qr related queries
+//    private FirestoreQrController firestoreQrController = new FirestoreQrController();
+
     private String qrHash;
+    private boolean saveLocation = true;
 
     public QrCapturePreferenceFragment() {}
 
@@ -30,6 +38,7 @@ public class QrCapturePreferenceFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         binding = FragmentQrCapturePreferenceBinding.inflate(inflater, container, false);
+        init();
         return binding.getRoot();
     }
 
@@ -38,5 +47,12 @@ public class QrCapturePreferenceFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         qrHash = QrCapturePreferenceFragmentArgs.fromBundle(getArguments()).getQrHash();
         binding.qrName.setText(qrHash);
+        binding.saveLocationCheckbox.setChecked(saveLocation);
+    }
+
+    void init() {
+        binding.saveLocationCheckbox.setOnClickListener(view -> {
+            saveLocation = binding.saveLocationCheckbox.isChecked();
+        });
     }
 }
