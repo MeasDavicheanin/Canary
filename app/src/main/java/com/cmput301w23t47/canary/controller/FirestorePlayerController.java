@@ -3,6 +3,8 @@ package com.cmput301w23t47.canary.controller;
 import android.os.Handler;
 
 import com.cmput301w23t47.canary.callback.DoesResourceExistCallback;
+import com.cmput301w23t47.canary.callback.OperationStatusCallback;
+import com.cmput301w23t47.canary.model.PlayerQrCode;
 import com.cmput301w23t47.canary.repository.PlayerRepository;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
@@ -50,5 +52,13 @@ public class FirestorePlayerController extends FirestoreController{
         // get the player model
         PlayerRepository playerRepo = getPlayerRepo(username);
         return playerRepo.containsQrRef(qrDocRef);
+    }
+
+    public void addQrToPlayer(PlayerQrCode playerQrCode, String username, OperationStatusCallback callback) {
+        PlayerRepository playerRepo = getPlayerRepo(username);
+
+        if (playerQrCode.getSnapshot() == null) {
+            // continue without setting the
+        }
     }
 }

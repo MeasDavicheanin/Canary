@@ -124,6 +124,8 @@ public class QrCapturePreferenceFragment extends Fragment implements DoesResourc
      */
     private void persistQr(Bitmap snapshot) {
         PlayerQrCode playerQrCode = new PlayerQrCode(qrCode);
+        // TODO: Get location
+        playerQrCode.setSnapshot(new Snapshot(snapshot));
     }
 
     private void returnFromActivity(Bitmap image) {

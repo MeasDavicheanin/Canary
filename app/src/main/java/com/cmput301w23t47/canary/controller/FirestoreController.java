@@ -1,5 +1,6 @@
 package com.cmput301w23t47.canary.controller;
 
+import android.graphics.Bitmap;
 import android.os.Handler;
 import android.util.Log;
 
@@ -13,12 +14,14 @@ import com.cmput301w23t47.canary.model.Player;
 import com.cmput301w23t47.canary.repository.PlayerQrCodeRepository;
 import com.cmput301w23t47.canary.repository.PlayerRepository;
 import com.cmput301w23t47.canary.repository.QrCodeRepository;
+import com.cmput301w23t47.canary.repository.SnapshotRepository;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -38,6 +41,7 @@ public class FirestoreController {
     protected final CollectionReference players = db.collection("Player");
     protected final CollectionReference qrCodes = db.collection("QRCode");
     protected final CollectionReference leaderboard = db.collection("Leaderboard");
+    protected final CollectionReference snapshot = db.collection("Snapshot");
     protected final String globalLeaderboardDocument = "Global";
 
     private static final String TAG = "Firestore Controller";
@@ -73,6 +77,30 @@ public class FirestoreController {
     protected void waitForQuery(Task<QuerySnapshot> querySnapshotTask) {
         try {
             Tasks.await(querySnapshotTask);
+        } catch (ExecutionException | InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Waits for the document snapshot task to complete
+     * @param snapshotTask the document snapshot object
+     */
+    protected void waitForTask(Task<DocumentSnapshot> snapshotTask) {
+        try {
+            Tasks.await(snapshotTask);
+        } catch (ExecutionException | InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Waits for the document snapshot task to complete
+     * @param referenceTask the document reference object
+     */
+    protected void waitForReference(Task<DocumentReference> referenceTask) {
+        try {
+            Tasks.await(referenceTask);
         } catch (ExecutionException | InterruptedException e) {
             e.printStackTrace();
         }
@@ -206,5 +234,46 @@ public class FirestoreController {
     protected PlayerRepository getPlayerRepo(String username) {
         Task<DocumentSnapshot> playerTask = players.document(username).get();
         return waitForTask(playerTask, PlayerRepository.class);
+    }
+
+    /**
+     * Saves the snapshot to firestore
+     * @param image the image to save
+     * @param owner the owner of resource
+     * @return the reference to the stored image
+     */
+    protected DocumentReference saveSnapshot(Bitmap image, String owner) {
+        // compress and store the image
+        String encodedSnap = SnapshotController.getBase64Image(image);
+        SnapshotRepository snapshotRepository = new SnapshotRepository(encodedSnap,
+                getReferenceToPlayer(owner));
+        Task<DocumentReference> referenceTask = snapshot.add(snapshotRepository);
+        waitForReference(referenceTask);
+        return referenceTask.getResult();
+    }
+
+    /**
+     * Gets the reference for the player document
+     * @param username the username of the player
+     * @return the document reference to the player's doc
+     */
+    protected DocumentReference getReferenceToPlayer(String username) {
+        Task<DocumentSnapshot> playerTask = players.document(username).get();
+        waitForTask(playerTask);
+        return playerTask.getResult().getReference();
+    }
+
+    protected DocumentReference getReferenceToQrOrCreate(QrCodeRepository qrCodeRepository) {
+        Task<QuerySnapshot> qrCodeQuery = qrCodes.whereEqualTo("hash", qrCodeRepository.getHash()).get();
+        waitForQuery(qrCodeQuery);
+        if (qrCodeQuery.getResult().size() > 0) {
+            // qr resource exist; return reference to it
+            return qrCodeQuery.getResult().getDocuments().get(0).getReference();
+        }
+        // create the QR Code repo
+    }
+
+    protected void persistQrCode(QrCodeRepository qrCodeRepository) {
+
     }
 }
