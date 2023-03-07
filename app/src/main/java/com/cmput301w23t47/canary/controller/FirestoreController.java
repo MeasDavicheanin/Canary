@@ -197,4 +197,14 @@ public class FirestoreController {
         waitForQuery(qrCodeQuery);
         return !qrCodeQuery.getResult().isEmpty();
     }
+
+    /**
+     * Gets the player Repo
+     * @param username
+     * @return
+     */
+    protected PlayerRepository getPlayerRepo(String username) {
+        Task<DocumentSnapshot> playerTask = players.document(username).get();
+        return waitForTask(playerTask, PlayerRepository.class);
+    }
 }

@@ -6,6 +6,7 @@ import com.cmput301w23t47.canary.model.LeaderboardPlayer;
 import com.cmput301w23t47.canary.model.Player;
 import com.cmput301w23t47.canary.model.PlayerQrCode;
 import com.google.firebase.firestore.DocumentId;
+import com.google.firebase.firestore.DocumentReference;
 
 import java.util.ArrayList;
 import java.util.Locale;
@@ -115,5 +116,19 @@ public class PlayerRepository {
         player.setUsername(username);
         player.setFirstName(firstName);
         player.setLastName(lastName);
+    }
+
+    /**
+     * Determines if the player repo contains the reference to the given qr
+     * @param qrRef the reference to compare
+     * @return true if it contains the reference
+     */
+    public boolean containsQrRef(DocumentReference qrRef) {
+        for (PlayerQrCodeRepository qrRepo : qrCodes) {
+            if (qrRepo.getQrCode().equals(qrRef)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

@@ -39,7 +39,7 @@ public class MainActivity extends AppCompatActivity implements
     private Fragment activeFragment;
 
     // TODO: Get the actual username
-    private String playerUsername = "jamesk";
+    public static String playerUsername = "hpotter";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
