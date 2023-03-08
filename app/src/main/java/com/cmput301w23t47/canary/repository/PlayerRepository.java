@@ -36,11 +36,11 @@ public class PlayerRepository {
         qrCodes = new ArrayList<>();
     }
 
-    public Player getParsedPlayer() {
+    public Player retrieveParsedPlayer() {
         Player player = new Player(username, firstName, lastName);
         ArrayList<PlayerQrCode> playerQrCodes = new ArrayList<>();
         for (PlayerQrCodeRepository qrRepo : qrCodes) {
-            playerQrCodes.add(qrRepo.getParsedPlayerQrCode());
+            playerQrCodes.add(qrRepo.retrieveParsedPlayerQrCode());
         }
         player.setQrCodes(playerQrCodes);
         return player;
@@ -102,7 +102,7 @@ public class PlayerRepository {
         this.maxScoreQr = maxScoreQr;
     }
 
-    public LeaderboardPlayer getLeaderboardPlayer() {
+    public LeaderboardPlayer retrieveLeaderboardPlayer() {
         return new LeaderboardPlayer(username, score, maxScoreQr);
     }
 
@@ -130,5 +130,14 @@ public class PlayerRepository {
             }
         }
         return false;
+    }
+
+    /**
+     * Adds the qr to the player stats
+     * @param playerQrCode the qr added
+     */
+    public void addQrToPlayerStats(PlayerQrCode playerQrCode) {
+        score += playerQrCode.getQrCode().getScore();
+        maxScoreQr = Math.max(maxScoreQr, playerQrCode.getQrCode().getScore());
     }
 }

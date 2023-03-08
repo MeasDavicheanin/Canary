@@ -10,4 +10,12 @@ public class Snapshot {
     public Snapshot(Bitmap bitmap) {
         this.bitmap = bitmap;
     }
+
+    public Bitmap getBitmap() {
+        return bitmap;
+    }
+
+    public void setBitmap(Bitmap bitmap) {
+        this.bitmap = bitmap;
+    }
 }

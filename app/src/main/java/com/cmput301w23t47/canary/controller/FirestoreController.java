@@ -94,6 +94,19 @@ public class FirestoreController {
         }
     }
 
+
+    /**
+     * Waits for the document snapshot task to complete
+     * @param snapshotTask the document snapshot object
+     */
+    protected void waitForUpdateTask(Task<Void> snapshotTask) {
+        try {
+            Tasks.await(snapshotTask);
+        } catch (ExecutionException | InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
     /**
      * Waits for the document snapshot task to complete
      * @param referenceTask the document reference object
@@ -165,7 +178,7 @@ public class FirestoreController {
                 QrCodeRepository qrCodeRepo = waitForTask(playerQrCodesRepo.getQrCode().get(), QrCodeRepository.class);
                 playerQrCodesRepo.setParsedQrCode(qrCodeRepo.getParsedQrCode());
             }
-            Player player = playerRepository.getParsedPlayer();
+            Player player = playerRepository.retrieveParsedPlayer();
             handler.post(() -> {
                 callback.updatePlayer(player);
             });
@@ -242,7 +255,7 @@ public class FirestoreController {
      * @param owner the owner of resource
      * @return the reference to the stored image
      */
-    protected DocumentReference saveSnapshot(Bitmap image, String owner) {
+    protected DocumentReference persistSnapshot(Bitmap image, String owner) {
         // compress and store the image
         String encodedSnap = SnapshotController.getBase64Image(image);
         SnapshotRepository snapshotRepository = new SnapshotRepository(encodedSnap,
@@ -263,17 +276,25 @@ public class FirestoreController {
         return playerTask.getResult().getReference();
     }
 
+    /**
+     * Gets the reference to the given qr; Creates it if it does not exist
+     * @param qrCodeRepository the qr's reference to return
+     * @return the reference to the given qr
+     */
     protected DocumentReference getReferenceToQrOrCreate(QrCodeRepository qrCodeRepository) {
         Task<QuerySnapshot> qrCodeQuery = qrCodes.whereEqualTo("hash", qrCodeRepository.getHash()).get();
         waitForQuery(qrCodeQuery);
-        if (qrCodeQuery.getResult().size() > 0) {
+        if (qrCodeQuery.getResult().getDocuments().size() > 0) {
             // qr resource exist; return reference to it
             return qrCodeQuery.getResult().getDocuments().get(0).getReference();
         }
         // create the QR Code repo
+        return persistQrCode(qrCodeRepository);
     }
 
-    protected void persistQrCode(QrCodeRepository qrCodeRepository) {
-
+    protected DocumentReference persistQrCode(QrCodeRepository qrCodeRepository) {
+        Task<DocumentReference> referenceTask = qrCodes.add(qrCodeRepository);
+        waitForReference(referenceTask);
+        return referenceTask.getResult();
     }
 }

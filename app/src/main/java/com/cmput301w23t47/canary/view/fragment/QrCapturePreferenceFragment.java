@@ -20,6 +20,7 @@ import android.view.ViewGroup;
 import com.cmput301w23t47.canary.MainActivity;
 import com.cmput301w23t47.canary.R;
 import com.cmput301w23t47.canary.callback.DoesResourceExistCallback;
+import com.cmput301w23t47.canary.callback.OperationStatusCallback;
 import com.cmput301w23t47.canary.controller.FirestorePlayerController;
 import com.cmput301w23t47.canary.controller.FirestoreQrController;
 import com.cmput301w23t47.canary.controller.RandomNameGenerator;
@@ -30,13 +31,15 @@ import com.cmput301w23t47.canary.model.QrCode;
 import com.cmput301w23t47.canary.model.Snapshot;
 import com.cmput301w23t47.canary.view.contract.QrCodeContract;
 import com.cmput301w23t47.canary.view.contract.SnapshotContract;
+import com.mifmif.common.regex.Main;
 
 import java.util.Locale;
 
 /**
  * Continues without saving location if permission denied
  */
-public class QrCapturePreferenceFragment extends Fragment implements DoesResourceExistCallback {
+public class QrCapturePreferenceFragment extends Fragment implements 
+        DoesResourceExistCallback, OperationStatusCallback {
     public static final String TAG = "QrCapturePreferenceFragment";
 
     private FragmentQrCapturePreferenceBinding binding;
@@ -114,8 +117,8 @@ public class QrCapturePreferenceFragment extends Fragment implements DoesResourc
     }
 
     private void receiveSnapshot(Bitmap image) {
-
-        returnFromActivity(image);
+        persistQr(image);
+//        returnFromActivity(image);
     }
 
     /**
@@ -126,6 +129,7 @@ public class QrCapturePreferenceFragment extends Fragment implements DoesResourc
         PlayerQrCode playerQrCode = new PlayerQrCode(qrCode);
         // TODO: Get location
         playerQrCode.setSnapshot(new Snapshot(snapshot));
+        firestorePlayerController.addQrToPlayer(playerQrCode, MainActivity.playerUsername, this);
     }
 
     private void returnFromActivity(Bitmap image) {
@@ -137,5 +141,10 @@ public class QrCapturePreferenceFragment extends Fragment implements DoesResourc
 
     private void captureSnapshot() {
         snapshotActivityLauncher.launch(null);
+    }
+
+    @Override
+    public void operationStatus(boolean status) {
+        Log.d(TAG, "operationStatus: Done");
     }
 }
