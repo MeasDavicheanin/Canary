@@ -98,7 +98,7 @@ public class QrCapturePreferenceFragment extends Fragment implements
                     .setCancelable(false)
                     .setPositiveButton("Continue", (DialogInterface dialog, int id) -> {
                         // TODO: handle already scanned QR
-                        Log.d("", "doesResourceExists: qr exists");
+                        getActivity().finish();
                     }).create().show();
         } else {
             RandomNameGenerator nameGenerator = new RandomNameGenerator();
