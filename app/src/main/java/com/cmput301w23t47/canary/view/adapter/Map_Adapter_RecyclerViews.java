@@ -2,25 +2,28 @@ package com.cmput301w23t47.canary.view.adapter;
 
 import com.cmput301w23t47.canary.R;
 import android.content.Context;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
+import androidx.fragment.app.Fragment;
 
-import com.cmput301w23t47.canary.view.fragment.MapInteractiveQRViewHolder;
+import com.cmput301w23t47.canary.view.fragment.FragmentMapScreenMapListSearch;
 import com.cmput301w23t47.canary.viewmodel.QRCodeVMElement;
 
 import java.util.ArrayList;
 
+//
 /**
  * Class for the list of QR Codes on map
  * should have multiple accessible qr codes
  *
  */
-public class Map_Adapter_RecyclerViews extends RecyclerView.Adapter<MapInteractiveQRViewHolder>{
+public class Map_Adapter_RecyclerViews extends RecyclerView.Adapter<FragmentMapScreenMapListSearch>{
     private static final String TAG = "MapQRLocationListAdapter";
 
     Context context;
@@ -32,6 +35,7 @@ public class Map_Adapter_RecyclerViews extends RecyclerView.Adapter<MapInteracti
         mmapQRLocationListAdapterClickListener = mapRecyclerClickListener;
     }
 
+    //could use help dont know what the error is here
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -41,14 +45,13 @@ public class Map_Adapter_RecyclerViews extends RecyclerView.Adapter<MapInteracti
     }
 
     @Override
-    public void onBindViewHolder(@NonNull MapInteractiveQRViewHolder holder, int position) {
-        ((ViewHolder)holder).MapTitle.setText(mqrCodes.get(position).getQRname());
+    public void onBindViewHolder(@android.support.annotation.NonNull @NonNull FragmentMapScreenMapListSearch mapInteractiveQRViewHolder, int i) {
+        mapInteractiveQRViewHolder.qrname.setText(mqrCodes.get(i).getQRname());
+        mapInteractiveQRViewHolder.qrdate.setText(mqrCodes.get(i).getQRdate());
+        mapInteractiveQRViewHolder.qrpoint.setText(mqrCodes.get(i).getQrPoints());
+        mapInteractiveQRViewHolder.qrimage.setImageResource(mqrCodes.get(i).getPlayerPicture());
     }
 
-    @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        ((ViewHolder)holder).MapTitle.setText(mqrCodes.get(position).getQRname());
-    }
 
     @Override
     public int getItemCount() {
@@ -56,12 +59,20 @@ public class Map_Adapter_RecyclerViews extends RecyclerView.Adapter<MapInteracti
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        TextView MapTitle;
+        TextView qrname,qrdate,qrpoint;
+        ImageView qrimage;
         MapRecyclerClickListener clickListener;
 
         public ViewHolder(View itemView, MapRecyclerClickListener clickListener) {
             super(itemView);
-            MapTitle = itemView.findViewById(R.id.map_title);
+
+            // get the text views
+            qrname = itemView.findViewById(R.id.qr_name_list);
+            qrdate = itemView.findViewById(R.id.qr_date_found_list);
+            qrpoint = itemView.findViewById(R.id.qr_point_total_list);
+            // get the image view
+            qrimage = itemView.findViewById(R.id.qr_image_list);
+
             this.clickListener = clickListener;
             itemView.setOnClickListener(this);
         }
@@ -76,3 +87,45 @@ public class Map_Adapter_RecyclerViews extends RecyclerView.Adapter<MapInteracti
         public void onMapSelected(int position);
     }
 }
+/*
+map_list_element_placement.xml
+
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_marginTop="10dp"
+    android:layout_height="wrap_content">
+
+    <ImageView
+        android:id="@+id/qr_image_list"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginRight="10dp" />
+
+    <TextView
+        android:id="@+id/qr_name_list"
+        android:layout_width="219dp"
+        android:layout_height="wrap_content"
+        android:layout_toEndOf="@+id/qr_image_list"
+        android:text="TextView" />
+
+    <TextView
+        android:id="@+id/qr_date_found_list"
+        android:layout_width="224dp"
+        android:layout_height="29dp"
+        android:layout_below="@+id/qr_name_list"
+        android:layout_toEndOf="@+id/qr_image_list"
+        android:text="TextView" />
+
+    <TextView
+        android:id="@+id/qr_point_total_list"
+        android:layout_width="135dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:text="Points"
+        android:textSize="24sp" />
+
+
+</RelativeLayout>
+
+ */

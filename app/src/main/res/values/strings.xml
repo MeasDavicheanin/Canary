@@ -9,9 +9,6 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
 
-
-
-
     <!-- Intent extras -->
     <string name="intent_qr_map">intent_qr</string>
     <string name="intent_recycler_list_map">intent_recycler_list_map</string>

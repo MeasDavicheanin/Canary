@@ -62,6 +62,13 @@ public class QRCodeVMElement {
         return this;
     }
 
+    public String getQRdate() {
+        return QRdate;
+    }
+
+    public void setQRdate(String QRdate) {
+        this.QRdate = QRdate;
+    }
 
     public String getQRname() {
         return QRname;
