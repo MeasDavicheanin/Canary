@@ -73,16 +73,29 @@ public class QRCodeViewFragment extends Fragment implements UpdatePlayerQrCallba
         binding.qrScanDate.setText(playerQrCode.getScanDate().toString());
         updateLocation();
         updateSnapshot();
+
+        hideLoadingBar();
     }
 
+    /**
+     * Shows the loading bar
+     */
     private void showLoadingBar() {
+        binding.progressBarBox.setVisibility(View.VISIBLE);
+    }
 
+    /**
+     * Hides the loading bar
+     */
+    private void hideLoadingBar() {
+        binding.progressBarBox.setVisibility(View.GONE);
     }
 
     /**
      * Initializes the view
      */
     private void init() {
+        showLoadingBar();
         String qrHash = QRCodeViewFragmentArgs.fromBundle(getArguments()).getQrHash();
         firestorePlayerController.getPlayerQr(qrHash, MainActivity.playerUsername, this);
     }

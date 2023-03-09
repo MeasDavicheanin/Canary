@@ -18,4 +18,6 @@
     <string name="qr_exists_message">The added QR code was scanned previously</string>
     <string name="qr_exists_title">QR Already Exists</string>
     <string name="view_other_players">View Other Players</string>
+    <string name="blank">_ _ _</string>
+    <string name="snapshot">Snapshot</string>
 </resources>
