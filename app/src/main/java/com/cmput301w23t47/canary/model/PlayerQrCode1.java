@@ -1,10 +1,6 @@
 package com.cmput301w23t47.canary.model;
 
 import android.location.Location;
-import android.os.Parcel;
-import android.os.Parcelable;
-
-import androidx.annotation.NonNull;
 
 import java.util.Date;
 
