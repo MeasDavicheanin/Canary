@@ -91,15 +91,14 @@ public class QRCodeView extends Fragment {
         currentQRCodeScanDateTime = view.findViewById(R.id.QRCodeScanDateTime);
         currentQRCodeImage = view.findViewById(R.id.QRCodeImage);
         updateFragmentData();
-        getImage(getString(R.string.random_image_generator));
+        //getImage(getString(R.string.random_image_generator));
         return view;
     }
 
-    public void getImage(String url) {
-        //extracting json data
-        //RequestQueue queue = Volley.newRequestQueue(this);
-        Log.d(TAG, "getImage: " + url);
-        Picasso.get().load(url).into(currentQRCodeImage);
-
-    }
+//    public void getImage(String url) {
+//        //extracting json data
+//        //RequestQueue queue = Volley.newRequestQueue(this);
+//        Log.d(TAG, "getImage: " + url);
+//        Picasso.get().load(url).into(currentQRCodeImage);
+//    }
 }
