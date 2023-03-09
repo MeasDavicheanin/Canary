@@ -1,5 +1,7 @@
 package com.cmput301w23t47.canary.repository;
 
+import com.cmput301w23t47.canary.controller.SnapshotController;
+import com.cmput301w23t47.canary.model.Snapshot;
 import com.google.firebase.firestore.DocumentId;
 import com.google.firebase.firestore.DocumentReference;
 
@@ -44,5 +46,13 @@ public class SnapshotRepository {
 
     public void setOwner(DocumentReference owner) {
         this.owner = owner;
+    }
+
+    /**
+     * Retrieves the Snapshot object from the repo model
+     * @return the Snapshot object
+     */
+    public Snapshot retrieveSnapshot() {
+        return new Snapshot(SnapshotController.getImage(data));
     }
 }

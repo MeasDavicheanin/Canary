@@ -12,10 +12,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.cmput301w23t47.canary.R;
-import com.cmput301w23t47.canary.controller.QrCodeUtil;
 import com.cmput301w23t47.canary.databinding.FragmentHomeBinding;
-import com.cmput301w23t47.canary.view.contract.QrCodeContract;
-import com.cmput301w23t47.canary.view.contract.SnapshotContract;
+import com.cmput301w23t47.canary.view.contract.AddNewQrContract;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -67,37 +65,27 @@ public class HomeFragment extends Fragment {
             launchScanQrActivity();
         });
 
-        // register contract for QR Activity
-        qrActivityLauncher = registerForActivityResult(new QrCodeContract(),
-                this::receivedQrCode);
-    }
-
-    /**
-     * Receives the QR Code scanned
-     * @param qrCodeVal (String): The raw value of the scanned QR Code
-     */
-    private void receivedQrCode(String qrCodeVal) {
-        if (qrCodeVal == null) {
-            // value not received
-            return;
-        }
-        byte[] qrHash = QrCodeUtil.getHashForQr(qrCodeVal);
-        StringBuilder str = new StringBuilder();
-        for (int i = 0; i < qrHash.length; i++) {
-            str.append(qrHash[i]);
-        }
-        binding.textView.setText(qrCodeVal + "\n " + str);
+        // register contract for new QR Activity
+        qrActivityLauncher = registerForActivityResult(new AddNewQrContract(),
+                this::receiveAddedQrCode);
     }
 
     /**
      * Launches the Scan Qr Activity
      */
     private void launchScanQrActivity() {
-        Navigation.findNavController(getView()).navigate(R.id.action_addNewQr);
+//        Navigation.findNavController(getView()).navigate(R.id.action_addNewQr);
+        qrActivityLauncher.launch(null);
+//        qrActivityLauncher.launch(null);
 //        registerForActivityResult(new SnapshotContract(),
 //                result -> {
 //                    Log.d(TAG, "launchScanQrActivity: Rec bitmap" + result.toString());
 //                }).launch(null);
+    }
+
+    private void receiveAddedQrCode(String qrHash) {
+        HomeFragmentDirections.ActionQrCodeView action = HomeFragmentDirections.actionQrCodeView(qrHash);
+        Navigation.findNavController(getView()).navigate(action);
     }
 //
 //    /**

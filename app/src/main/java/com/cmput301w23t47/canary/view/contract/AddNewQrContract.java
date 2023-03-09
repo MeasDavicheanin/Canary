@@ -8,13 +8,14 @@ import androidx.activity.result.contract.ActivityResultContract;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.cmput301w23t47.canary.view.activity.ScanQRCodeActivity;
+import com.cmput301w23t47.canary.view.activity.AddQrActivity;
 
 /**
- * Contract for launching the QR Code activity
+ * Contract for adding a new QR
+ * Returns the string which stores the hash of the scanned QR
  */
-public class QrCodeContract extends ActivityResultContract<Object, String> {
-    static public final String RESPONSE_TAG = "QrCodeContractResp";
+public class AddNewQrContract extends ActivityResultContract<Object, String> {
+    static public final String RESPONSE_TAG = "AddNewQrContractResp";
 
     /**
      * Creates the intent for launching the application
@@ -22,7 +23,7 @@ public class QrCodeContract extends ActivityResultContract<Object, String> {
     @NonNull
     @Override
     public Intent createIntent(@NonNull Context context, Object o) {
-        return new Intent(context, ScanQRCodeActivity.class);
+        return new Intent(context, AddQrActivity.class);
     }
 
     /**

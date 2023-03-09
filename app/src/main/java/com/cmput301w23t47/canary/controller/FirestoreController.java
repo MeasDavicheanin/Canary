@@ -176,7 +176,7 @@ public class FirestoreController {
             // Get associated QR Repos
             for (PlayerQrCodeRepository playerQrCodesRepo : playerRepository.getQrCodes()) {
                 QrCodeRepository qrCodeRepo = waitForTask(playerQrCodesRepo.getQrCode().get(), QrCodeRepository.class);
-                playerQrCodesRepo.setParsedQrCode(qrCodeRepo.getParsedQrCode());
+                playerQrCodesRepo.setParsedQrCode(qrCodeRepo.retrieveParsedQrCode());
             }
             Player player = playerRepository.retrieveParsedPlayer();
             handler.post(() -> {

@@ -1,7 +1,6 @@
 package com.cmput301w23t47.canary.view.fragment;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,12 +9,10 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
-import androidx.navigation.fragment.NavHostFragment;
 
-import com.cmput301w23t47.canary.R;
-import com.cmput301w23t47.canary.controller.QrCodeUtil;
+import com.cmput301w23t47.canary.controller.QrCodeController;
 import com.cmput301w23t47.canary.databinding.FragmentAddNewQrBinding;
-import com.cmput301w23t47.canary.view.contract.QrCodeContract;
+import com.cmput301w23t47.canary.view.contract.ScanQrContract;
 
 
 public class AddNewQrFragment extends Fragment {
@@ -51,7 +48,7 @@ public class AddNewQrFragment extends Fragment {
 
     void init() {
         // register contract for QR Activity
-        qrActivityLauncher = registerForActivityResult(new QrCodeContract(),
+        qrActivityLauncher = registerForActivityResult(new ScanQrContract(),
                 this::receivedQrCode);
         if (qrHash == null) {
             qrActivityLauncher.launch(null);
@@ -71,7 +68,7 @@ public class AddNewQrFragment extends Fragment {
             return;
         }
         // Get Preferences for QR
-        qrHash = qrCodeVal;
+        qrHash = QrCodeController.getHashStrForQr(qrCodeVal);
         // pass the obtained hash to the capture preference fragment
         AddNewQrFragmentDirections.ActionQrCapturePreference action = AddNewQrFragmentDirections.actionQrCapturePreference(qrHash);
         Navigation.findNavController(getView()).navigate(action);

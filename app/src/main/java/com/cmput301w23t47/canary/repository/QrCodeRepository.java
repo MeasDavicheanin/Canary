@@ -28,7 +28,7 @@ public class QrCodeRepository {
     }
 
     @Exclude
-    public QrCode getParsedQrCode() {
+    public QrCode retrieveParsedQrCode() {
         // TODO: Parse location
         return new QrCode(hash, score, null, name);
     }
@@ -64,6 +64,14 @@ public class QrCodeRepository {
     @Exclude
     public QrCode getQrCode() {
         return new QrCode(hash, score, null, name);
+    }
+
+    public GeoPoint getLocation() {
+        return location;
+    }
+
+    public void setLocation(GeoPoint location) {
+        this.location = location;
     }
 
     @NonNull

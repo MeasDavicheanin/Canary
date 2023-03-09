@@ -51,4 +51,16 @@ public class PlayerQrCodeRepository {
     public void setSnapshot(DocumentReference snapshot) {
         this.snapshot = snapshot;
     }
+
+    /**
+     * Retrieves the player qr code
+     * @param qrCodeRepository the QrCodeRepo
+     * @param snapRepo the snapshot repo
+     * @return the PlayerQrCode object
+     */
+    public static PlayerQrCode retrievePlayerQrCode(QrCodeRepository qrCodeRepository, SnapshotRepository snapRepo) {
+        PlayerQrCode playerQrCode = new PlayerQrCode(qrCodeRepository.retrieveParsedQrCode());
+        playerQrCode.setSnapshot(snapRepo.retrieveSnapshot());
+        return playerQrCode;
+    }
 }

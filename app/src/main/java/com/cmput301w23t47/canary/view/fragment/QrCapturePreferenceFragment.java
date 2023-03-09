@@ -1,12 +1,12 @@
 package com.cmput301w23t47.canary.view.fragment;
 
+import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 
 import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
@@ -22,16 +22,15 @@ import com.cmput301w23t47.canary.R;
 import com.cmput301w23t47.canary.callback.DoesResourceExistCallback;
 import com.cmput301w23t47.canary.callback.OperationStatusCallback;
 import com.cmput301w23t47.canary.controller.FirestorePlayerController;
-import com.cmput301w23t47.canary.controller.FirestoreQrController;
 import com.cmput301w23t47.canary.controller.RandomNameGenerator;
 import com.cmput301w23t47.canary.controller.ScoreCalculator;
 import com.cmput301w23t47.canary.databinding.FragmentQrCapturePreferenceBinding;
 import com.cmput301w23t47.canary.model.PlayerQrCode;
 import com.cmput301w23t47.canary.model.QrCode;
 import com.cmput301w23t47.canary.model.Snapshot;
-import com.cmput301w23t47.canary.view.contract.QrCodeContract;
+import com.cmput301w23t47.canary.view.contract.AddNewQrContract;
+import com.cmput301w23t47.canary.view.contract.ScanQrContract;
 import com.cmput301w23t47.canary.view.contract.SnapshotContract;
-import com.mifmif.common.regex.Main;
 
 import java.util.Locale;
 
@@ -98,7 +97,7 @@ public class QrCapturePreferenceFragment extends Fragment implements
                     .setCancelable(false)
                     .setPositiveButton("Continue", (DialogInterface dialog, int id) -> {
                         // TODO: handle already scanned QR
-                        getActivity().finish();
+                        returnToQrCodePage();
                     }).create().show();
         } else {
             RandomNameGenerator nameGenerator = new RandomNameGenerator();
@@ -106,6 +105,14 @@ public class QrCapturePreferenceFragment extends Fragment implements
             qrCode.setScore(ScoreCalculator.calculateScore(qrCode.getHash()));
             updateUi();
         }
+    }
+
+    public void returnToQrCodePage() {
+        Intent intent = new Intent();
+        intent.putExtra(AddNewQrContract.RESPONSE_TAG, qrCode.getHash());
+        Activity activity = getActivity();
+        activity.setResult(Activity.RESULT_OK, intent);
+        activity.finish();
     }
 
     /**
@@ -118,7 +125,7 @@ public class QrCapturePreferenceFragment extends Fragment implements
 
     private void receiveSnapshot(Bitmap image) {
         persistQr(image);
-//        returnFromActivity(image);
+        returnToQrCodePage();
     }
 
     /**
@@ -130,13 +137,6 @@ public class QrCapturePreferenceFragment extends Fragment implements
         // TODO: Get location
         playerQrCode.setSnapshot(new Snapshot(snapshot));
         firestorePlayerController.addQrToPlayer(playerQrCode, MainActivity.playerUsername, this);
-    }
-
-    private void returnFromActivity(Bitmap image) {
-        PlayerQrCode playerQrCode = new PlayerQrCode(qrCode);
-        playerQrCode.setSnapshot(new Snapshot(image));
-        Intent intent = new Intent();
-        intent.putExtra(QrCodeContract.RESPONSE_TAG, playerQrCode);
     }
 
     private void captureSnapshot() {

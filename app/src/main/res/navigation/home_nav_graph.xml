@@ -14,7 +14,7 @@
             android:id="@+id/action_addNewQr"
             app:destination="@id/addQrActivity" />
         <action
-            android:id="@+id/action_homeFragment_to_QRCodeView"
+            android:id="@+id/action_qrCodeView"
             app:destination="@id/QRCodeView" />
     </fragment>
     <activity
@@ -24,7 +24,11 @@
         tools:layout="@layout/activity_add_qr" />
     <fragment
         android:id="@+id/QRCodeView"
-        android:name="com.cmput301w23t47.canary.view.fragment.QRCodeView"
+        android:name="com.cmput301w23t47.canary.view.fragment.QRCodeViewFragment"
         android:label="fragment_qr_code_view"
-        tools:layout="@layout/fragment_qr_code_view" />
+        tools:layout="@layout/fragment_qr_code_view" >
+        <argument
+            android:name="qrHash"
+            app:argType="string" />
+    </fragment>
 </navigation>

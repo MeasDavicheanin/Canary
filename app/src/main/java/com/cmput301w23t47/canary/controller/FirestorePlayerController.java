@@ -4,12 +4,15 @@ import android.os.Handler;
 
 import com.cmput301w23t47.canary.callback.DoesResourceExistCallback;
 import com.cmput301w23t47.canary.callback.OperationStatusCallback;
+import com.cmput301w23t47.canary.callback.UpdatePlayerQrCallback;
 import com.cmput301w23t47.canary.model.PlayerQrCode;
 import com.cmput301w23t47.canary.repository.PlayerQrCodeRepository;
 import com.cmput301w23t47.canary.repository.PlayerRepository;
 import com.cmput301w23t47.canary.repository.QrCodeRepository;
+import com.cmput301w23t47.canary.repository.SnapshotRepository;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 /**
@@ -83,5 +86,55 @@ public class FirestorePlayerController extends FirestoreController{
     protected void updatePlayer(PlayerRepository playerRepo) {
         Task<Void> updatePlayerTask = players.document(playerRepo.getDocId()).set(playerRepo);
         waitForUpdateTask(updatePlayerTask);
+    }
+
+    /**
+     * Get the PlayerQr object
+     * @param qrHash the hash of the qr
+     * @param username the username of the player
+     * @param callback the callback to return the result
+     */
+    public void getPlayerQr(String qrHash, String username, UpdatePlayerQrCallback callback) {
+        Handler handler = new Handler();
+        new Thread(() -> {
+            PlayerRepository playerRepo = getPlayerRepo(username);
+            Task<QuerySnapshot> qrCodeQuery = qrCodes.whereEqualTo("hash", qrHash).get();
+            waitForQuery(qrCodeQuery);
+            if (qrCodeQuery.getResult().isEmpty()) {
+                handler.post(() -> {
+                    callback.updatePlayerQr(null);
+                });
+                // the given qr does not exist
+                return;
+            }
+            QrCodeRepository qrRepo = qrCodeQuery.getResult().getDocuments().get(0).toObject(QrCodeRepository.class);
+            DocumentReference qrRef = qrCodeQuery.getResult().getDocuments().get(0).getReference();
+            SnapshotRepository snapRepo = retrieveQrSnapshotFromPlayer(playerRepo, qrRef);
+            handler.post(() -> {
+                // return the playerQr Model
+                callback.updatePlayerQr(PlayerQrCodeRepository.retrievePlayerQrCode(qrRepo, snapRepo));
+            });
+        }).start();
+    }
+
+    /**
+     * Retrieves the snapshot repo if it exists
+     * @param playerRepo the player repo that contains the qr ref and snapshot ref
+     * @param qrRef the qr ref to search
+     * @return the snapshot repo if it exists
+     */
+    public SnapshotRepository retrieveQrSnapshotFromPlayer(PlayerRepository playerRepo, DocumentReference qrRef) {
+        DocumentReference snapRef = null;
+        for (PlayerQrCodeRepository playerQrCodeRepository : playerRepo.getQrCodes()) {
+            if (qrRef.equals(playerQrCodeRepository.getQrCode())) {
+                snapRef = playerQrCodeRepository.getSnapshot();
+                break;
+            }
+        }
+        if (snapRef == null) {
+            return null;
+        }
+        Task<DocumentSnapshot> snapTask = snapRef.get();
+        return waitForTask(snapTask, SnapshotRepository.class);
     }
 }

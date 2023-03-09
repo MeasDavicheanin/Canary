@@ -30,7 +30,7 @@ import androidx.camera.view.PreviewView;
 import androidx.core.content.ContextCompat;
 
 import com.cmput301w23t47.canary.databinding.ActivityScanQrcodeBinding;
-import com.cmput301w23t47.canary.view.contract.QrCodeContract;
+import com.cmput301w23t47.canary.view.contract.ScanQrContract;
 import com.cmput301w23t47.canary.view.model.QrCodeVm;
 import com.google.mlkit.vision.barcode.BarcodeScanner;
 import com.google.mlkit.vision.barcode.BarcodeScannerOptions;
@@ -122,7 +122,7 @@ public class ScanQRCodeActivity extends CameraBaseActivity {
                     preview.setOnTouchListener(qrVm::qrCodePressCallback);
                     preview.getOverlay().clear();
                     Intent intent = new Intent();
-                    intent.putExtra(QrCodeContract.RESPONSE_TAG, qr.getRawValue());
+                    intent.putExtra(ScanQrContract.RESPONSE_TAG, qr.getRawValue());
                     setResult(Activity.RESULT_OK, intent);
                     finish();
                 }
