@@ -68,7 +68,7 @@ public class QRCodeViewFragment extends Fragment implements UpdatePlayerQrCallba
             return;
         }
         // set qr info
-        binding.qrTitle.setText(playerQrCode.getName());
+        binding.qrTitle.setText(getNameString());
         binding.qrScoreVal.setText(String.format(Locale.CANADA, "Score: %d Pts", playerQrCode.getQrCode().getScore()));
         binding.qrScanDate.setText(playerQrCode.getScanDate().toString());
         updateLocation();
@@ -89,6 +89,18 @@ public class QRCodeViewFragment extends Fragment implements UpdatePlayerQrCallba
      */
     private void hideLoadingBar() {
         binding.progressBarBox.setVisibility(View.GONE);
+    }
+
+    /**
+     * Gets the formatted name of the qr
+     * @return the formatted name of the qr, truncates it if it's too long
+     */
+    private String getNameString() {
+        String name = playerQrCode.getName();
+        if (name.length() < 15) {
+            return name;
+        }
+        return String.format(Locale.CANADA, "%s...", name.substring(0, 11));
     }
 
     /**
