@@ -11,6 +11,7 @@ import com.cmput301w23t47.canary.callback.UpdatePlayerCallback;
 import com.cmput301w23t47.canary.model.Leaderboard;
 import com.cmput301w23t47.canary.model.LeaderboardPlayer;
 import com.cmput301w23t47.canary.model.Player;
+import com.cmput301w23t47.canary.model.QrCode;
 import com.cmput301w23t47.canary.repository.PlayerQrCodeRepository;
 import com.cmput301w23t47.canary.repository.PlayerRepository;
 import com.cmput301w23t47.canary.repository.QrCodeRepository;
@@ -24,11 +25,13 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
 import com.google.firebase.installations.FirebaseInstallations;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
@@ -37,8 +40,8 @@ import java.util.concurrent.ExecutionException;
  * Objects are singleton
  */
 public class FirestoreController {
-    protected final FirebaseFirestore db = FirebaseFirestore.getInstance();
-    protected final CollectionReference players = db.collection("Player");
+    protected static final FirebaseFirestore db = FirebaseFirestore.getInstance();
+    protected static final CollectionReference players = db.collection("Player");
     protected final CollectionReference qrCodes = db.collection("QRCode");
     protected final CollectionReference leaderboard = db.collection("Leaderboard");
     protected final CollectionReference snapshot = db.collection("Snapshot");
@@ -163,6 +166,47 @@ public class FirestoreController {
 
     }
 
+    public void getActivePlayerUserName(OnSuccessListener<String> successListener, OnFailureListener failureListener){
+        FirebaseInstallations firebaseInstallations = FirebaseInstallations.getInstance();
+        firebaseInstallations.getId().addOnSuccessListener(installationId -> {
+            players.document(installationId).get().addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        Map<String, Object> data = document.getData();
+                        if(data != null){
+                            successListener.onSuccess((String) data.get("username"));
+                        }
+                    } else {
+                        failureListener.onFailure(new Exception("Player ID not found"));
+                    }
+                } else {
+                    failureListener.onFailure(task.getException());
+                }
+            });
+        }).addOnFailureListener(failureListener);
+    }
+
+
+    public static void identifyPlayer(OnSuccessListener<String> successListener, OnFailureListener failureListener) {
+        FirebaseInstallations firebaseInstallations = FirebaseInstallations.getInstance();
+        firebaseInstallations.getId().addOnSuccessListener(installationId -> {
+            players.document(installationId).get().addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        String playerId = document.getId();
+                        successListener.onSuccess(playerId);
+                    } else {
+                        failureListener.onFailure(new Exception("Player ID not found"));
+                    }
+                } else {
+                    failureListener.onFailure(task.getException());
+                }
+            });
+        }).addOnFailureListener(failureListener);
+    }
+
     /**
      * Gets the Player from db
      * @param playerId the id of the player
@@ -225,6 +269,43 @@ public class FirestoreController {
             e.printStackTrace();
         }
         return playersList;
+    }
+
+
+    protected ArrayList<String> getUsernamesOfPlayersWhoScanned(String qrHash){
+        String qrDocID = findQrDocId(qrHash);
+        ArrayList<String> usernameList = new ArrayList<>();
+        Query query = players.whereArrayContains("qrCodes.qrCode", "/QRCode/" + qrDocID);
+        query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    QuerySnapshot playersQuery = task.getResult();
+                    for (QueryDocumentSnapshot playerDoc : playersQuery) {
+                        usernameList.add(playerDoc.getId());
+                    }
+                } else {
+                    // Handle any errors that occurred while retrieving the players collection
+                    Exception e = task.getException();
+                    System.err.println("Error retrieving data: " + e.getMessage());
+                }
+            }
+        });
+        return usernameList;
+    }
+
+    protected String findQrDocId(String qrHash){
+        Task<QuerySnapshot> qrCodeQuery = qrCodes.whereEqualTo("hash", qrHash).get();
+        try {
+            QuerySnapshot qrCodeSnapshot = Tasks.await(qrCodeQuery);
+            if (!qrCodeSnapshot.isEmpty()) {
+                DocumentSnapshot qrCodeDoc = qrCodeSnapshot.getDocuments().get(0);
+                return qrCodeDoc.getId();
+            }
+        } catch (Exception e) {
+            System.err.println("Error retrieving QR code document: " + e.getMessage());
+        }
+        return null;
     }
 
     /**
