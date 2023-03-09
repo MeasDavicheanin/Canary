@@ -10,10 +10,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
 
 import com.cmput301w23t47.canary.view.fragment.FragmentMapScreenMapListSearch;
-import com.cmput301w23t47.canary.viewmodel.QRCodeVMElement;
 
 import java.util.ArrayList;
 

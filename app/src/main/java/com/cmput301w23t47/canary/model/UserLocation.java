@@ -9,18 +9,18 @@ import com.google.type.Date;
  * This class is used to store the location of a player
  *
  */
-public class PlayerLocation {
+public class UserLocation {
     private Player user;
     private GeoPoint geo_point;
     private @ServerTimestamp Date timestamp;
 
-    public PlayerLocation(Player user, GeoPoint geo_point, Date timestamp) {
+    public UserLocation(Player user, GeoPoint geo_point, Date timestamp) {
         this.user = user;
         this.geo_point = geo_point;
         this.timestamp = timestamp;
     }
 
-    public PlayerLocation() {
+    public UserLocation() {
 
     }
 

@@ -50,7 +50,7 @@ public class FragmentMapScreenMapListSearch extends Fragment implements OnMapRea
     private MapView mMapView;
     private AutoCompleteTextView mSearchBar;
     //purposefully using a 0 for the no limit so that if you read 0 then you know that there is no limit
-    private String[] mSearchRange = {"200m", "500m", "1km", "2km", "5km", "N0 LIMIT" };
+    private String[] mSearchRange = {"200m", "500m", "1km", "2km", "5km", "NO LIMIT" };
     private ArrayAdapter<String> mSearchRangeAdapter;
 
     private int mSearchRangeDouble;
@@ -108,7 +108,7 @@ public class FragmentMapScreenMapListSearch extends Fragment implements OnMapRea
             case "5km":
                 mSearchRangeDouble = 5000;
                 break;
-            case "N0 LIMIT":
+            case "NO LIMIT":
                 mSearchRangeDouble = 10000;
                 break;
             default:
@@ -135,7 +135,7 @@ public class FragmentMapScreenMapListSearch extends Fragment implements OnMapRea
         if (getArguments() != null) {
             // this is supposed to be something else but I don't know what
             // I think it has something to do with our firestore
-            //mMapList = getArguments().getParcelableArrayList(getString(R.string.intent_recycler_list_map));
+            mMapList = getArguments().getParcelableArrayList(getString(R.string.intent_recycler_list_map));
         }
         initDropDownMenuItems();
     }

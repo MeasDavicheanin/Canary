@@ -4,13 +4,11 @@ import static com.cmput301w23t47.canary.Constants.ERROR_DIALOG_REQUEST;
 import static com.cmput301w23t47.canary.Constants.PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION;
 import static com.cmput301w23t47.canary.Constants.PERMISSIONS_REQUEST_ENABLE_GPS;
 
-import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -22,18 +20,13 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
-import android.view.View;
 import android.widget.Toast;
 import android.Manifest;
 
-import com.cmput301w23t47.canary.callback.UpdatePlayerCallback;
 import com.cmput301w23t47.canary.controller.NavbarController;
-import com.cmput301w23t47.canary.controller.QrCodeUtil;
 import com.cmput301w23t47.canary.databinding.ActivityMainBinding;
-import com.cmput301w23t47.canary.model.Leaderboard;
 import com.cmput301w23t47.canary.model.Player;
-import com.cmput301w23t47.canary.model.PlayerLocation;
-import com.cmput301w23t47.canary.view.contract.QrCodeContract;
+import com.cmput301w23t47.canary.model.UserLocation;
 import com.cmput301w23t47.canary.view.fragment.HomeFragment;
 import com.cmput301w23t47.canary.view.fragment.LeaderboardFragment;
 
@@ -76,7 +69,7 @@ public class MainActivity extends AppCompatActivity implements
     private static final String TAG = "MainActivity";
     private boolean mLocationPermissionGranted = false;
     private FusedLocationProviderClient mFusedLocationClient;
-    private PlayerLocation mPlayerLocation;
+    private UserLocation mUserLocation;
 
     // TODO: Get the actual Playername
     private String playerPlayername = "jamesk";
@@ -192,8 +185,8 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     private void getPlayerDetails(){
-        if(mPlayerLocation == null){
-            mPlayerLocation = new PlayerLocation();
+        if(mUserLocation == null){
+            mUserLocation = new UserLocation();
             DocumentReference PlayerRef = mDb.collection(getString(R.string.collection_Players))
                     .document(FirebaseAuth.getInstance().getUid());
 
@@ -203,7 +196,7 @@ public class MainActivity extends AppCompatActivity implements
                     if(task.isSuccessful()){
                         Log.d(TAG, "onComplete: successfully set the Player client.");
                         Player Player = task.getResult().toObject(Player.class);
-                        mPlayerLocation.setPlayer(Player);
+                        mUserLocation.setPlayer(Player);
                         getLastKnownLocation();
                     }
                 }
@@ -227,8 +220,8 @@ public class MainActivity extends AppCompatActivity implements
                 if (task.isSuccessful()) {
                     Location location = task.getResult();
                     GeoPoint geoPoint = new GeoPoint(location.getLatitude(), location.getLongitude());
-                    mPlayerLocation.setGeo_point(geoPoint);
-                    mPlayerLocation.setTimestamp(null);
+                    mUserLocation.setGeo_point(geoPoint);
+                    mUserLocation.setTimestamp(null);
                     savePlayerLocation();
                 }
             }
@@ -238,18 +231,18 @@ public class MainActivity extends AppCompatActivity implements
 
     private void savePlayerLocation(){
 
-        if(mPlayerLocation != null){
+        if(mUserLocation != null){
             DocumentReference locationRef = mDb
                     .collection(getString(R.string.collection_Player_locations))
                     .document(FirebaseAuth.getInstance().getUid());
 
-            locationRef.set(mPlayerLocation).addOnCompleteListener(new OnCompleteListener<Void>() {
+            locationRef.set(mUserLocation).addOnCompleteListener(new OnCompleteListener<Void>() {
                 @Override
                 public void onComplete(@NonNull Task<Void> task) {
                     if(task.isSuccessful()){
                         Log.d(TAG, "savePlayerLocation: \ninserted Player location into database." +
-                                "\n latitude: " + mPlayerLocation.getGeo_point().getLatitude() +
-                                "\n longitude: " + mPlayerLocation.getGeo_point().getLongitude());
+                                "\n latitude: " + mUserLocation.getGeo_point().getLatitude() +
+                                "\n longitude: " + mUserLocation.getGeo_point().getLongitude());
                     }
                 }
             });
