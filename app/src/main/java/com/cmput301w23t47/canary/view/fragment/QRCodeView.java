@@ -15,6 +15,9 @@ import android.widget.TextView;
 import com.cmput301w23t47.canary.R;
 import com.cmput301w23t47.canary.model.PlayerQrCode;
 import com.cmput301w23t47.canary.model.Snapshot;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 
 public class QRCodeView extends Fragment {
@@ -25,6 +28,7 @@ public class QRCodeView extends Fragment {
     private TextView currentQRCodeScanDateTime;
     private TextView currentQRCodeScanLocation;
     private ImageView currentQRCodeImage;
+
     ListView commentsListView;
 
     public QRCodeView(PlayerQrCode currentPlayerQRCode) {
@@ -68,7 +72,22 @@ public class QRCodeView extends Fragment {
         currentQRCodeScanLocation = view.findViewById(R.id.QRCardLocation);
         currentQRCodeScanDateTime = view.findViewById(R.id.QRCodeScanDateTime);
         currentQRCodeImage = view.findViewById(R.id.QRCodeImage);
+        FloatingActionButton deleteQrButton = view.findViewById(R.id.delete_qr_button);
+
+        deleteQrButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                currentPlayerQRCode.setQrCode(null);
+
+            }
+        });
+
         updateFragmentData();
+
+
         return view;
     }
+
+
 }
