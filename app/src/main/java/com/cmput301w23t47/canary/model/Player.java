@@ -1,16 +1,13 @@
 package com.cmput301w23t47.canary.model;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
-import androidx.annotation.NonNull;
+import android.graphics.Bitmap;
 
 import java.util.ArrayList;
 
 /**
  * Class for Player
  */
-public class Player implements Parcelable {
+public class Player {
     // username of the player
     private String username;
     // firstname of the player
@@ -21,6 +18,9 @@ public class Player implements Parcelable {
     private ArrayList<PlayerQrCode> qrCodes;
     // score of the player
     private long score = 0;
+    // unique ID of the player, stored as the document name on firestore
+    private String uniquePlayerId;
+    private Bitmap playerImage;
 
 
     public Player(String username, String firstName, String lastName) {
@@ -76,36 +76,39 @@ public class Player implements Parcelable {
         this.score = score;
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
+    public String getUniquePlayerId() {
+        return uniquePlayerId;
     }
 
-    @Override
-    public void writeToParcel(@NonNull Parcel parcel, int i) {
-        parcel.writeString(username);
-        parcel.writeString(firstName);
-        parcel.writeString(lastName);
-        parcel.writeLong(score);
-        parcel.writeList(qrCodes);
+    public void setUniquePlayerId(String uniquePlayerId) {
+        this.uniquePlayerId = uniquePlayerId;
     }
 
-    public static final Parcelable.Creator<Player> CREATOR
-            = new Parcelable.Creator<Player>() {
-        public Player createFromParcel(Parcel in) {
-            return new Player(in);
+    public Bitmap getPlayerImage() {
+        return playerImage;
+    }
+
+    public void setPlayerImage(Bitmap playerImage) {
+        this.playerImage = playerImage;
+    }
+
+    public long getHighestQr(){
+        long highest = 0;
+        for (PlayerQrCode qr: qrCodes){
+            long qrScore = qr.getQrCode().getScore();
+            if( qrScore > highest)
+                highest = qrScore;
         }
-
-        public Player[] newArray(int size) {
-            return new Player[size];
-        }
-    };
-
-    private Player(Parcel in) {
-        username = in.readString();
-        firstName = in.readString();
-        lastName = in.readString();
-        score = in.readLong();
-        // Complete function
+        return highest;
     }
+    public long getLowestQr(){
+        long lowest = Long.MAX_VALUE;
+        for (PlayerQrCode qr: qrCodes){
+            long qrScore = qr.getQrCode().getScore();
+            if( qrScore < lowest)
+                lowest = qrScore;
+        }
+        return lowest;
+    }
+
 }

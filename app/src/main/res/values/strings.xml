@@ -20,4 +20,8 @@
     <string name="view_other_players">View Other Players</string>
     <string name="blank">_ _ _</string>
     <string name="snapshot">Snapshot</string>
+    <string name="score">Score</string>
+    <string name="qrs_scanned">QRs Scanned</string>
+    <string name="highest_qr">Highest QR</string>
+    <string name="lowest_qr">Lowest QR</string>
 </resources>
