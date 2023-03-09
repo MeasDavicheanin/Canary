@@ -48,10 +48,6 @@ public class QRCodeViewFragment extends Fragment implements UpdatePlayerQrCallba
         if (playerQrCode == null) {
             return;
         }
-        String name = playerQrCode.getName();
-        Location location = playerQrCode.getLocation();
-        Snapshot qrCodeImage = playerQrCode.getSnapshot();
-        long score = playerQrCode.getQrCode().getScore();
         // **Need to set currentQRCodeScanLocation, currentQRCodeImage, currentQRCodeScanDateTime**
         // we don't have any scan date time for the player qr codes yet
         binding.QRCodeName.setText(playerQrCode.getName());
@@ -91,6 +87,7 @@ public class QRCodeViewFragment extends Fragment implements UpdatePlayerQrCallba
 
     @Override
     public void updatePlayerQr(PlayerQrCode playerQrCode) {
-
+        this.playerQrCode = playerQrCode;
+        updateFragmentData();
     }
 }
