@@ -18,6 +18,9 @@ public class SearchFragment extends Fragment {
     private static final String progressBarTitle = "Loading search results";
     private static final String progressBarMessage = "Should take only a moment...";
     private Leaderboard leaderboard;
+
+    public SearchFragment() {}
+
     @NonNull
     @Override
     public CreationExtras getDefaultViewModelCreationExtras() {

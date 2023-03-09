@@ -33,7 +33,6 @@ public class MainActivity extends AppCompatActivity implements
 
     private HomeFragment homeFragment;
     private LeaderboardFragment leaderboardFragment;
-
     private SearchFragment searchFragment;
     private Fragment activeFragment;
 
@@ -63,14 +62,17 @@ public class MainActivity extends AppCompatActivity implements
         if (homeFragment == null) {
             homeFragment = new HomeFragment();
             leaderboardFragment = new LeaderboardFragment(playerUsername);
+            searchFragment = new SearchFragment();
         }
         getSupportFragmentManager().beginTransaction()
                 .setReorderingAllowed(true)
                 .add(R.id.fragment_container_view, homeFragment, HomeFragment.TAG)
                 .add(R.id.fragment_container_view, leaderboardFragment, LeaderboardFragment.TAG)
+                .add(R.id.fragment_container_view, searchFragment, SearchFragment.TAG)
                 .hide(leaderboardFragment)
+                .hide(homeFragment)
                 .commit();
-        activeFragment = homeFragment;
+        activeFragment = searchFragment;
     }
 
     /**
