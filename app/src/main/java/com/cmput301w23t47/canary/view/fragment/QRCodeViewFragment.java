@@ -18,7 +18,9 @@ import com.cmput301w23t47.canary.model.PlayerQrCode;
 
 import java.util.Locale;
 
-
+/**
+ * Fragment to view the QR Code page
+ */
 public class QRCodeViewFragment extends Fragment implements UpdatePlayerQrCallback {
     private static final String TAG = "QRCodeViewFragment";
 
@@ -121,7 +123,24 @@ public class QRCodeViewFragment extends Fragment implements UpdatePlayerQrCallba
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         binding = FragmentQrCodeViewBinding.inflate(inflater, container, false);
+        initUi();
         return binding.getRoot();
+    }
+
+    /**
+     * Initializes the UI
+     */
+    private void initUi() {
+        binding.qrDeleteIcon.setOnClickListener(view -> {
+            deleteQr();
+        });
+    }
+
+    private void deleteQr() {
+        if (playerQrCode == null) {
+            return;
+        }
+
     }
 
     @Override
