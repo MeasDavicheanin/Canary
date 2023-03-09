@@ -21,10 +21,12 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.cmput301w23t47.canary.R;
 import com.cmput301w23t47.canary.model.PlayerQrCode;
 import com.cmput301w23t47.canary.model.Snapshot;
+import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -97,27 +99,7 @@ public class QRCodeView extends Fragment {
         //extracting json data
         //RequestQueue queue = Volley.newRequestQueue(this);
         Log.d(TAG, "getImage: " + url);
-        RequestQueue queue = Volley.newRequestQueue(getActivity().getApplicationContext());
-        JsonArrayRequest arrayRequest = new JsonArrayRequest(Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
-            @Override
-            public void onResponse(JSONArray response) {
-                //Log.d(TAG, "onResponse: " + response.toString());
-                try {
-                    JSONObject data = response.getJSONObject(0);
-                    String url = data.getString("url");
-                    Log.d(TAG, "onResponse" + data);
+        Picasso.get().load(url).into(currentQRCodeImage);
 
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                error.printStackTrace();
-                Log.d(TAG, "onErrorResponse: " + error.getMessage());
-            }
-        });
-        queue.add(arrayRequest);
     }
 }
