@@ -32,6 +32,7 @@ import com.cmput301w23t47.canary.view.contract.AddNewQrContract;
 import com.cmput301w23t47.canary.view.contract.ScanQrContract;
 import com.cmput301w23t47.canary.view.contract.SnapshotContract;
 
+import java.util.Date;
 import java.util.Locale;
 
 /**
@@ -133,7 +134,7 @@ public class QrCapturePreferenceFragment extends Fragment implements
      * @param snapshot The snapshot of qr
      */
     private void persistQr(Bitmap snapshot) {
-        PlayerQrCode playerQrCode = new PlayerQrCode(qrCode);
+        PlayerQrCode playerQrCode = new PlayerQrCode(qrCode, new Date());
         // TODO: Get location
         playerQrCode.setSnapshot(new Snapshot(snapshot));
         firestorePlayerController.addQrToPlayer(playerQrCode, MainActivity.playerUsername, this);

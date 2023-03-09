@@ -59,4 +59,12 @@ public class QrCode {
     public void setName(String name) {
         this.name = name;
     }
+
+    /**
+     * Determines whether location for the qr is available
+     * @return true if location is available
+     */
+    public boolean hasLocation() {
+        return location != null;
+    }
 }

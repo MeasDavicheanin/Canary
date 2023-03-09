@@ -6,21 +6,27 @@ import android.os.Parcelable;
 
 import androidx.annotation.NonNull;
 
+import java.util.Date;
+
 
 /**
  * Class for the QR Code scanned by the Player
  */
-public class PlayerQrCode implements Parcelable {
+public class PlayerQrCode {
     // QR Code scanned
     private QrCode qrCode;
-
     // Snapshot of the QR
     private Snapshot snapshot;
+    // the date when qr was scanned by player
+    private Date scanDate;
+    // whether the location of qr is shared
+    private boolean locationShared;
 
     public PlayerQrCode() {}
 
-    public PlayerQrCode(QrCode qrCode) {
+    public PlayerQrCode(QrCode qrCode, Date date) {
         this.qrCode = qrCode;
+        this.scanDate = date;
     }
 
     public QrCode getQrCode() {
@@ -43,28 +49,19 @@ public class PlayerQrCode implements Parcelable {
 
     public Location getLocation() {return qrCode.getLocation();}
 
-    @Override
-    public int describeContents() {
-        return 0;
+    public Date getScanDate() {
+        return scanDate;
     }
 
-    @Override
-    public void writeToParcel(@NonNull Parcel parcel, int i) {
-
+    public void setScanDate(Date scanDate) {
+        this.scanDate = scanDate;
     }
 
-    public static final Parcelable.Creator<PlayerQrCode> CREATOR
-            = new Parcelable.Creator<PlayerQrCode>() {
-        public PlayerQrCode createFromParcel(Parcel in) {
-            return new PlayerQrCode(in);
-        }
+    public boolean isLocationShared() {
+        return locationShared;
+    }
 
-        public PlayerQrCode[] newArray(int size) {
-            return new PlayerQrCode[size];
-        }
-    };
-
-    private PlayerQrCode(Parcel in) {
-
+    public void setLocationShared(boolean locationShared) {
+        this.locationShared = locationShared;
     }
 }

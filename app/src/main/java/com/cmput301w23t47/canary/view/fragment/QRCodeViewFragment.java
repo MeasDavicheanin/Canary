@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import com.cmput301w23t47.canary.MainActivity;
 import com.cmput301w23t47.canary.callback.UpdatePlayerQrCallback;
 import com.cmput301w23t47.canary.controller.FirestorePlayerController;
+import com.cmput301w23t47.canary.controller.LocationController;
 import com.cmput301w23t47.canary.databinding.FragmentQrCodeViewBinding;
 import com.cmput301w23t47.canary.model.PlayerQrCode;
 
@@ -33,20 +34,41 @@ public class QRCodeViewFragment extends Fragment implements UpdatePlayerQrCallba
         super.onCreate(savedInstanceState);
     }
 
+    /**
+     * Updates the location if available
+     */
+    private void updateLocation() {
+        // set location
+        if (playerQrCode.isLocationShared()) {
+            String cityName = LocationController.retrieveCityName(playerQrCode.getLocation());
+            if (cityName.equals("")) {
+                // no city name given
+                binding.qrScanLocation.setText("_ _ _");
+            } else {
+                binding.qrScanLocation.setText(cityName);
+            }
+        }
+    }
+
+    /**
+     * Updates the snapshot if available
+     */
+    private void updateSnapshot() {
+        if (playerQrCode.getSnapshot() != null) {
+            binding.qrSnapshot.setImageBitmap(playerQrCode.getSnapshot().getBitmap());
+        }
+    }
+
     public void updateFragmentData(){
         if (playerQrCode == null) {
             return;
         }
-        // **Need to set currentQRCodeScanLocation, currentQRCodeImage, currentQRCodeScanDateTime**
-        // we don't have any scan date time for the player qr codes yet
-//        binding.QRCodeName.setText(playerQrCode.getName());
-//        binding.QRCodeScore.setText(String.format(Locale.CANADA, "Score: %d Pts", playerQrCode.getQrCode().getScore()));
-//        // TODO: Set location and date
-//        binding.QRCardLocation.setText("Edmonton");
-//        binding.QRCodeScanDateTime.setText("Today");
-//        if (playerQrCode.getSnapshot() != null) {
-//            binding.QRCodeSnapshot.setImageBitmap(playerQrCode.getSnapshot().getBitmap());
-//        }
+        // set qr info
+        binding.qrTitle.setText(playerQrCode.getName());
+        binding.qrScoreVal.setText(String.format(Locale.CANADA, "Score: %d Pts", playerQrCode.getQrCode().getScore()));
+        binding.qrScanDate.setText(playerQrCode.getScanDate().toString());
+        updateLocation();
+        updateSnapshot();
     }
 
     /**
@@ -57,19 +79,12 @@ public class QRCodeViewFragment extends Fragment implements UpdatePlayerQrCallba
         firestorePlayerController.getPlayerQr(qrHash, MainActivity.playerUsername, this);
     }
 
-
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         binding = FragmentQrCodeViewBinding.inflate(inflater, container, false);
         init();
-//        currentQRCodeName = view.findViewById(R.id.QRCodeName);
-//        currentQRCodeScore = view.findViewById(R.id.QRCodeScore);
-//        currentQRCodeScanLocation = view.findViewById(R.id.QRCardLocation);
-//        currentQRCodeScanDateTime = view.findViewById(R.id.QRCodeScanDateTime);
-//        currentQRCodeImage = view.findViewById(R.id.QRCodeImage);
         updateFragmentData();
         return binding.getRoot();
     }
@@ -77,7 +92,8 @@ public class QRCodeViewFragment extends Fragment implements UpdatePlayerQrCallba
     @Override
     public void onResume() {
         super.onResume();
-
+        String qrHash = QRCodeViewFragmentArgs.fromBundle(getArguments()).getQrHash();
+        firestorePlayerController.getPlayerQr(qrHash, MainActivity.playerUsername, this);
     }
 
     @Override
