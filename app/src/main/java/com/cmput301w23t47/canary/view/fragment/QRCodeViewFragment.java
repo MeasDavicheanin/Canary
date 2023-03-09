@@ -1,6 +1,5 @@
 package com.cmput301w23t47.canary.view.fragment;
 
-import android.location.Location;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -8,16 +7,12 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.ListView;
-import android.widget.TextView;
 
 import com.cmput301w23t47.canary.MainActivity;
 import com.cmput301w23t47.canary.callback.UpdatePlayerQrCallback;
 import com.cmput301w23t47.canary.controller.FirestorePlayerController;
 import com.cmput301w23t47.canary.databinding.FragmentQrCodeViewBinding;
 import com.cmput301w23t47.canary.model.PlayerQrCode;
-import com.cmput301w23t47.canary.model.Snapshot;
 
 import java.util.Locale;
 
@@ -26,14 +21,8 @@ public class QRCodeViewFragment extends Fragment implements UpdatePlayerQrCallba
     private PlayerQrCode playerQrCode;
 
     private FragmentQrCodeViewBinding binding;
-    private TextView currentQRCodeName;
-    private TextView currentQRCodeScore;
-    private TextView currentQRCodeScanDateTime;
-    private TextView currentQRCodeScanLocation;
-    private ImageView currentQRCodeImage;
-    ListView commentsListView;
 
-    private FirestorePlayerController firestorePlayerController = new FirestorePlayerController();
+    private final FirestorePlayerController firestorePlayerController = new FirestorePlayerController();
 
     // Default constructor
     public QRCodeViewFragment() {
@@ -50,14 +39,14 @@ public class QRCodeViewFragment extends Fragment implements UpdatePlayerQrCallba
         }
         // **Need to set currentQRCodeScanLocation, currentQRCodeImage, currentQRCodeScanDateTime**
         // we don't have any scan date time for the player qr codes yet
-        binding.QRCodeName.setText(playerQrCode.getName());
-        binding.QRCodeScore.setText(String.format(Locale.CANADA, "Score: %d Pts", playerQrCode.getQrCode().getScore()));
-        // TODO: Set location and date
-        binding.QRCardLocation.setText("Edmonton");
-        binding.QRCodeScanDateTime.setText("Today");
-        if (playerQrCode.getSnapshot() != null) {
-            binding.QRCodeSnapshot.setImageBitmap(playerQrCode.getSnapshot().getBitmap());
-        }
+//        binding.QRCodeName.setText(playerQrCode.getName());
+//        binding.QRCodeScore.setText(String.format(Locale.CANADA, "Score: %d Pts", playerQrCode.getQrCode().getScore()));
+//        // TODO: Set location and date
+//        binding.QRCardLocation.setText("Edmonton");
+//        binding.QRCodeScanDateTime.setText("Today");
+//        if (playerQrCode.getSnapshot() != null) {
+//            binding.QRCodeSnapshot.setImageBitmap(playerQrCode.getSnapshot().getBitmap());
+//        }
     }
 
     /**
@@ -83,6 +72,12 @@ public class QRCodeViewFragment extends Fragment implements UpdatePlayerQrCallba
 //        currentQRCodeImage = view.findViewById(R.id.QRCodeImage);
         updateFragmentData();
         return binding.getRoot();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
     }
 
     @Override

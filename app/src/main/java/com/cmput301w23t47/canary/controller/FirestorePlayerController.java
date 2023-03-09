@@ -135,6 +135,7 @@ public class FirestorePlayerController extends FirestoreController{
             return null;
         }
         Task<DocumentSnapshot> snapTask = snapRef.get();
+//        players.whereEqualTo("qrCodes.qrCode", qrDocRef);
         return waitForTask(snapTask, SnapshotRepository.class);
     }
 }
