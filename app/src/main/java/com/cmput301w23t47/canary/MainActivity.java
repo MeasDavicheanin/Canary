@@ -13,9 +13,11 @@ import com.cmput301w23t47.canary.controller.QrCodeUtil;
 import com.cmput301w23t47.canary.databinding.ActivityMainBinding;
 import com.cmput301w23t47.canary.model.Leaderboard;
 import com.cmput301w23t47.canary.model.Player;
+import com.cmput301w23t47.canary.model.PlayerQrCode;
 import com.cmput301w23t47.canary.view.contract.QrCodeContract;
 import com.cmput301w23t47.canary.view.fragment.HomeFragment;
 import com.cmput301w23t47.canary.view.fragment.LeaderboardFragment;
+import com.cmput301w23t47.canary.view.fragment.QRCodeView;
 
 
 /**
@@ -31,6 +33,8 @@ public class MainActivity extends AppCompatActivity implements
 
 
     private HomeFragment homeFragment;
+    //
+    private QRCodeView qrCodeView;
     private LeaderboardFragment leaderboardFragment;
     private Fragment activeFragment;
 
@@ -60,11 +64,16 @@ public class MainActivity extends AppCompatActivity implements
         if (homeFragment == null) {
             homeFragment = new HomeFragment();
             leaderboardFragment = new LeaderboardFragment(playerUsername);
+            //
+            qrCodeView = new QRCodeView(new PlayerQrCode());
+            //
         }
         getSupportFragmentManager().beginTransaction()
                 .setReorderingAllowed(true)
                 .add(R.id.fragment_container_view, homeFragment, HomeFragment.TAG)
                 .add(R.id.fragment_container_view, leaderboardFragment, LeaderboardFragment.TAG)
+                .add(R.id.fragment_container_view, qrCodeView, "LeaderboardFragment.TAG")
+                .hide(homeFragment)
                 .hide(leaderboardFragment)
                 .commit();
         activeFragment = homeFragment;
