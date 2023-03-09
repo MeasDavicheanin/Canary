@@ -4,6 +4,7 @@ import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +20,8 @@ import java.util.Locale;
 
 
 public class QRCodeViewFragment extends Fragment implements UpdatePlayerQrCallback {
+    private static final String TAG = "QRCodeViewFragment";
+
     private PlayerQrCode playerQrCode;
 
     private FragmentQrCodeViewBinding binding;
@@ -60,6 +63,7 @@ public class QRCodeViewFragment extends Fragment implements UpdatePlayerQrCallba
     }
 
     public void updateFragmentData(){
+        Log.d(TAG, "updateFragmentData: called");
         if (playerQrCode == null) {
             return;
         }
@@ -69,6 +73,10 @@ public class QRCodeViewFragment extends Fragment implements UpdatePlayerQrCallba
         binding.qrScanDate.setText(playerQrCode.getScanDate().toString());
         updateLocation();
         updateSnapshot();
+    }
+
+    private void showLoadingBar() {
+
     }
 
     /**
@@ -84,16 +92,13 @@ public class QRCodeViewFragment extends Fragment implements UpdatePlayerQrCallba
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         binding = FragmentQrCodeViewBinding.inflate(inflater, container, false);
-        init();
-        updateFragmentData();
         return binding.getRoot();
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        String qrHash = QRCodeViewFragmentArgs.fromBundle(getArguments()).getQrHash();
-        firestorePlayerController.getPlayerQr(qrHash, MainActivity.playerUsername, this);
+        init();
     }
 
     @Override

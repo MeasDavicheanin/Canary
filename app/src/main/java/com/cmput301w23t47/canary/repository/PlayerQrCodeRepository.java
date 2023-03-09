@@ -75,7 +75,9 @@ public class PlayerQrCodeRepository {
      */
     public static PlayerQrCode retrievePlayerQrCode(QrCodeRepository qrCodeRepository, SnapshotRepository snapRepo, Timestamp date) {
         PlayerQrCode playerQrCode = new PlayerQrCode(qrCodeRepository.retrieveParsedQrCode(), date.toDate());
-        playerQrCode.setSnapshot(snapRepo.retrieveSnapshot());
+        if (snapRepo != null) {
+            playerQrCode.setSnapshot(snapRepo.retrieveSnapshot());
+        }
         return playerQrCode;
     }
 }

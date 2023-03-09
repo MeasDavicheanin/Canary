@@ -74,7 +74,7 @@ public class FirestorePlayerController extends FirestoreController{
             QrCodeRepository qrCodeRepository = QrCodeRepository.retrieveQrCodeRepo(playerQrCode.getQrCode());
             DocumentReference qrReference = getReferenceToQrOrCreate(qrCodeRepository);
             DocumentReference snapshotReference = null;
-            if (playerQrCode.getSnapshot().getBitmap() != null) {
+            if (playerQrCode.getSnapshot() != null) {
                 snapshotReference = persistSnapshot(playerQrCode.getSnapshot().getBitmap(), username);
             }
             playerRepo.getQrCodes().add(new PlayerQrCodeRepository(qrReference, snapshotReference,
@@ -117,8 +117,8 @@ public class FirestorePlayerController extends FirestoreController{
             Integer a = new Integer(1);
             handler.post(() -> {
                 // return the playerQr Model
-                callback.updatePlayerQr(PlayerQrCodeRepository.retrievePlayerQrCode(qrRepo, snapRepo,
-                        playerRepo.getQrCodes().get(indexArg.i).getScanDate()));
+                Timestamp scanDate = playerRepo.getQrCodes().get(indexArg.i).getScanDate();
+                callback.updatePlayerQr(PlayerQrCodeRepository.retrievePlayerQrCode(qrRepo, snapRepo, scanDate));
             });
         }).start();
     }

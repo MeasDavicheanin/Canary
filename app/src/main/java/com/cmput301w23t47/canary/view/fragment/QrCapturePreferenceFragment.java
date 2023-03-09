@@ -85,6 +85,9 @@ public class QrCapturePreferenceFragment extends Fragment implements
         binding.takeSnap.setOnClickListener(view -> {
             captureSnapshot();
         });
+        binding.noSnap.setOnClickListener(view -> {
+            persistQr(null);
+        });
 
         builder = new AlertDialog.Builder(getContext());
     }
@@ -126,7 +129,6 @@ public class QrCapturePreferenceFragment extends Fragment implements
 
     private void receiveSnapshot(Bitmap image) {
         persistQr(image);
-        returnToQrCodePage();
     }
 
     /**
@@ -136,7 +138,9 @@ public class QrCapturePreferenceFragment extends Fragment implements
     private void persistQr(Bitmap snapshot) {
         PlayerQrCode playerQrCode = new PlayerQrCode(qrCode, new Date());
         // TODO: Get location
-        playerQrCode.setSnapshot(new Snapshot(snapshot));
+        if (snapshot != null) {
+            playerQrCode.setSnapshot(new Snapshot(snapshot));
+        }
         firestorePlayerController.addQrToPlayer(playerQrCode, MainActivity.playerUsername, this);
     }
 
@@ -146,6 +150,7 @@ public class QrCapturePreferenceFragment extends Fragment implements
 
     @Override
     public void operationStatus(boolean status) {
-        Log.d(TAG, "operationStatus: Done");
+        // QR Persisted, go back
+        returnToQrCodePage();
     }
 }
