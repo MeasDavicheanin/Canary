@@ -1,5 +1,7 @@
 package com.cmput301w23t47.canary.model;
 
+import android.graphics.Bitmap;
+
 import java.util.ArrayList;
 
 /**
@@ -16,6 +18,9 @@ public class Player {
     private ArrayList<PlayerQrCode> qrCodes;
     // score of the player
     private long score = 0;
+    // unique ID of the player, stored as the document name on firestore
+    private String uniquePlayerId;
+    private Bitmap playerImage;
 
 
     public Player(String username, String firstName, String lastName) {
@@ -70,4 +75,40 @@ public class Player {
     public void setScore(long score) {
         this.score = score;
     }
+
+    public String getUniquePlayerId() {
+        return uniquePlayerId;
+    }
+
+    public void setUniquePlayerId(String uniquePlayerId) {
+        this.uniquePlayerId = uniquePlayerId;
+    }
+
+    public Bitmap getPlayerImage() {
+        return playerImage;
+    }
+
+    public void setPlayerImage(Bitmap playerImage) {
+        this.playerImage = playerImage;
+    }
+
+    public long getHighestQr(){
+        long highest = 0;
+        for (PlayerQrCode qr: qrCodes){
+            long qrScore = qr.getQrCode().getScore();
+            if( qrScore > highest)
+                highest = qrScore;
+        }
+        return highest;
+    }
+    public long getLowestQr(){
+        long lowest = Long.MAX_VALUE;
+        for (PlayerQrCode qr: qrCodes){
+            long qrScore = qr.getQrCode().getScore();
+            if( qrScore < lowest)
+                lowest = qrScore;
+        }
+        return lowest;
+    }
+
 }
