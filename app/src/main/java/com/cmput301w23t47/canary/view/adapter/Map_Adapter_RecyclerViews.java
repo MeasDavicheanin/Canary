@@ -19,9 +19,9 @@ import java.util.ArrayList;
 
 //
 /**
- * Class for the list of QR Codes on map
- * should have multiple accessible qr codes
- *
+ * A adapter that holds the recycler view for the map list ( fragmentmapscreenmaplistsearch )
+ * displays this in the format of a list
+ * the xml file which determines how elements are stored is map_list_element_placement
  */
 public class Map_Adapter_RecyclerViews extends RecyclerView.Adapter<FragmentMapScreenMapListSearch>{
     private static final String TAG = "MapQRLocationListAdapter";
@@ -46,6 +46,7 @@ public class Map_Adapter_RecyclerViews extends RecyclerView.Adapter<FragmentMapS
 
     @Override
     public void onBindViewHolder(@android.support.annotation.NonNull @NonNull FragmentMapScreenMapListSearch mapInteractiveQRViewHolder, int i) {
+        //Need to gget the proper data from the firebase
         mapInteractiveQRViewHolder.qrname.setText(mqrCodes.get(i).getQRname());
         mapInteractiveQRViewHolder.qrdate.setText(mqrCodes.get(i).getQRdate());
         mapInteractiveQRViewHolder.qrpoint.setText(mqrCodes.get(i).getQrPoints());

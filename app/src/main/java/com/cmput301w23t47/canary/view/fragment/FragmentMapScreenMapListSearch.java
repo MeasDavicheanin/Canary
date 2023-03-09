@@ -14,20 +14,29 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
+import android.Manifest;
 
-import com.cmput301w23t47.canary.Manifest;
+//import com.cmput301w23t47.canary.Manifest;
 import com.cmput301w23t47.canary.R;
 import com.cmput301w23t47.canary.view.adapter.Map_Adapter_RecyclerViews;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.firebase.firestore.auth.User;
+//import com.google.firebase.firestore.auth.QRCodeProvider;
 
 import java.util.ArrayList;
 
 import static com.cmput301w23t47.canary.Constants.MAPVIEW_BUNDLE_KEY;
 //User_list_fragment
-
+/**
+ *  A fragment that holds a mapview and a recyckler view
+ *  The mapview is used to display the location of the qr codes
+ *  The recycler view is used to display the list of qr codes
+ *  The recycler view is also used to display the map results
+ *
+ *
+ */
 public class FragmentMapScreenMapListSearch extends Fragment implements OnMapReadyCallback {
 
     //widgets
@@ -38,7 +47,9 @@ public class FragmentMapScreenMapListSearch extends Fragment implements OnMapRea
 
 
     //vars
-    private ArrayList<User> mMapList = new ArrayList<>();
+    // this isn't needed just pull the qr code global list.
+    // private ArrayList<User> mMapList = new ArrayList<>();
+
     private Map_Adapter_RecyclerViews mMapAdapterRecyclerViews;
 
 
@@ -149,6 +160,9 @@ public class FragmentMapScreenMapListSearch extends Fragment implements OnMapRea
         mMapView.onLowMemory();
     }
 
+    public void qrrecycler(){
+
+    }
 
 }
 /*
