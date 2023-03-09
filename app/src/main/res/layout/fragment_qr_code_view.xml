@@ -102,7 +102,7 @@
 
             <!--qr Info Card-->
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/score_card_layout"
+                android:id="@+id/qr_other_info_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"

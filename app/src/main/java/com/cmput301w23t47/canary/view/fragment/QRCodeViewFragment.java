@@ -59,6 +59,10 @@ public class QRCodeViewFragment extends Fragment implements UpdatePlayerQrCallba
     private void updateSnapshot() {
         if (playerQrCode.getSnapshot() != null) {
             binding.qrSnapshot.setImageBitmap(playerQrCode.getSnapshot().getBitmap());
+            binding.noSnapshotBox.setVisibility(View.GONE);
+            binding.qrSnapshot.setVisibility(View.VISIBLE);
+        } else {
+
         }
     }
 

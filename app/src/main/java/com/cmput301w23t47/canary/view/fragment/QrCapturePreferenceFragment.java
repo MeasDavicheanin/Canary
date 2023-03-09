@@ -90,10 +90,26 @@ public class QrCapturePreferenceFragment extends Fragment implements
         });
 
         builder = new AlertDialog.Builder(getContext());
+        showLoadingBar();
+    }
+
+    /**
+     * Shows the loading bar
+     */
+    private void showLoadingBar() {
+        binding.progressBarBox.setVisibility(View.VISIBLE);
+    }
+
+    /**
+     * Hides the loading bar
+     */
+    private void hideLoadingBar() {
+        binding.progressBarBox.setVisibility(View.GONE);
     }
 
     @Override
     public void doesResourceExists(boolean exists) {
+        hideLoadingBar();
         if (exists) {
             // if qr with the given hash exist, show an alert
             builder.setMessage(R.string.qr_exists_message)
