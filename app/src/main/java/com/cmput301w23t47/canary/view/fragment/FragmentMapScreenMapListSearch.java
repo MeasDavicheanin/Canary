@@ -14,6 +14,10 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
+import android.widget.Spinner;
 import android.widget.Toast;
 import android.Manifest;
 
@@ -44,8 +48,14 @@ public class FragmentMapScreenMapListSearch extends Fragment implements OnMapRea
     //widgets
     private RecyclerView mMapListRecyclerView;
     private MapView mMapView;
+    private AutoCompleteTextView mSearchBar;
+    //purposefully using a 0 for the no limit so that if you read 0 then you know that there is no limit
+    private String[] mSearchRange = {"200m", "500m", "1km", "2km", "5km", "N0 LIMIT" };
+    private ArrayAdapter<String> mSearchRangeAdapter;
 
-
+    private int mSearchRangeDouble;
+    private String mSearchSpecifiedRange;
+    private AutoCompleteTextView mSearchBarRange;
     //vars
     // this isn't needed just pull the qr code global list.
     // private ArrayList<User> mMapList = new ArrayList<>();
@@ -57,6 +67,68 @@ public class FragmentMapScreenMapListSearch extends Fragment implements OnMapRea
         return new FragmentMapScreenMapListSearch();
     }
 
+    public void initDropDownMenuItems(){
+        mSearchBar = (AutoCompleteTextView) getActivity().findViewById(R.id.map_search_range_dropdown_menu);
+        mSearchRangeAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, mSearchRange);
+
+        mSearchBar.setAdapter(mSearchRangeAdapter);
+        mSearchBar.setOnItemClickListener( new AdapterView.OnItemClickListener(){
+            @Override
+            public void onItemclick(AdapterView<?> parent, View view, int position, long id){
+                String item = parent.getItemAtPosition(position).toString();
+                Toast.makeText(parent.getContext(), "Selected: " + item, Toast.LENGTH_LONG).show();
+            }
+
+
+        });
+
+    }
+
+
+    /**
+     * This is a temporary proof of concept function
+     */
+    public void initMapSearchRangeCheck(){
+        mSearchBarRange = (AutoCompleteTextView) getActivity().findViewById(R.id.map_search_range_dropdown_menu);
+        mSearchSpecifiedRange = mSearchBarRange.getText().toString();
+
+        switch(mSearchSpecifiedRange){
+            case "200m":
+                mSearchRangeDouble = 200;
+                break;
+            case "500m":
+                mSearchRangeDouble = 500;
+                break;
+            case "1km":
+                mSearchRangeDouble = 1000;
+                break;
+            case "2km":
+                mSearchRangeDouble = 2000;
+                break;
+            case "5km":
+                mSearchRangeDouble = 5000;
+                break;
+            case "N0 LIMIT":
+                mSearchRangeDouble = 10000;
+                break;
+            default:
+                mSearchRangeDouble = 100;
+                break;
+        }
+
+
+        for(int i = 0; i < mglobalQRList.length; i++){
+            if(mglobalQRList[i].getDistance(    playerLocation      ) <= mSearchRangeDouble || mSearchRangeDouble == 10000){
+                //add to the list
+            }
+
+        }
+
+    }
+
+
+
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,6 +137,7 @@ public class FragmentMapScreenMapListSearch extends Fragment implements OnMapRea
             // I think it has something to do with our firestore
             //mMapList = getArguments().getParcelableArrayList(getString(R.string.intent_recycler_list_map));
         }
+        initDropDownMenuItems();
     }
 
     @Nullable
@@ -95,7 +168,7 @@ public class FragmentMapScreenMapListSearch extends Fragment implements OnMapRea
     }
 
     private void initMapListRecyclerView() {
-        mMapAdapterRecyclerViews = new Map_Adapter_RecyclerViews(mMapList);
+        mMapAdapterRecyclerViews = new Map_Adapter_RecyclerViews(mMapView, getActivity());
         mMapListRecyclerView.setAdapter(mMapAdapterRecyclerViews);
         mMapListRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
     }

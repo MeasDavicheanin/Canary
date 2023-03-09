@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/white">
 
     <LinearLayout
@@ -15,7 +15,7 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="50"
+            android:layout_weight="55"
             android:id="@+id/map_container">
 
             <com.google.android.gms.maps.MapView
@@ -24,11 +24,30 @@
                 android:layout_height="match_parent" />
         </RelativeLayout>
 
+
+        <com.google.android.material.textfield.TextInputLayout
+            style = "@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:startIconDrawable="@drawable/map_location_search">
+
+            <AutoCompleteTextView
+                android:id="@+id/map_search_range_dropdown_menu"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:inputType="none"
+                android:hint="@string/search_range_200m"
+                 />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
         <android.support.v7.widget.RecyclerView
             android:id="@+id/user_list_recycler_view"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="50">
+            android:layout_weight="35"
+            >
 
         </android.support.v7.widget.RecyclerView>
 

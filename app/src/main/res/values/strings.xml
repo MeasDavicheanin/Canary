@@ -15,4 +15,24 @@
     <string name="intent_user_locations_map">intent_user_locations_map</string>
     <string name="intent_location_map">intent_location_map</string>
     <string name="intent_user_map">intent_user_map</string>
+
+
+    <!--Map dropdown search ranges-->
+    <string name = "search_range">Search Range</string>
+
+    <string name="search_range_200m">200 m</string>
+    <string name="search_range_500m">500 m</string>
+    <string name="search_range_1km">1 km</string>
+    <string name="search_range_2km">2 km</string>
+    <string name="search_range_5km">5 km</string>
+    <string name="search_range_nolim">N0 LIMIT</string>
+    <string-array name="search_range_array">
+        <item>@string/search_range_200m</item>
+        <item>@string/search_range_500m</item>
+        <item>@string/search_range_1km</item>
+        <item>@string/search_range_2km</item>
+        <item>@string/search_range_5km</item>
+        <item>@string/search_range_nolim</item>
+    </string-array>
+
 </resources>
