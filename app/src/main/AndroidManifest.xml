@@ -25,6 +25,9 @@ This allows access to the precise device location
         android:theme="@style/Theme.Canary"
         tools:targetApi="31">
         <activity
+            android:name=".MapScreenTemp"
+            android:exported="false" />
+        <activity
             android:name=".ActivityMapScreen"
             android:exported="false" />
 
