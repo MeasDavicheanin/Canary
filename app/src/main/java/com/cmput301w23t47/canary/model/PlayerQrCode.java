@@ -60,4 +60,12 @@ public class PlayerQrCode {
     public void setLocationShared(boolean locationShared) {
         this.locationShared = locationShared;
     }
+
+    /**
+     * Gets the score for the qr
+     * @return the score of the qr
+     */
+    public long retrieveScore() {
+        return qrCode.getScore();
+    }
 }

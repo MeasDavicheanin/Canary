@@ -6,6 +6,7 @@ import com.cmput301w23t47.canary.callback.DoesResourceExistCallback;
 import com.cmput301w23t47.canary.callback.OperationStatusCallback;
 import com.cmput301w23t47.canary.callback.UpdatePlayerQrCallback;
 import com.cmput301w23t47.canary.model.PlayerQrCode;
+import com.cmput301w23t47.canary.model.Snapshot;
 import com.cmput301w23t47.canary.repository.GetIndexArg;
 import com.cmput301w23t47.canary.repository.PlayerQrCodeRepository;
 import com.cmput301w23t47.canary.repository.PlayerRepository;
@@ -78,7 +79,7 @@ public class FirestorePlayerController extends FirestoreController{
                 snapshotReference = persistSnapshot(playerQrCode.getSnapshot().getBitmap(), username);
             }
             playerRepo.getQrCodes().add(new PlayerQrCodeRepository(qrReference, snapshotReference,
-                    new Timestamp(playerQrCode.getScanDate())));
+                    new Timestamp(playerQrCode.getScanDate()), playerQrCode.retrieveScore()));
             updatePlayer(playerRepo);
             handler.post(() -> {
                callback.operationStatus(true);
@@ -145,5 +146,71 @@ public class FirestorePlayerController extends FirestoreController{
         }
         Task<DocumentSnapshot> snapTask = snapRef.get();
         return waitForTask(snapTask, SnapshotRepository.class);
+    }
+
+    /**
+     * Deletes the Qr from the player
+     * @param playerQrCode the qr to delete
+     * @param callback the callback to inform
+     */
+    public void deleteQrFromPlayer(PlayerQrCode playerQrCode, OperationStatusCallback callback) {
+        Handler handler = new Handler();
+        new Thread(() -> {
+            // get the player and qr
+            String playerDocId = identifyPlayer();
+            PlayerRepository playerRepo = getPlayerRepo(playerDocId);
+            Task<QuerySnapshot> qrCodeQuery = qrCodes.whereEqualTo("hash", playerQrCode.getQrCode()).get();
+            waitForQuery(qrCodeQuery);
+            if (qrCodeQuery.getResult().isEmpty()) {
+                // the given qr does not exist
+                handler.post(() -> {
+                    callback.operationStatus(false);
+                });
+                return;
+            }
+
+            // delete the qr, snapshot from player
+            DocumentReference qrRef = qrCodeQuery.getResult().getDocuments().get(0).getReference();
+            int qrIndex = getIndexOfQrInPlayer(playerRepo, qrRef);
+            if (qrIndex < 0) {
+                handler.post(() -> {
+                    callback.operationStatus(false);
+                });
+                return;
+            }
+
+            deleteSnapshotForQr(playerRepo, qrIndex);
+            playerRepo.removeQrAt(qrIndex, playerQrCode);
+        }).start();
+    }
+
+    /**
+     * Gets the index of the qr in the player
+     * @param playerRepo the player to search
+     * @param qrRef the reference to the qr
+     * @return the index of the qr in player
+     */
+    protected int getIndexOfQrInPlayer(PlayerRepository playerRepo, DocumentReference qrRef) {
+        for (int i = 0; i < playerRepo.getQrCodes().size(); i++) {
+            PlayerQrCodeRepository playerQrCodeRepository = playerRepo.getQrCodes().get(i);
+            if (qrRef.equals(playerQrCodeRepository.getQrCode())) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    /**
+     * Deletes the snapshot for the qr from the player
+     * @param playerRepo the player repo
+     * @param qrIndex the index of the qr in the player repo
+     */
+    protected void deleteSnapshotForQr(PlayerRepository playerRepo, int qrIndex) {
+        DocumentReference snapRef = playerRepo.getQrCodes().get(qrIndex).getSnapshot();
+        if (snapRef == null) {
+            return;
+        }
+        Task<Void> deleteTask = snapRef.delete();
+        waitForUpdateTask(deleteTask);
     }
 }

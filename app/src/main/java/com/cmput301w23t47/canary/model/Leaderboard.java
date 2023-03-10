@@ -1,6 +1,7 @@
 package com.cmput301w23t47.canary.model;
 
 import com.cmput301w23t47.canary.controller.LeaderboardController;
+import com.google.firebase.firestore.Exclude;
 
 import java.util.ArrayList;
 import java.util.Locale;
@@ -18,10 +19,14 @@ public class Leaderboard {
     private String maxScorePlayer;
     // the score of winner
     private long maxScore;
+
+    @Exclude
     // list of all players to determine ranking
     private ArrayList<LeaderboardPlayer> players; // absent from Firestore
+    @Exclude
     // player with max score
     private ArrayList<LeaderboardPlayer> byScore; // absent from Firestore
+    @Exclude
     // player with max qr
     private ArrayList<LeaderboardPlayer> byHighestScoringQr; // absent from Firestore
 

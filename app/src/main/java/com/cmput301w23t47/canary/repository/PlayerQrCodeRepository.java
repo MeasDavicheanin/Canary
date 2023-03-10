@@ -19,6 +19,8 @@ public class PlayerQrCodeRepository {
     private DocumentReference snapshot;
     // store the date the qr was scanned
     private Timestamp scanDate;
+    // store the score of qr; required to speed up qr deletion
+    private long qrScore;
 
     @Exclude
     // stores the parsed playerQrCode
@@ -28,10 +30,11 @@ public class PlayerQrCodeRepository {
         parsedPlayerQrCode = new PlayerQrCode();
     }
 
-    public PlayerQrCodeRepository(DocumentReference qrCode, DocumentReference snapshot, Timestamp scanDate) {
+    public PlayerQrCodeRepository(DocumentReference qrCode, DocumentReference snapshot, Timestamp scanDate, long qrScore) {
         this.qrCode = qrCode;
         this.snapshot = snapshot;
         this.scanDate = scanDate;
+        this.qrScore = qrScore;
     }
 
     public void setParsedQrCode(QrCode qrCode) {
@@ -65,6 +68,14 @@ public class PlayerQrCodeRepository {
 
     public void setScanDate(Timestamp scanDate) {
         this.scanDate = scanDate;
+    }
+
+    public long getQrScore() {
+        return qrScore;
+    }
+
+    public void setQrScore(long qrScore) {
+        this.qrScore = qrScore;
     }
 
     /**

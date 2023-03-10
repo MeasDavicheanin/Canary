@@ -30,6 +30,9 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
 import com.google.firebase.installations.FirebaseInstallations;
+
+import org.checkerframework.checker.units.qual.K;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -105,6 +108,18 @@ public class FirestoreController {
     protected void waitForUpdateTask(Task<Void> snapshotTask) {
         try {
             Tasks.await(snapshotTask);
+        } catch (ExecutionException | InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Waits for the General task to complete
+     * @param task the task to wait for
+     */
+    protected <K extends Object> void waitForGeneralTask(Task<K> task) {
+        try {
+            Tasks.await(task);
         } catch (ExecutionException | InterruptedException e) {
             e.printStackTrace();
         }
@@ -187,7 +202,9 @@ public class FirestoreController {
         }).addOnFailureListener(failureListener);
     }
 
-
+    /**
+     * Gets the unique id for the player
+     */
     public static void identifyPlayer(OnSuccessListener<String> successListener, OnFailureListener failureListener) {
         FirebaseInstallations firebaseInstallations = FirebaseInstallations.getInstance();
         firebaseInstallations.getId().addOnSuccessListener(installationId -> {
@@ -205,6 +222,17 @@ public class FirestoreController {
                 }
             });
         }).addOnFailureListener(failureListener);
+    }
+
+    /**
+     * Gets the doc id for the current player
+     * @return the doc if for player
+     */
+    protected String identifyPlayer() {
+        FirebaseInstallations firebaseInstallations = FirebaseInstallations.getInstance();
+        Task<String> idTask = firebaseInstallations.getId();
+        waitForGeneralTask(idTask);
+        return idTask.getResult();
     }
 
     /**
@@ -323,11 +351,11 @@ public class FirestoreController {
 
     /**
      * Gets the player Repo
-     * @param username
+     * @param playerDocId
      * @return
      */
-    protected PlayerRepository getPlayerRepo(String username) {
-        Task<DocumentSnapshot> playerTask = players.document(username).get();
+    protected PlayerRepository getPlayerRepo(String playerDocId) {
+        Task<DocumentSnapshot> playerTask = players.document(playerDocId).get();
         return waitForTask(playerTask, PlayerRepository.class);
     }
 

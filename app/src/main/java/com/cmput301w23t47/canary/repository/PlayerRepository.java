@@ -140,4 +140,34 @@ public class PlayerRepository {
         score += playerQrCode.getQrCode().getScore();
         maxScoreQr = Math.max(maxScoreQr, playerQrCode.getQrCode().getScore());
     }
+
+    /**
+     * Update the stats after updating
+     * @param playerQrCode
+     */
+    public void updateStatsAfterRemoveQr(PlayerQrCode playerQrCode) {
+        long qrScore = playerQrCode.getQrCode().getScore();
+        score -= qrScore;
+        if (maxScoreQr == qrScore) {
+            // need to find new max qr
+            long locMaxScore = 0;
+            for (int i = 0; i < qrCodes.size(); i++) {
+                PlayerQrCodeRepository qrCodeRepository = qrCodes.get(i);
+                if (qrCodeRepository.getQrScore() > locMaxScore) {
+                    locMaxScore = qrCodeRepository.getQrScore();
+                }
+            }
+            maxScoreQr = locMaxScore;
+        }
+    }
+
+    /**
+     * Removes the qr at the given index
+     * @param qrIndex the index to remove
+     * @param playerQrCode the qr which is deleted
+     */
+    public void removeQrAt(int qrIndex, PlayerQrCode playerQrCode) {
+        qrCodes.remove(qrIndex);
+        updateStatsAfterRemoveQr(playerQrCode);
+    }
 }
