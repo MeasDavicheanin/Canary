@@ -18,7 +18,7 @@ public class Player  implements Parcelable {
     // lastname of the player
     private String lastName;
     // list of QR codes scanned by user
-    private ArrayList<PlayerQrCode> qrCodes;
+    private ArrayList<PlayerQrCodeRepository> qrCodes;
     // score of the player
     private long score = 0;
 
@@ -30,8 +30,8 @@ public class Player  implements Parcelable {
         this.qrCodes = new ArrayList<>();
     }
 
-    public void addQrCode(PlayerQrCode playerQrCode) {
-        qrCodes.add(playerQrCode);
+    public void addQrCode(PlayerQrCodeRepository PlayerQrCodeRepository) {
+        qrCodes.add(PlayerQrCodeRepository);
     }
 
     public Player() {}
@@ -60,11 +60,11 @@ public class Player  implements Parcelable {
         this.lastName = lastName;
     }
 
-    public ArrayList<PlayerQrCode> getQrCodes() {
+    public ArrayList<PlayerQrCodeRepository> getQrCodes() {
         return qrCodes;
     }
 
-    public void setQrCodes(ArrayList<PlayerQrCode> qrCodes) {
+    public void setQrCodes(ArrayList<PlayerQrCodeRepository> qrCodes) {
         this.qrCodes = qrCodes;
     }
 
