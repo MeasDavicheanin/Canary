@@ -152,6 +152,7 @@ public class QRCodeViewFragment extends Fragment implements GetPlayerQrCallback,
         if (playerQrCode == null) {
             return;
         }
+        showLoadingBar();
         firestorePlayerController.deleteQrFromPlayer(playerQrCode, this);
     }
 
@@ -169,13 +170,21 @@ public class QRCodeViewFragment extends Fragment implements GetPlayerQrCallback,
 
     @Override
     public void operationStatus(boolean status) {
-        if (status == true) {
+        hideLoadingBar();
+        if (status) {
             new AlertDialog.Builder(getContext())
-                    .setMessage(R.string.qr_exists_message)
-                    .setTitle(R.string.qr_exists_title)
+                    .setMessage("QR Deleted")
+                    .setTitle("QR Deleted successfully")
                     .setCancelable(false)
                     .setPositiveButton("Continue", (DialogInterface dialog, int id) -> {
-                        // TODO: handle already scanned QR
+                        returnToHome();
+                    }).create().show();
+        } else {
+            new AlertDialog.Builder(getContext())
+                    .setMessage("Request failed")
+                    .setTitle("QR couldn't be Deleted. Try again later")
+                    .setCancelable(false)
+                    .setPositiveButton("Continue", (DialogInterface dialog, int id) -> {
                         returnToHome();
                     }).create().show();
         }

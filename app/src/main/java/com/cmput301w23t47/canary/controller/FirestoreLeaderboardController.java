@@ -19,7 +19,6 @@ public class FirestoreLeaderboardController extends FirestoreController{
      * @param playerRepo the player that changed
      */
     public void updateLeaderboardIfRequired(PlayerRepository playerRepo) {
-        Handler handler = new Handler();
         new Thread(() -> {
             Task<DocumentSnapshot> lbTask = leaderboard.document(globalLeaderboardDocument).get();
             Leaderboard leaderboard = waitForTask(lbTask, Leaderboard.class);

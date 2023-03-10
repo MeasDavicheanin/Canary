@@ -24,6 +24,7 @@ import com.google.firebase.firestore.QuerySnapshot;
  * Firestore controller for interacting with Player model
  */
 public class FirestorePlayerController extends FirestoreController{
+    public static final String TAG = "FirestorePlayerController";
     FirestoreLeaderboardController firestoreLeaderboardController = new FirestoreLeaderboardController();
 
     /**
@@ -161,7 +162,7 @@ public class FirestorePlayerController extends FirestoreController{
             // get the player and qr
             String playerDocId = identifyPlayer();
             PlayerRepository playerRepo = getPlayerRepo(playerDocId);
-            Task<QuerySnapshot> qrCodeQuery = qrCodes.whereEqualTo("hash", playerQrCode.getQrCode()).get();
+            Task<QuerySnapshot> qrCodeQuery = qrCodes.whereEqualTo("hash", playerQrCode.retrieveHash()).get();
             waitForQuery(qrCodeQuery);
             if (qrCodeQuery.getResult().isEmpty()) {
                 // the given qr does not exist
@@ -175,6 +176,7 @@ public class FirestorePlayerController extends FirestoreController{
             DocumentReference qrRef = qrCodeQuery.getResult().getDocuments().get(0).getReference();
             int qrIndex = getIndexOfQrInPlayer(playerRepo, qrRef);
             if (qrIndex < 0) {
+                // qr not found in player
                 handler.post(() -> {
                     callback.operationStatus(false);
                 });
@@ -186,6 +188,9 @@ public class FirestorePlayerController extends FirestoreController{
             Task<Void> playerUpdateTask = players.document(playerDocId).set(playerRepo);
             waitForUpdateTask(playerUpdateTask);
             firestoreLeaderboardController.updateLeaderboardIfRequired(playerRepo);
+            handler.post(() -> {
+                callback.operationStatus(true);
+            });
         }).start();
     }
 
