@@ -5,14 +5,14 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.animation.ObjectAnimator;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -129,7 +129,7 @@ public class FragmentMapScreenMapListSearch extends Fragment implements OnMapRea
     @Override
     public void onItemClicked(int position){
         // Need to change the error with the qr activitiy
-        Intent intent = new Intent(getActivity(), QRCodeView.class );
+        Intent intent = new Intent(getActivity(), QRCodeViewFragment.class );
         
         // if you want to send the whole qr code then use this one
         intent.putExtra(getString(R.string.intent_qr_code), mSearchResults.get(position));
