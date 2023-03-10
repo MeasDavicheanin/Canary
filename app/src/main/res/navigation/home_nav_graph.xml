@@ -34,4 +34,14 @@
             android:id="@+id/action_goToHomeFromQRCodeView"
             app:destination="@id/homeFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/leaderboardFragment"
+        android:name="com.cmput301w23t47.canary.view.fragment.LeaderboardFragment"
+        android:label="fragment_leaderboard"
+        tools:layout="@layout/fragment_leaderboard" />
+    <fragment
+        android:id="@+id/playerProfileFragment"
+        android:name="com.cmput301w23t47.canary.view.fragment.PlayerProfileFragment"
+        android:label="fragment_player_profile"
+        tools:layout="@layout/fragment_player_profile" />
 </navigation>

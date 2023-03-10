@@ -28,22 +28,22 @@ public class NavbarController {
      * @param activity      the current activity
      */
     public static void handleSelection(MenuItem selectedItem, NavigateToPage navigator) {
-        switch (selectedItem.getItemId()) {
-            case R.id.page_home:
-                navigator.navigateToHome();
-                break;
-            case R.id.page_search:
-                Log.d(TAG, "handleSelection: search");
-                break;
-            case R.id.page_rank:
-                navigator.navigateToLeaderboard();
-                break;
-            case R.id.page_players:
-                Log.d(TAG, "handleSelection: player");
-                break;
-            case R.id.page_profile:
-                Log.d(TAG, "handleSelection: profile");
-                break;
-        }
+//        switch (selectedItem.getItemId()) {
+//            case R.id.page_home:
+//                navigator.navigateToHome();
+//                break;
+//            case R.id.page_search:
+//                Log.d(TAG, "handleSelection: search");
+//                break;
+//            case R.id.page_rank:
+//                navigator.navigateToLeaderboard();
+//                break;
+//            case R.id.page_players:
+//                Log.d(TAG, "handleSelection: player");
+//                break;
+//            case R.id.page_profile:
+//                Log.d(TAG, "handleSelection: profile");
+//                break;
+//        }
     }
 }

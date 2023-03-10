@@ -2,7 +2,10 @@ package com.cmput301w23t47.canary;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
+import androidx.navigation.ui.NavigationUI;
 
 import android.os.Bundle;
 
@@ -10,6 +13,7 @@ import com.cmput301w23t47.canary.controller.NavbarController;
 import com.cmput301w23t47.canary.databinding.ActivityMainBinding;
 import com.cmput301w23t47.canary.view.fragment.HomeFragment;
 import com.cmput301w23t47.canary.view.fragment.LeaderboardFragment;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 
 /**
@@ -37,9 +41,9 @@ public class MainActivity extends AppCompatActivity implements
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-//        NavController navController = Navigation.findNavController(this, R.id.fragment_container_view_main);
-//        appBarConfiguration = new AppBarConfiguration.Builder(navController.getGraph()).build();
-//        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
+        NavController navController = Navigation.findNavController(this, R.id.fragment_container_view_main);
+        appBarConfiguration = new AppBarConfiguration.Builder(navController.getGraph()).build();
+        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
 
         init(savedInstanceState);
     }
@@ -73,15 +77,20 @@ public class MainActivity extends AppCompatActivity implements
      * Initializes the navbar
      */
     private void initNavbar() {
+        NavController navController = Navigation.findNavController(this, R.id.fragment_container_view_main);
+        NavigationUI.setupWithNavController(binding.bottomNavigationLayout.bottomNavigation,
+                navController);
+
+
         // add listener for navbar
-        binding.bottomNavigationLayout.bottomNavigation.setOnItemSelectedListener(item -> {
-            NavbarController.handleSelection(item, this);
-            return true;
-        });
+//        binding.bottomNavigationLayout.bottomNavigation.setOnItemSelectedListener(item -> {
+//            NavbarController.handleSelection(item, this);
+//            return true;
+//        });
         // ignore if option reselected
-        binding.bottomNavigationLayout.bottomNavigation.setOnItemReselectedListener(item -> {});
+//        binding.bottomNavigationLayout.bottomNavigation.setOnItemReselectedListener(item -> {});
         // configure selected option; calls the itemSelectedCallback function
-        binding.bottomNavigationLayout.bottomNavigation.setSelectedItemId(R.id.page_home);
+//        binding.bottomNavigationLayout.bottomNavigation.setSelectedItemId(R.id.page_home);
     }
 
     /**
