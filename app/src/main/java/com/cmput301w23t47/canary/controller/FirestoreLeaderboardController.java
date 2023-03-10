@@ -20,7 +20,7 @@ public class FirestoreLeaderboardController extends FirestoreController{
         new Thread(() -> {
             Task<DocumentSnapshot> lbTask = leaderboard.document(globalLeaderboardDocument).get();
             Leaderboard leaderboard = waitForTask(lbTask, Leaderboard.class);
-            if (leaderboard.get)
+//            if (leaderboard.get)
         }).start();
     }
 }
