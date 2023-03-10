@@ -4,9 +4,8 @@ import android.os.Handler;
 
 import com.cmput301w23t47.canary.callback.DoesResourceExistCallback;
 import com.cmput301w23t47.canary.callback.OperationStatusCallback;
-import com.cmput301w23t47.canary.callback.UpdatePlayerQrCallback;
+import com.cmput301w23t47.canary.callback.GetPlayerQrCallback;
 import com.cmput301w23t47.canary.model.PlayerQrCode;
-import com.cmput301w23t47.canary.model.Snapshot;
 import com.cmput301w23t47.canary.repository.GetIndexArg;
 import com.cmput301w23t47.canary.repository.PlayerQrCodeRepository;
 import com.cmput301w23t47.canary.repository.PlayerRepository;
@@ -22,6 +21,7 @@ import com.google.firebase.firestore.QuerySnapshot;
  * Firestore controller for interacting with Player model
  */
 public class FirestorePlayerController extends FirestoreController{
+    FirestoreLeaderboardController firestoreLeaderboardController = new FirestoreLeaderboardController();
 
     /**
      * Determines whether the player has the given qr
@@ -98,7 +98,7 @@ public class FirestorePlayerController extends FirestoreController{
      * @param username the username of the player
      * @param callback the callback to return the result
      */
-    public void getPlayerQr(String qrHash, String username, UpdatePlayerQrCallback callback) {
+    public void getPlayerQr(String qrHash, String username, GetPlayerQrCallback callback) {
         Handler handler = new Handler();
         new Thread(() -> {
             PlayerRepository playerRepo = getPlayerRepo(username);
@@ -106,7 +106,7 @@ public class FirestorePlayerController extends FirestoreController{
             waitForQuery(qrCodeQuery);
             if (qrCodeQuery.getResult().isEmpty()) {
                 handler.post(() -> {
-                    callback.updatePlayerQr(null);
+                    callback.getPlayerQr(null);
                 });
                 // the given qr does not exist
                 return;
@@ -119,7 +119,7 @@ public class FirestorePlayerController extends FirestoreController{
             handler.post(() -> {
                 // return the playerQr Model
                 Timestamp scanDate = playerRepo.getQrCodes().get(indexArg.i).getScanDate();
-                callback.updatePlayerQr(PlayerQrCodeRepository.retrievePlayerQrCode(qrRepo, snapRepo, scanDate));
+                callback.getPlayerQr(PlayerQrCodeRepository.retrievePlayerQrCode(qrRepo, snapRepo, scanDate));
             });
         }).start();
     }
@@ -181,6 +181,9 @@ public class FirestorePlayerController extends FirestoreController{
 
             deleteSnapshotForQr(playerRepo, qrIndex);
             playerRepo.removeQrAt(qrIndex, playerQrCode);
+            Task<Void> playerUpdateTask = players.document(playerDocId).set(playerRepo);
+            waitForUpdateTask(playerUpdateTask);
+            firestoreLeaderboardController.updateLeaderboardIfRequired(playerRepo);
         }).start();
     }
 

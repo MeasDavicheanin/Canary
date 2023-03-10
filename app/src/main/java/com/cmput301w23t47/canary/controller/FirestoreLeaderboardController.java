@@ -5,7 +5,10 @@ import android.os.Handler;
 import com.cmput301w23t47.canary.model.Leaderboard;
 import com.cmput301w23t47.canary.repository.PlayerRepository;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QuerySnapshot;
 
 /**
  * Controller for operating on the leaderboard collection
@@ -15,12 +18,54 @@ public class FirestoreLeaderboardController extends FirestoreController{
      * Checks if the leaderboard needs to be updated using the new player model
      * @param playerRepo the player that changed
      */
-    public void checkIfLeaderboardUpdates(PlayerRepository playerRepo) {
+    public void updateLeaderboardIfRequired(PlayerRepository playerRepo) {
         Handler handler = new Handler();
         new Thread(() -> {
             Task<DocumentSnapshot> lbTask = leaderboard.document(globalLeaderboardDocument).get();
             Leaderboard leaderboard = waitForTask(lbTask, Leaderboard.class);
-//            if (leaderboard.get)
+            boolean updateLeaderboard = false;
+            if (leaderboard.getMaxQrPlayer().equals(playerRepo.getUsername())) {
+                updateLeaderboard = updatePlayerWithMaxQr(leaderboard);
+            }
+            if (leaderboard.getMaxScorePlayer().equals(playerRepo.getUsername())) {
+                updateLeaderboard |= updatePlayerWithMaxScore(leaderboard);
+            }
+
+            // update the leaderboard if it was indeed updated
+            if (updateLeaderboard) {
+                Task<Void> updateTask = getGlobalLeaderboardDoc().set(leaderboard);
+                waitForUpdateTask(updateTask);
+            }
         }).start();
+    }
+
+    protected boolean updatePlayerWithMaxQr(Leaderboard leaderboard) {
+        Task<QuerySnapshot> queryTask = players.orderBy("qrCodesSize", Query.Direction.DESCENDING).limit(1).get();
+        waitForQuery(queryTask);
+        if (!queryTask.getResult().isEmpty()) {
+            DocumentSnapshot maxQrPlayerDoc = queryTask.getResult().getDocuments().get(0);
+            PlayerRepository maxQrPlayer = maxQrPlayerDoc.toObject(PlayerRepository.class);
+            leaderboard.setMaxQrPlayer(maxQrPlayer.getUsername());
+            leaderboard.setMaxQr(maxQrPlayer.getQrCodesSize());
+            return true;
+        }
+        return false;
+    }
+
+    protected boolean updatePlayerWithMaxScore(Leaderboard leaderboard) {
+        Task<QuerySnapshot> queryTask = players.orderBy("score", Query.Direction.DESCENDING).limit(1).get();
+        waitForQuery(queryTask);
+        if (!queryTask.getResult().isEmpty()) {
+            DocumentSnapshot maxScorePlayerDoc = queryTask.getResult().getDocuments().get(0);
+            PlayerRepository maxQrPlayer = maxScorePlayerDoc.toObject(PlayerRepository.class);
+            leaderboard.setMaxScorePlayer(maxQrPlayer.getUsername());
+            leaderboard.setMaxScore(maxQrPlayer.getQrCodesSize());
+            return true;
+        }
+        return false;
+    }
+
+    protected DocumentReference getGlobalLeaderboardDoc() {
+        return leaderboard.document(globalLeaderboardDocument);
     }
 }

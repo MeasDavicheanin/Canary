@@ -28,7 +28,10 @@ public class PlayerRepository {
     private long score;
     // QR with max score
     private long maxScoreQr;
+    // qr codes that player has
     private ArrayList<PlayerQrCodeRepository> qrCodes;
+    // the number of qr codes that player has
+    private long qrCodesSize;
 
 
     // Default Constructor
@@ -100,6 +103,14 @@ public class PlayerRepository {
 
     public void setMaxScoreQr(long maxScoreQr) {
         this.maxScoreQr = maxScoreQr;
+    }
+
+    public long getQrCodesSize() {
+        return qrCodesSize;
+    }
+
+    public void setQrCodesSize(long qrCodesSize) {
+        this.qrCodesSize = qrCodesSize;
     }
 
     public LeaderboardPlayer retrieveLeaderboardPlayer() {
