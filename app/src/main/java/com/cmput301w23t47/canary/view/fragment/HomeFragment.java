@@ -85,7 +85,6 @@ public class HomeFragment extends Fragment {
 
     private void receiveAddedQrCode(String qrHash) {
         HomeFragmentDirections.ActionQrCodeView action = HomeFragmentDirections.actionQrCodeView(qrHash);
-        Log.d(TAG, "receiveAddedQrCode: " + qrHash);
         Navigation.findNavController(getView()).navigate(action);
     }
 //

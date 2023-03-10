@@ -29,9 +29,7 @@ public class MainActivity extends AppCompatActivity {
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        NavController navController = Navigation.findNavController(this, R.id.fragment_container_view_main);
-        appBarConfiguration = new AppBarConfiguration.Builder(navController.getGraph()).build();
-        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
+
 
         init(savedInstanceState);
     }
@@ -44,10 +42,23 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * Initializes the navbar
+     * Initializes the navbar (bottom and top)
      */
     private void initNavbar() {
+        // Bottom navigation
         NavController navController = Navigation.findNavController(this, R.id.fragment_container_view_main);
         NavigationUI.setupWithNavController(binding.bottomNavigationLayout.bottomNavigation, navController);
+
+        // top navigation
+        setSupportActionBar(binding.toolbar);
+        appBarConfiguration = new AppBarConfiguration.Builder(navController.getGraph()).build();
+        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        NavController navController = Navigation.findNavController(this, R.id.fragment_container_view_main);
+        return NavigationUI.navigateUp(navController, appBarConfiguration)
+                || super.onSupportNavigateUp();
     }
 }

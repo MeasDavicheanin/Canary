@@ -79,4 +79,12 @@ public class PlayerQrCode {
         if (scanDate == null) { return ""; }
         return QrCodeController.getFormattedDate(scanDate);
     }
+
+    /**
+     * Retrieves the hash of the qr
+     * @return the hash of the qr
+     */
+    public String retrieveHash() {
+        return qrCode.getHash();
+    }
 }

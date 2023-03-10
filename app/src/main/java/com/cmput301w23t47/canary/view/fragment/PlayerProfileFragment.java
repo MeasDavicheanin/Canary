@@ -7,6 +7,8 @@ import android.os.Bundle;
 import com.amulyakhare.textdrawable.TextDrawable;
 
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +17,7 @@ import com.cmput301w23t47.canary.callback.GetPlayerCallback;
 import com.cmput301w23t47.canary.controller.FirestorePlayerController;
 import com.cmput301w23t47.canary.databinding.FragmentPlayerProfileBinding;
 import com.cmput301w23t47.canary.model.Player;
+import com.cmput301w23t47.canary.model.PlayerQrCode;
 import com.cmput301w23t47.canary.view.adapter.QRCodeListAdapter;
 
 import java.util.ArrayList;
@@ -53,11 +56,18 @@ public class PlayerProfileFragment extends Fragment implements
         return binding.getRoot();
     }
 
+    /**
+     * Initializes the ui for the page
+     */
     private void init(){
         showLoadingBar();
         firestorePlayerController.getCompleteCurrentPlayer(this);
         qrCodeListAdapter = new QRCodeListAdapter(getContext(), new ArrayList<>());
         binding.qrsScannedList.setAdapter(qrCodeListAdapter);
+        binding.qrsScannedList.setOnItemClickListener((adapterView, view, i, l) -> {
+            PlayerQrCode playerQrCode = (PlayerQrCode) adapterView.getItemAtPosition(i);
+            navigateToSelectedQr(playerQrCode);
+        });
     }
 
     @Override
@@ -121,5 +131,15 @@ public class PlayerProfileFragment extends Fragment implements
      */
     private void hideLoadingBar() {
         binding.progressBarBox.setVisibility(View.GONE);
+    }
+
+    /**
+     * Navigates to the selected qr
+     * @param playerQrCode the selected qr code
+     */
+    private void navigateToSelectedQr(PlayerQrCode playerQrCode) {
+        PlayerProfileFragmentDirections.ActionQrCodeViewFromPlayerProfile action =
+                PlayerProfileFragmentDirections.actionQrCodeViewFromPlayerProfile(playerQrCode.retrieveHash());
+        Navigation.findNavController(getView()).navigate(action);
     }
 }
