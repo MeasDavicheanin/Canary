@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_nav_graph"
+    app:startDestination="@id/homeFragment">
+
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="com.cmput301w23t47.canary.view.fragment.HomeFragment"
+        android:label="Home"
+        tools:layout="@layout/fragment_home" >
+        <action
+            android:id="@+id/action_addNewQr"
+            app:destination="@id/addQrActivity" />
+        <action
+            android:id="@+id/action_qrCodeView"
+            app:destination="@id/QRCodeView" />
+    </fragment>
+    <activity
+        android:id="@+id/addQrActivity"
+        android:name="com.cmput301w23t47.canary.view.activity.AddQrActivity"
+        android:label="activity_add_qr"
+        tools:layout="@layout/activity_add_qr" />
+    <fragment
+        android:id="@+id/QRCodeView"
+        android:name="com.cmput301w23t47.canary.view.fragment.QRCodeViewFragment"
+        android:label="QR Code"
+        tools:layout="@layout/fragment_qr_code_view" >
+        <argument
+            android:name="qrHash"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_goToHomeFromQRCodeView"
+            app:destination="@id/homeFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/leaderboardFragment"
+        android:name="com.cmput301w23t47.canary.view.fragment.LeaderboardFragment"
+        android:label="Rank"
+        tools:layout="@layout/fragment_leaderboard" />
+    <fragment
+        android:id="@+id/playerProfileFragment"
+        android:name="com.cmput301w23t47.canary.view.fragment.PlayerProfileFragment"
+        android:label="Profile"
+        tools:layout="@layout/fragment_player_profile" >
+        <action
+            android:id="@+id/action_qrCodeViewFromPlayerProfile"
+            app:destination="@id/QRCodeView" />
+    </fragment>
+</navigation>
