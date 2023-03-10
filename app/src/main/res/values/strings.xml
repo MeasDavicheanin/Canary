@@ -10,8 +10,18 @@
 
 
     <!-- Intent extras -->
+    <string name="intent_qr_code">qr_code</string>
+
+    <string name="intent_qr_name">qr_name</string>
+    <string name="intent_qr_hash">qr_hash</string>
+    <string name="intent_qr_location">qr_location</string>
+    <string name="intent_qr_score">qr_score</string>
+
     <string name="intent_qr_map">intent_qr</string>
+
+
     <string name="intent_recycler_list_map">intent_recycler_list_map</string>
+
     <string name="intent_user_locations_map">intent_user_locations_map</string>
     <string name="intent_location_map">intent_location_map</string>
     <string name="intent_user_map">intent_user_map</string>

@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 
+import com.cmput301w23t47.canary.callback.RecyclerViewInterface;
 import com.cmput301w23t47.canary.model.Qrcodem;
 import com.cmput301w23t47.canary.view.fragment.FragmentMapScreenMapListSearch;
 
@@ -24,13 +25,15 @@ import java.util.ArrayList;
  */
 public class Map_Adapter_RecyclerViews extends RecyclerView.Adapter<Map_Adapter_RecyclerViews.ViewHolder>{
     private static final String TAG = "MapQRLocationListAdapter";
+      private final RecyclerViewInterface recyclerViewInterface;
 
     Context context;
     private ArrayList<Qrcodem> mqrCodes = new ArrayList<>();
     private MapRecyclerClickListener mmapQRLocationListAdapterClickListener;
 
-    public Map_Adapter_RecyclerViews(ArrayList<Qrcodem> qrcodes) {
+    public Map_Adapter_RecyclerViews(ArrayList<Qrcodem> qrcodes, RecyclerViewInterface recyclerViewInterface) {
         this.mqrCodes = qrcodes;
+        this.recyclerViewInterface = recyclerViewInterface;
     }
 
     //could use help dont know what the error is here
@@ -38,10 +41,16 @@ public class Map_Adapter_RecyclerViews extends RecyclerView.Adapter<Map_Adapter_
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.map_list_element_placement, parent, false);
-        final ViewHolder holder = new ViewHolder(view, mmapQRLocationListAdapterClickListener);
+        final ViewHolder holder = new ViewHolder(view, mmapQRLocationListAdapterClickListener,recyclerViewInterface);
         return holder;
     }
-
+    
+    /**
+     * sets the text for the qr name and qr point total
+     * this acts like a
+     * @param holder
+     * @param position
+     */
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
 
@@ -55,12 +64,12 @@ public class Map_Adapter_RecyclerViews extends RecyclerView.Adapter<Map_Adapter_
         return mqrCodes.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         TextView qrname,qrpoint;
 
         MapRecyclerClickListener clickListener;
 
-        public ViewHolder(View itemView, MapRecyclerClickListener clickListener) {
+        public ViewHolder(View itemView, MapRecyclerClickListener clickListener,RecyclerViewInterface recyclerViewInterface){
             super(itemView);
 
             // get the text views
@@ -69,7 +78,18 @@ public class Map_Adapter_RecyclerViews extends RecyclerView.Adapter<Map_Adapter_
             // get the image view
 
             this.clickListener = clickListener;
-            itemView.setOnClickListener(this);
+            itemView.setOnClickListener( new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(recyclerViewInterface != null) {
+                        int pos = getAdapterPosition();
+    
+                        if ( pos != RecyclerView.NO_POSITION ) {
+                            recyclerViewInterface.onItemClicked( pos );
+                        }
+                    }
+                }
+            });
         }
 
         @Override

@@ -7,6 +7,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
 import android.animation.ObjectAnimator;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
@@ -25,6 +26,7 @@ import android.Manifest;
 import android.location.Location;
 
 import com.cmput301w23t47.canary.R;
+import com.cmput301w23t47.canary.callback.RecyclerViewInterface;
 import com.cmput301w23t47.canary.model.Qrcodem;
 import com.cmput301w23t47.canary.model.UserLocation;
 import com.cmput301w23t47.canary.model.WorldQRLIST;
@@ -51,7 +53,7 @@ import static com.cmput301w23t47.canary.Constants.MAPVIEW_BUNDLE_KEY;
  *
  *
  */
-public class FragmentMapScreenMapListSearch extends Fragment implements OnMapReadyCallback, View.OnClickListener {
+public class FragmentMapScreenMapListSearch extends Fragment implements OnMapReadyCallback, View.OnClickListener, RecyclerViewInterface {
 
     //constants
     private static final String TAG = "Map_Activity_Screen_map_and_list";
@@ -117,9 +119,28 @@ public class FragmentMapScreenMapListSearch extends Fragment implements OnMapRea
     
             initDropDownMenuItems();
             initMapSearchRangeCheck();
+         
             
         }
 
+    }
+    
+    //Change activity if item is clicked
+    @Override
+    public void onItemClicked(int position){
+        //
+        Intent intent = new Intent(getActivity(), (QRCODEACTIVITYIDONTKNOWWHERETHISIS) );
+        
+        // if you want to send the whole qr code then use this one
+        intent.putExtra(getString(R.string.intent_qr_code), mSearchResults.get(position));
+        
+        //if you want to break up the intents into seperate data then use this one
+        //intent.putExtra(getString(R.string.intent_qr_name), mSearchResults.get(position).getName());
+        // intent.putExtra( getString(R.string.intent_qr_location), mSearchResults.get(position).getLocation());
+        // intent.putExtra( getString(R.string.intent_qr_hash), mSearchResults.get(position).getQrHash());
+       //  intent.putExtra( getString(R.string.intent_qr_score), mSearchResults.get(position).getScore());
+        
+        startActivity(intent);
     }
 
     @Nullable
@@ -297,7 +318,7 @@ public class FragmentMapScreenMapListSearch extends Fragment implements OnMapRea
         
     }
     private void initMapListRecyclerView() {
-        mMapAdapterRecyclerViews = new Map_Adapter_RecyclerViews(mSearchResults);
+        mMapAdapterRecyclerViews = new Map_Adapter_RecyclerViews(mSearchResults,this);
         mMapListRecyclerView.setAdapter(mMapAdapterRecyclerViews);
         mMapListRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
     }
@@ -366,6 +387,7 @@ public class FragmentMapScreenMapListSearch extends Fragment implements OnMapRea
     @Override
     public void onClick(View v) {
         switch(v.getId()){
+            //did you click on the button to make it full screen
             case R.id.btn_full_screen_map:
                 if(mMapLayoutState == MAP_LAYOUT_STATE_CONTRACTED){
                     expandMapAnimation();
@@ -375,6 +397,7 @@ public class FragmentMapScreenMapListSearch extends Fragment implements OnMapRea
                     mMapLayoutState = MAP_LAYOUT_STATE_CONTRACTED;
                 }
                 break;
+                
         }
     }
     
