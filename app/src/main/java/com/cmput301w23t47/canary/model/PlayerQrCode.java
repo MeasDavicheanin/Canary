@@ -2,6 +2,8 @@ package com.cmput301w23t47.canary.model;
 
 import android.location.Location;
 
+import com.cmput301w23t47.canary.controller.QrCodeController;
+
 import java.util.Date;
 
 
@@ -67,5 +69,22 @@ public class PlayerQrCode {
      */
     public long retrieveScore() {
         return qrCode.getScore();
+    }
+
+    /**
+     * Gets the formatted scan date
+     * @return the formatted string for scan date
+     */
+    public String retrieveDateString() {
+        if (scanDate == null) { return ""; }
+        return QrCodeController.getFormattedDate(scanDate);
+    }
+
+    /**
+     * Retrieves the hash of the qr
+     * @return the hash of the qr
+     */
+    public String retrieveHash() {
+        return qrCode.getHash();
     }
 }

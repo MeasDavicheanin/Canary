@@ -70,6 +70,8 @@ public class Leaderboard {
         return players;
     }
 
+
+
     /**
      * Sets the player list; Also sets the player with max score and QR
      * @param players the list of players

@@ -2,11 +2,13 @@ package com.cmput301w23t47.canary;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
+import androidx.navigation.ui.NavigationUI;
 
 import android.os.Bundle;
 
-import com.cmput301w23t47.canary.controller.NavbarController;
 import com.cmput301w23t47.canary.databinding.ActivityMainBinding;
 import com.cmput301w23t47.canary.view.fragment.HomeFragment;
 import com.cmput301w23t47.canary.view.fragment.LeaderboardFragment;
@@ -17,21 +19,9 @@ import com.cmput301w23t47.canary.view.fragment.SearchFragment;
  * Main Acitvity
  * @author Meharpreet Singh Nanda
  */
-public class MainActivity extends AppCompatActivity implements
-//        UpdatePlayerCallback,
-        NavbarController.NavigateToPage {
-
+public class MainActivity extends AppCompatActivity {
     private ActivityMainBinding binding;
     private AppBarConfiguration appBarConfiguration;
-
-
-    private HomeFragment homeFragment;
-    private LeaderboardFragment leaderboardFragment;
-    private SearchFragment searchFragment;
-    private Fragment activeFragment;
-
-    // TODO: Get the actual username
-    public static String playerUsername = "hpotter";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,9 +29,7 @@ public class MainActivity extends AppCompatActivity implements
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-//        NavController navController = Navigation.findNavController(this, R.id.fragment_container_view_main);
-//        appBarConfiguration = new AppBarConfiguration.Builder(navController.getGraph()).build();
-//        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
+
 
         init(savedInstanceState);
     }
@@ -50,97 +38,27 @@ public class MainActivity extends AppCompatActivity implements
      * Initialization for activity
      */
     private void init(Bundle savedInstanceState) {
-        initFragmentStack();
         initNavbar();
     }
 
     /**
-     * Initializes the fragment stack
-     */
-    private void initFragmentStack() {
-        if (homeFragment == null) {
-            homeFragment = new HomeFragment();
-            leaderboardFragment = new LeaderboardFragment(playerUsername);
-            searchFragment = new SearchFragment();
-        }
-        getSupportFragmentManager().beginTransaction()
-                .setReorderingAllowed(true)
-                .add(R.id.fragment_container_view_main, homeFragment, HomeFragment.TAG)
-                .add(R.id.fragment_container_view_main, leaderboardFragment, LeaderboardFragment.TAG)
-                .add(R.id.fragment_container_view_main, searchFragment, SearchFragment.TAG)
-                .add(R.id.fragment_container_view_main, homeFragment, HomeFragment.TAG)
-                .add(R.id.fragment_container_view_main, leaderboardFragment, LeaderboardFragment.TAG)
-                .hide(leaderboardFragment)
-                .hide(homeFragment)
-                .commit();
-        activeFragment = searchFragment;
-    }
-
-    /**
-     * Initializes the navbar
+     * Initializes the navbar (bottom and top)
      */
     private void initNavbar() {
-        // add listener for navbar
-        binding.bottomNavigationLayout.bottomNavigation.setOnItemSelectedListener(item -> {
-            NavbarController.handleSelection(item, this);
-            return true;
-        });
-        // ignore if option reselected
-        binding.bottomNavigationLayout.bottomNavigation.setOnItemReselectedListener(item -> {});
-        // configure selected option; calls the itemSelectedCallback function
-        binding.bottomNavigationLayout.bottomNavigation.setSelectedItemId(R.id.page_home);
-    }
+        // Bottom navigation
+        NavController navController = Navigation.findNavController(this, R.id.fragment_container_view_main);
+        NavigationUI.setupWithNavController(binding.bottomNavigationLayout.bottomNavigation, navController);
 
-    /**
-     * Navigates to the leaderboard page
-     */
-    @Override
-    public void navigateToHome() {
-        getSupportFragmentManager().beginTransaction()
-                .setReorderingAllowed(true)
-                .hide(activeFragment)
-                .show(homeFragment)
-                .commit();
-        activeFragment = homeFragment;
-    }
-
-
-    @Override
-    public void navigateToSearch() {
-        getSupportFragmentManager().beginTransaction()
-                .setReorderingAllowed(true)
-                .add(R.id.fragment_container_view_main, homeFragment, homeFragment.TAG)
-                .add(R.id.fragment_container_view_main, leaderboardFragment,leaderboardFragment.TAG)
-                .add(R.id.fragment_container_view_main, searchFragment, searchFragment.TAG)
-                .hide(leaderboardFragment)
-                .hide(homeFragment)
-                .commit();
-        activeFragment = homeFragment;
-        activeFragment = searchFragment;
-    }
-
-    /**
-     * Navigates to the leaderboard page
-     */
-    @Override
-    public void navigateToLeaderboard() {
-        getSupportFragmentManager().beginTransaction()
-                .setReorderingAllowed(true)
-                .hide(activeFragment)
-                .show(leaderboardFragment)
-                .commit();
-        activeFragment = leaderboardFragment;
+        // top navigation
+        setSupportActionBar(binding.toolbar);
+        appBarConfiguration = new AppBarConfiguration.Builder(navController.getGraph()).build();
+        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
     }
 
     @Override
-    public void navigateToPlayers() {
-
+    public boolean onSupportNavigateUp() {
+        NavController navController = Navigation.findNavController(this, R.id.fragment_container_view_main);
+        return NavigationUI.navigateUp(navController, appBarConfiguration)
+                || super.onSupportNavigateUp();
     }
-
-    @Override
-    public void navigateToProfile() {
-
-    }
-
-
 }

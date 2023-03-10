@@ -1,8 +1,11 @@
 package com.cmput301w23t47.canary.view.fragment;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -10,7 +13,9 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.cmput301w23t47.canary.MainActivity;
-import com.cmput301w23t47.canary.callback.UpdatePlayerQrCallback;
+import com.cmput301w23t47.canary.R;
+import com.cmput301w23t47.canary.callback.GetPlayerQrCallback;
+import com.cmput301w23t47.canary.callback.OperationStatusCallback;
 import com.cmput301w23t47.canary.controller.FirestorePlayerController;
 import com.cmput301w23t47.canary.controller.LocationController;
 import com.cmput301w23t47.canary.databinding.FragmentQrCodeViewBinding;
@@ -21,12 +26,13 @@ import java.util.Locale;
 /**
  * Fragment to view the QR Code page
  */
-public class QRCodeViewFragment extends Fragment implements UpdatePlayerQrCallback {
+public class QRCodeViewFragment extends Fragment implements GetPlayerQrCallback, OperationStatusCallback {
     private static final String TAG = "QRCodeViewFragment";
 
     private PlayerQrCode playerQrCode;
 
     private FragmentQrCodeViewBinding binding;
+    AlertDialog.Builder builder;
 
     private final FirestorePlayerController firestorePlayerController = new FirestorePlayerController();
 
@@ -115,7 +121,7 @@ public class QRCodeViewFragment extends Fragment implements UpdatePlayerQrCallba
     private void init() {
         showLoadingBar();
         String qrHash = QRCodeViewFragmentArgs.fromBundle(getArguments()).getQrHash();
-        firestorePlayerController.getPlayerQr(qrHash, MainActivity.playerUsername, this);
+        firestorePlayerController.getPlayerQr(qrHash, this);
     }
 
     @Override
@@ -123,6 +129,7 @@ public class QRCodeViewFragment extends Fragment implements UpdatePlayerQrCallba
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         binding = FragmentQrCodeViewBinding.inflate(inflater, container, false);
+        builder = new AlertDialog.Builder(getContext());
         initUi();
         return binding.getRoot();
     }
@@ -132,7 +139,12 @@ public class QRCodeViewFragment extends Fragment implements UpdatePlayerQrCallba
      */
     private void initUi() {
         binding.qrDeleteIcon.setOnClickListener(view -> {
-            deleteQr();
+            builder.setMessage("Are you sure you want to delete this QR. This will update your score")
+                    .setTitle("Delete QR")
+                    .setCancelable(false)
+                    .setPositiveButton("Yes", (DialogInterface dialog, int id) -> {
+                        deleteQr();
+                    }).create().show();
         });
     }
 
@@ -140,7 +152,8 @@ public class QRCodeViewFragment extends Fragment implements UpdatePlayerQrCallba
         if (playerQrCode == null) {
             return;
         }
-
+        showLoadingBar();
+        firestorePlayerController.deleteQrFromPlayer(playerQrCode, this);
     }
 
     @Override
@@ -150,8 +163,37 @@ public class QRCodeViewFragment extends Fragment implements UpdatePlayerQrCallba
     }
 
     @Override
-    public void updatePlayerQr(PlayerQrCode playerQrCode) {
+    public void getPlayerQr(PlayerQrCode playerQrCode) {
         this.playerQrCode = playerQrCode;
         updateFragmentData();
+    }
+
+    @Override
+    public void operationStatus(boolean status) {
+        hideLoadingBar();
+        if (status) {
+            new AlertDialog.Builder(getContext())
+                    .setMessage("QR Deleted")
+                    .setTitle("QR Deleted successfully")
+                    .setCancelable(false)
+                    .setPositiveButton("Continue", (DialogInterface dialog, int id) -> {
+                        returnToHome();
+                    }).create().show();
+        } else {
+            new AlertDialog.Builder(getContext())
+                    .setMessage("Request failed")
+                    .setTitle("QR couldn't be Deleted. Try again later")
+                    .setCancelable(false)
+                    .setPositiveButton("Continue", (DialogInterface dialog, int id) -> {
+                        returnToHome();
+                    }).create().show();
+        }
+    }
+
+    /**
+     * Returns to the home page after deleting a qr
+     */
+    protected void returnToHome() {
+        Navigation.findNavController(getView()).navigate(R.id.action_goToHomeFromQRCodeView);
     }
 }

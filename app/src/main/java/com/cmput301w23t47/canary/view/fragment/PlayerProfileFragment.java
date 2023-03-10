@@ -1,21 +1,20 @@
 package com.cmput301w23t47.canary.view.fragment;
 
-import android.app.ProgressDialog;
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
 import android.graphics.Color;
 import android.os.Bundle;
 
 import com.amulyakhare.textdrawable.TextDrawable;
 
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.cmput301w23t47.canary.callback.UpdatePlayerCallback;
-import com.cmput301w23t47.canary.controller.FirestoreController;
+import com.cmput301w23t47.canary.callback.GetPlayerCallback;
+import com.cmput301w23t47.canary.controller.FirestorePlayerController;
 import com.cmput301w23t47.canary.databinding.FragmentPlayerProfileBinding;
 import com.cmput301w23t47.canary.model.Player;
 import com.cmput301w23t47.canary.model.PlayerQrCode;
@@ -25,22 +24,18 @@ import java.util.ArrayList;
 
 
 public class PlayerProfileFragment extends Fragment implements
-        UpdatePlayerCallback {
+        GetPlayerCallback {
+
+    public static final String TAG = "PlayerProfileFragment";
 
     private FragmentPlayerProfileBinding binding;
-    private FirestoreController firestoreController;
-    private ProgressDialog progressDialog;
+    private FirestorePlayerController firestorePlayerController = new FirestorePlayerController();
     private Player player;
     private QRCodeListAdapter qrCodeListAdapter;
     private static final String progressBarTitle = "Loading Player Profile";
     private static final String progressBarMessage = "Should take only a moment...";
 
     public PlayerProfileFragment() {}
-
-    public PlayerProfileFragment(Player player){
-        this.player=player;
-    }
-
 
     public static PlayerProfileFragment newInstance() {
         PlayerProfileFragment fragment = new PlayerProfileFragment();
@@ -61,31 +56,32 @@ public class PlayerProfileFragment extends Fragment implements
         return binding.getRoot();
     }
 
+    /**
+     * Initializes the ui for the page
+     */
     private void init(){
-        firestoreController = new FirestoreController();
-        progressDialog = new ProgressDialog(getContext());
-        firestoreController.getPlayer(player.getUniquePlayerId(), this);
+        showLoadingBar();
+        firestorePlayerController.getCompleteCurrentPlayer(this);
         qrCodeListAdapter = new QRCodeListAdapter(getContext(), new ArrayList<>());
         binding.qrsScannedList.setAdapter(qrCodeListAdapter);
+        binding.qrsScannedList.setOnItemClickListener((adapterView, view, i, l) -> {
+            PlayerQrCode playerQrCode = (PlayerQrCode) adapterView.getItemAtPosition(i);
+            navigateToSelectedQr(playerQrCode);
+        });
     }
 
     @Override
     public void onHiddenChanged(boolean hidden){
         if(!hidden && player == null){
-            firestoreController.getPlayer(player.getUniquePlayerId(),this);
-            initProgressBar();
+            firestorePlayerController.getCompleteCurrentPlayer(this);
+            showLoadingBar();
         }
-    }
-
-    private void initProgressBar() {
-        progressDialog.setTitle(progressBarTitle);
-        progressDialog.setMessage(progressBarMessage);
-        progressDialog.show();
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        player = null;
         binding = null;
     }
 
@@ -97,29 +93,53 @@ public class PlayerProfileFragment extends Fragment implements
             binding.playerImage.setImageDrawable(null);
             TextDrawable drawable = TextDrawable.builder()
                     .buildRound(firstLetter, Color.BLACK);
-            Bitmap bitmap = Bitmap.createBitmap(
-                    drawable.getIntrinsicWidth(),
-                    drawable.getIntrinsicHeight(),
-                    Bitmap.Config.ARGB_8888);
-
-            Canvas canvas = new Canvas(bitmap);
-            drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
-            drawable.draw(canvas);
-            binding.playerImage.setImageBitmap(bitmap);
+            binding.playerImage.setImageDrawable(drawable);
         }
     }
 
-
-    @Override
-    public void updatePlayer(Player player) {
-        this.player = player;
+    private void updateView() {
+        if (player == null) {
+            return;
+        }
         updatePlayerImage(this.player);
         binding.playerUsername.setText(player.getUsername());
         binding.playerScore.setText(Long.toString(player.getScore()));
         binding.playerQrsScanned.setText(Integer.toString(player.getQrCodes().size()));
         binding.highestQrScore.setText(Long.toString(player.getHighestQr()));
         binding.lowestQrScore.setText(Long.toString(player.getLowestQr()));
-        ArrayList<PlayerQrCode> playerQrCodes = qrCodeListAdapter.getPlayerQrCodesList();
+        qrCodeListAdapter.setQrList(this.player.getQrCodes());
         qrCodeListAdapter.notifyDataSetChanged();
+        hideLoadingBar();
+    }
+
+
+    @Override
+    public void getPlayer(Player player) {
+        this.player = player;
+        updateView();
+    }
+
+    /**
+     * Shows the loading bar
+     */
+    private void showLoadingBar() {
+        binding.progressBarBox.setVisibility(View.VISIBLE);
+    }
+
+    /**
+     * Hides the loading bar
+     */
+    private void hideLoadingBar() {
+        binding.progressBarBox.setVisibility(View.GONE);
+    }
+
+    /**
+     * Navigates to the selected qr
+     * @param playerQrCode the selected qr code
+     */
+    private void navigateToSelectedQr(PlayerQrCode playerQrCode) {
+        PlayerProfileFragmentDirections.ActionQrCodeViewFromPlayerProfile action =
+                PlayerProfileFragmentDirections.actionQrCodeViewFromPlayerProfile(playerQrCode.retrieveHash());
+        Navigation.findNavController(getView()).navigate(action);
     }
 }

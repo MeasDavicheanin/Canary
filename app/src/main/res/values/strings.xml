@@ -24,4 +24,6 @@
     <string name="qrs_scanned">QRs Scanned</string>
     <string name="highest_qr">Highest QR</string>
     <string name="lowest_qr">Lowest QR</string>
+    <string name="title_activity_test">TestActivity</string>
+    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
 </resources>

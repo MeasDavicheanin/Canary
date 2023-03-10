@@ -12,13 +12,11 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.cmput301w23t47.canary.MainActivity;
-import com.cmput301w23t47.canary.R;
 import com.cmput301w23t47.canary.callback.DoesResourceExistCallback;
 import com.cmput301w23t47.canary.callback.OperationStatusCallback;
 import com.cmput301w23t47.canary.controller.FirestorePlayerController;
@@ -29,7 +27,6 @@ import com.cmput301w23t47.canary.model.PlayerQrCode;
 import com.cmput301w23t47.canary.model.QrCode;
 import com.cmput301w23t47.canary.model.Snapshot;
 import com.cmput301w23t47.canary.view.contract.AddNewQrContract;
-import com.cmput301w23t47.canary.view.contract.ScanQrContract;
 import com.cmput301w23t47.canary.view.contract.SnapshotContract;
 
 import java.util.Date;
@@ -72,7 +69,7 @@ public class QrCapturePreferenceFragment extends Fragment implements
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         qrCode.setHash(QrCapturePreferenceFragmentArgs.fromBundle(getArguments()).getQrHash());
-        firestorePlayerController.doesPlayerHaveQr(qrCode.getHash(), MainActivity.playerUsername, this);
+        firestorePlayerController.doesCurrentPlayerHaveQr(qrCode.getHash(), this);
         binding.saveLocationCheckbox.setChecked(saveLocation);
     }
 
@@ -112,8 +109,8 @@ public class QrCapturePreferenceFragment extends Fragment implements
         hideLoadingBar();
         if (exists) {
             // if qr with the given hash exist, show an alert
-            builder.setMessage(R.string.qr_exists_message)
-                    .setTitle(R.string.qr_exists_title)
+            builder.setMessage("The selected QR is deleted")
+                    .setTitle("QR Code Deleted")
                     .setCancelable(false)
                     .setPositiveButton("Continue", (DialogInterface dialog, int id) -> {
                         // TODO: handle already scanned QR
@@ -144,6 +141,7 @@ public class QrCapturePreferenceFragment extends Fragment implements
     }
 
     private void receiveSnapshot(Bitmap image) {
+        showLoadingBar();
         persistQr(image);
     }
 
@@ -157,7 +155,7 @@ public class QrCapturePreferenceFragment extends Fragment implements
         if (snapshot != null) {
             playerQrCode.setSnapshot(new Snapshot(snapshot));
         }
-        firestorePlayerController.addQrToPlayer(playerQrCode, MainActivity.playerUsername, this);
+        firestorePlayerController.addQrToCurrentPlayer(playerQrCode, this);
     }
 
     private void captureSnapshot() {

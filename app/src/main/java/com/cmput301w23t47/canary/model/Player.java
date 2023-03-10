@@ -6,6 +6,7 @@ import java.util.ArrayList;
 
 /**
  * Class for Player
+ * @author Meharpreet Singh Nanda
  */
 public class Player {
     // username of the player
@@ -92,7 +93,14 @@ public class Player {
         this.playerImage = playerImage;
     }
 
+    /**
+     * Gets the highest qr score
+     * @return the highest qr score
+     */
     public long getHighestQr(){
+        if (qrCodes.isEmpty()) {
+            return 0;
+        }
         long highest = 0;
         for (PlayerQrCode qr: qrCodes){
             long qrScore = qr.getQrCode().getScore();
@@ -101,7 +109,15 @@ public class Player {
         }
         return highest;
     }
+
+    /**
+     * Gets the lowest qr
+     * @return the lowest qr
+     */
     public long getLowestQr(){
+        if (qrCodes.isEmpty()) {
+            return 0;
+        }
         long lowest = Long.MAX_VALUE;
         for (PlayerQrCode qr: qrCodes){
             long qrScore = qr.getQrCode().getScore();
@@ -111,4 +127,11 @@ public class Player {
         return lowest;
     }
 
+    /**
+     * Gets the string to draw for the player
+     * @return the first char of the username
+     */
+    public String retrieveStringToDraw() {
+        return String.valueOf(username.charAt(0));
+    }
 }
