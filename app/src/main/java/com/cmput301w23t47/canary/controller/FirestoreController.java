@@ -7,11 +7,10 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 
 import com.cmput301w23t47.canary.callback.UpdateLeaderboardCallback;
-import com.cmput301w23t47.canary.callback.UpdatePlayerCallback;
+import com.cmput301w23t47.canary.callback.GetPlayerCallback;
 import com.cmput301w23t47.canary.model.Leaderboard;
 import com.cmput301w23t47.canary.model.LeaderboardPlayer;
 import com.cmput301w23t47.canary.model.Player;
-import com.cmput301w23t47.canary.model.QrCode;
 import com.cmput301w23t47.canary.repository.PlayerQrCodeRepository;
 import com.cmput301w23t47.canary.repository.PlayerRepository;
 import com.cmput301w23t47.canary.repository.QrCodeRepository;
@@ -30,8 +29,8 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
 import com.google.firebase.installations.FirebaseInstallations;
+
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
@@ -111,6 +110,18 @@ public class FirestoreController {
     }
 
     /**
+     * Waits for the General task to complete
+     * @param task the task to wait for
+     */
+    protected <K extends Object> void waitForGeneralTask(Task<K> task) {
+        try {
+            Tasks.await(task);
+        } catch (ExecutionException | InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
      * Waits for the document snapshot task to complete
      * @param referenceTask the document reference object
      */
@@ -135,6 +146,7 @@ public class FirestoreController {
                             if (document.exists()) {
                                 Log.d(TAG, "Player document already exists");
                             } else {
+                                player.setUniquePlayerId(installationId);
                                 Map<String, Object> playerData = new HashMap<>();
                                 playerData.put("username", player.getUsername());
                                 playerData.put("firstName" , player.getFirstName());
@@ -185,7 +197,9 @@ public class FirestoreController {
         }).addOnFailureListener(failureListener);
     }
 
-
+    /**
+     * Gets the unique id for the player
+     */
     public static void identifyPlayer(OnSuccessListener<String> successListener, OnFailureListener failureListener) {
         FirebaseInstallations firebaseInstallations = FirebaseInstallations.getInstance();
         firebaseInstallations.getId().addOnSuccessListener(installationId -> {
@@ -206,24 +220,35 @@ public class FirestoreController {
     }
 
     /**
+     * Gets the doc id for the current player
+     * @return the doc if for player
+     */
+    protected String identifyPlayer() {
+        FirebaseInstallations firebaseInstallations = FirebaseInstallations.getInstance();
+        Task<String> idTask = firebaseInstallations.getId();
+        waitForGeneralTask(idTask);
+        return idTask.getResult();
+    }
+
+    /**
      * Gets the Player from db
      * @param playerId the id of the player
      */
-    public void getPlayer(String playerId, UpdatePlayerCallback callback) {
+    public void getPlayer(String playerId, GetPlayerCallback callback) {
         Handler handler = new Handler();
         new Thread(() -> {
             // get Player Repo
             Task<DocumentSnapshot> playerTask = players.document(playerId).get();
             PlayerRepository playerRepository = waitForTask(playerTask, PlayerRepository.class);
-            Log.d(TAG, "getPlayer: " + playerRepository.toString());
             // Get associated QR Repos
             for (PlayerQrCodeRepository playerQrCodesRepo : playerRepository.getQrCodes()) {
                 QrCodeRepository qrCodeRepo = waitForTask(playerQrCodesRepo.getQrCode().get(), QrCodeRepository.class);
-                playerQrCodesRepo.setParsedQrCode(qrCodeRepo.getParsedQrCode());
+                // TODO: Fix the snapshot here
+                playerQrCodesRepo.setParsedQrCode(qrCodeRepo.retrieveParsedQrCode(), null);
             }
             Player player = playerRepository.retrieveParsedPlayer();
             handler.post(() -> {
-                callback.updatePlayer(player);
+                callback.getPlayer(player);
             });
         }).start();
     }
@@ -321,11 +346,11 @@ public class FirestoreController {
 
     /**
      * Gets the player Repo
-     * @param username
+     * @param playerDocId
      * @return
      */
-    protected PlayerRepository getPlayerRepo(String username) {
-        Task<DocumentSnapshot> playerTask = players.document(username).get();
+    protected PlayerRepository getPlayerRepo(String playerDocId) {
+        Task<DocumentSnapshot> playerTask = players.document(playerDocId).get();
         return waitForTask(playerTask, PlayerRepository.class);
     }
 

@@ -5,13 +5,18 @@ import android.util.Log;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 /**
  * Util controller for interacting with the QR Code
+ * @author Meharpreet Singh Nanda
  */
-public class QrCodeUtil {
+public class QrCodeController {
+    private static final String dateFormat = "dd MMM yyyy";
+    private static final SimpleDateFormat simpleDateFormat = new SimpleDateFormat(dateFormat, Locale.CANADA);
+
     /**
      * Gets the Hash for the QR
      * Uses the SHA-256 algorithm as the hashing algorithm
@@ -29,11 +34,20 @@ public class QrCodeUtil {
     }
 
     public static String getHashStrForQr(String qrVal) {
-        byte[] qrHash = QrCodeUtil.getHashForQr(qrVal);
+        byte[] qrHash = QrCodeController.getHashForQr(qrVal);
         StringBuilder str = new StringBuilder();
         for (int i = 0; i < qrHash.length; i++) {
             str.append(qrHash[i]);
         }
         return str.toString();
+    }
+
+    /**
+     * Gets the formatted Date time
+     * @param date the date to format
+     * @return the formatted str for date
+     */
+    public static String getFormattedDate(Date date) {
+        return simpleDateFormat.format(date);
     }
 }

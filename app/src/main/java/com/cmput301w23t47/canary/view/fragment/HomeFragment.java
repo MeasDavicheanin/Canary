@@ -12,22 +12,30 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.cmput301w23t47.canary.R;
-import com.cmput301w23t47.canary.controller.QrCodeUtil;
+import com.cmput301w23t47.canary.callback.GetPlayerCallback;
+import com.cmput301w23t47.canary.controller.FirestorePlayerController;
+import com.cmput301w23t47.canary.controller.SnapshotController;
 import com.cmput301w23t47.canary.databinding.FragmentHomeBinding;
-import com.cmput301w23t47.canary.view.contract.QrCodeContract;
-import com.cmput301w23t47.canary.view.contract.SnapshotContract;
+import com.cmput301w23t47.canary.model.Player;
+import com.cmput301w23t47.canary.view.contract.AddNewQrContract;
+
+import java.util.Locale;
 
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link HomeFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class HomeFragment extends Fragment {
+public class HomeFragment extends Fragment implements
+        GetPlayerCallback {
     public static final String TAG = "HomeFragment";
 
     private ActivityResultLauncher<Object> qrActivityLauncher;
-
     private FragmentHomeBinding binding;
+    private final FirestorePlayerController firestorePlayerController = new FirestorePlayerController();
+
+    private Player player;
+
 
     public HomeFragment() {
         // Required empty public constructor
@@ -62,51 +70,76 @@ public class HomeFragment extends Fragment {
      * Initialization for fragment
      */
     private void init() {
+        showLoadingBar();
         // add listener for scanQr button
         binding.scanQr.setOnClickListener(view -> {
             launchScanQrActivity();
         });
 
-        // register contract for QR Activity
-        qrActivityLauncher = registerForActivityResult(new QrCodeContract(),
-                this::receivedQrCode);
+        // register contract for new QR Activity
+        qrActivityLauncher = registerForActivityResult(new AddNewQrContract(),
+                this::receiveAddedQrCode);
+        // get player model
+        firestorePlayerController.getCompleteCurrentPlayer(this);
     }
 
-    /**
-     * Receives the QR Code scanned
-     * @param qrCodeVal (String): The raw value of the scanned QR Code
-     */
-    private void receivedQrCode(String qrCodeVal) {
-        if (qrCodeVal == null) {
-            // value not received
-            return;
+    @Override
+    public void onHiddenChanged(boolean hidden){
+        if(!hidden && player == null){
+            firestorePlayerController.getCompleteCurrentPlayer(this);
+            showLoadingBar();
         }
-        byte[] qrHash = QrCodeUtil.getHashForQr(qrCodeVal);
-        StringBuilder str = new StringBuilder();
-        for (int i = 0; i < qrHash.length; i++) {
-            str.append(qrHash[i]);
-        }
-        binding.textView.setText(qrCodeVal + "\n " + str);
     }
 
     /**
      * Launches the Scan Qr Activity
      */
     private void launchScanQrActivity() {
-        Navigation.findNavController(getView()).navigate(R.id.action_addNewQr);
-//        registerForActivityResult(new SnapshotContract(),
-//                result -> {
-//                    Log.d(TAG, "launchScanQrActivity: Rec bitmap" + result.toString());
-//                }).launch(null);
+        qrActivityLauncher.launch(null);
     }
-//
-//    /**
-//     * Call back for updated player
-//     * @param player The player object
-//     */
-//    public void updatePlayer(Player player) {
-//        binding.textView.setText(String.format("%s %s %d", player.getFirstName(),
-//                player.getLastName(), player.getQrCodes().size()));
-//
-//    }
+
+    private void receiveAddedQrCode(String qrHash) {
+        HomeFragmentDirections.ActionQrCodeView action = HomeFragmentDirections.actionQrCodeView(qrHash);
+        Navigation.findNavController(getView()).navigate(action);
+    }
+
+    /**
+     * Shows the loading bar
+     */
+    private void showLoadingBar() {
+        binding.progressBarLayout.progressBarBox.setVisibility(View.VISIBLE);
+    }
+
+    /**
+     * Hides the loading bar
+     */
+    private void hideLoadingBar() {
+        binding.progressBarLayout.progressBarBox.setVisibility(View.GONE);
+    }
+
+    /**
+     * Called when player object is available
+     * @param player the player model
+     */
+    @Override
+    public void getPlayer(Player player) {
+        this.player = player;
+        updatePlayerInfo();
+    }
+
+    /**
+     * Updates the player info on the UI
+     */
+    private void updatePlayerInfo() {
+        if (player == null) {
+            return;
+        }
+        binding.playerStats.playerUsername.setText(player.getUsername());
+        binding.playerStats.playerScore.setText(String.format(Locale.CANADA, "%d", player.getScore()));
+        binding.playerStats.playerQrsScanned.setText(String.format(Locale.CANADA, "%d", player.getQrCodes().size()));
+        binding.playerStats.highestQrScore.setText(String.format(Locale.CANADA, "%d", player.getHighestQr()));
+        binding.playerStats.lowestQrScore.setText(String.format(Locale.CANADA, "%d", player.getLowestQr()));
+        binding.playerStats.playerImage.setImageDrawable(SnapshotController.getDrawableForString(player.retrieveStringToDraw()));
+        hideLoadingBar();
+    }
 }

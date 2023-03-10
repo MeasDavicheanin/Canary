@@ -2,16 +2,10 @@ package com.cmput301w23t47.canary.view.activity;
 
 import android.os.Bundle;
 
-import com.cmput301w23t47.canary.controller.QrCodeUtil;
 import com.cmput301w23t47.canary.databinding.ActivityAddQrBinding;
-import com.cmput301w23t47.canary.view.contract.QrCodeContract;
-import com.google.android.material.snackbar.Snackbar;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.appcompat.app.AppCompatActivity;
-
-import android.util.Log;
-import android.view.View;
 
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;

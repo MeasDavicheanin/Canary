@@ -1,38 +1,35 @@
 package com.cmput301w23t47.canary.view.fragment;
 
+import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 
 import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.cmput301w23t47.canary.MainActivity;
-import com.cmput301w23t47.canary.R;
 import com.cmput301w23t47.canary.callback.DoesResourceExistCallback;
 import com.cmput301w23t47.canary.callback.OperationStatusCallback;
 import com.cmput301w23t47.canary.controller.FirestorePlayerController;
-import com.cmput301w23t47.canary.controller.FirestoreQrController;
 import com.cmput301w23t47.canary.controller.RandomNameGenerator;
 import com.cmput301w23t47.canary.controller.ScoreCalculator;
 import com.cmput301w23t47.canary.databinding.FragmentQrCapturePreferenceBinding;
 import com.cmput301w23t47.canary.model.PlayerQrCode;
 import com.cmput301w23t47.canary.model.QrCode;
 import com.cmput301w23t47.canary.model.Snapshot;
-import com.cmput301w23t47.canary.view.contract.QrCodeContract;
+import com.cmput301w23t47.canary.view.contract.AddNewQrContract;
 import com.cmput301w23t47.canary.view.contract.SnapshotContract;
-import com.mifmif.common.regex.Main;
 
+import java.util.Date;
 import java.util.Locale;
 
 /**
@@ -72,7 +69,7 @@ public class QrCapturePreferenceFragment extends Fragment implements
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         qrCode.setHash(QrCapturePreferenceFragmentArgs.fromBundle(getArguments()).getQrHash());
-        firestorePlayerController.doesPlayerHaveQr(qrCode.getHash(), MainActivity.playerUsername, this);
+        firestorePlayerController.doesCurrentPlayerHaveQr(qrCode.getHash(), this);
         binding.saveLocationCheckbox.setChecked(saveLocation);
     }
 
@@ -85,20 +82,39 @@ public class QrCapturePreferenceFragment extends Fragment implements
         binding.takeSnap.setOnClickListener(view -> {
             captureSnapshot();
         });
+        binding.noSnap.setOnClickListener(view -> {
+            persistQr(null);
+        });
 
         builder = new AlertDialog.Builder(getContext());
+        showLoadingBar();
+    }
+
+    /**
+     * Shows the loading bar
+     */
+    private void showLoadingBar() {
+        binding.progressBarBox.setVisibility(View.VISIBLE);
+    }
+
+    /**
+     * Hides the loading bar
+     */
+    private void hideLoadingBar() {
+        binding.progressBarBox.setVisibility(View.GONE);
     }
 
     @Override
     public void doesResourceExists(boolean exists) {
+        hideLoadingBar();
         if (exists) {
             // if qr with the given hash exist, show an alert
-            builder.setMessage(R.string.qr_exists_message)
-                    .setTitle(R.string.qr_exists_title)
+            builder.setMessage("The selected QR is deleted")
+                    .setTitle("QR Code Deleted")
                     .setCancelable(false)
                     .setPositiveButton("Continue", (DialogInterface dialog, int id) -> {
                         // TODO: handle already scanned QR
-                        getActivity().finish();
+                        returnToQrCodePage();
                     }).create().show();
         } else {
             RandomNameGenerator nameGenerator = new RandomNameGenerator();
@@ -106,6 +122,14 @@ public class QrCapturePreferenceFragment extends Fragment implements
             qrCode.setScore(ScoreCalculator.calculateScore(qrCode.getHash()));
             updateUi();
         }
+    }
+
+    public void returnToQrCodePage() {
+        Intent intent = new Intent();
+        intent.putExtra(AddNewQrContract.RESPONSE_TAG, qrCode.getHash());
+        Activity activity = getActivity();
+        activity.setResult(Activity.RESULT_OK, intent);
+        activity.finish();
     }
 
     /**
@@ -117,8 +141,8 @@ public class QrCapturePreferenceFragment extends Fragment implements
     }
 
     private void receiveSnapshot(Bitmap image) {
+        showLoadingBar();
         persistQr(image);
-//        returnFromActivity(image);
     }
 
     /**
@@ -126,17 +150,12 @@ public class QrCapturePreferenceFragment extends Fragment implements
      * @param snapshot The snapshot of qr
      */
     private void persistQr(Bitmap snapshot) {
-        PlayerQrCode playerQrCode = new PlayerQrCode(qrCode);
+        PlayerQrCode playerQrCode = new PlayerQrCode(qrCode, new Date());
         // TODO: Get location
-        playerQrCode.setSnapshot(new Snapshot(snapshot));
-        firestorePlayerController.addQrToPlayer(playerQrCode, MainActivity.playerUsername, this);
-    }
-
-    private void returnFromActivity(Bitmap image) {
-        PlayerQrCode playerQrCode = new PlayerQrCode(qrCode);
-        playerQrCode.setSnapshot(new Snapshot(image));
-        Intent intent = new Intent();
-        intent.putExtra(QrCodeContract.RESPONSE_TAG, playerQrCode);
+        if (snapshot != null) {
+            playerQrCode.setSnapshot(new Snapshot(snapshot));
+        }
+        firestorePlayerController.addQrToCurrentPlayer(playerQrCode, this);
     }
 
     private void captureSnapshot() {
@@ -145,6 +164,7 @@ public class QrCapturePreferenceFragment extends Fragment implements
 
     @Override
     public void operationStatus(boolean status) {
-        Log.d(TAG, "operationStatus: Done");
+        // QR Persisted, go back
+        returnToQrCodePage();
     }
 }

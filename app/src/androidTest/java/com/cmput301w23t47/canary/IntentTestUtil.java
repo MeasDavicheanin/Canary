@@ -1,14 +1,12 @@
 package com.cmput301w23t47.canary;
 
 import android.app.Activity;
-import android.app.Instrumentation;
 import android.content.Intent;
 
 
 import android.app.Instrumentation.ActivityResult;
 
-import com.cmput301w23t47.canary.view.activity.ScanQRCodeActivity;
-import com.cmput301w23t47.canary.view.contract.QrCodeContract;
+import com.cmput301w23t47.canary.view.contract.ScanQrContract;
 
 /**
  * Util Class for Intent testing
@@ -23,7 +21,7 @@ public class IntentTestUtil {
      */
     public static ActivityResult getMockResultForScanQrCodeActivity() {
         Intent result = new Intent();
-        result.putExtra(QrCodeContract.RESPONSE_TAG, scanQrCodeResult);
+        result.putExtra(ScanQrContract.RESPONSE_TAG, scanQrCodeResult);
         return new ActivityResult(Activity.RESULT_OK, result);
     }
 }

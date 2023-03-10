@@ -5,9 +5,6 @@ import android.os.Handler;
 import com.cmput301w23t47.canary.callback.DoesResourceExistCallback;
 import com.cmput301w23t47.canary.callback.GetPlayersScannedQrCallBack;
 import com.cmput301w23t47.canary.model.QrCode;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 

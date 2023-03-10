@@ -8,13 +8,13 @@
     <fragment
         android:id="@+id/homeFragment"
         android:name="com.cmput301w23t47.canary.view.fragment.HomeFragment"
-        android:label="fragment_home"
+        android:label="Home"
         tools:layout="@layout/fragment_home" >
         <action
             android:id="@+id/action_addNewQr"
             app:destination="@id/addQrActivity" />
         <action
-            android:id="@+id/action_homeFragment_to_QRCodeView"
+            android:id="@+id/action_qrCodeView"
             app:destination="@id/QRCodeView" />
     </fragment>
     <activity
@@ -24,7 +24,28 @@
         tools:layout="@layout/activity_add_qr" />
     <fragment
         android:id="@+id/QRCodeView"
-        android:name="com.cmput301w23t47.canary.view.fragment.QRCodeView"
-        android:label="fragment_qr_code_view"
-        tools:layout="@layout/fragment_qr_code_view" />
+        android:name="com.cmput301w23t47.canary.view.fragment.QRCodeViewFragment"
+        android:label="QR Code"
+        tools:layout="@layout/fragment_qr_code_view" >
+        <argument
+            android:name="qrHash"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_goToHomeFromQRCodeView"
+            app:destination="@id/homeFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/leaderboardFragment"
+        android:name="com.cmput301w23t47.canary.view.fragment.LeaderboardFragment"
+        android:label="Rank"
+        tools:layout="@layout/fragment_leaderboard" />
+    <fragment
+        android:id="@+id/playerProfileFragment"
+        android:name="com.cmput301w23t47.canary.view.fragment.PlayerProfileFragment"
+        android:label="Profile"
+        tools:layout="@layout/fragment_player_profile" >
+        <action
+            android:id="@+id/action_qrCodeViewFromPlayerProfile"
+            app:destination="@id/QRCodeView" />
+    </fragment>
 </navigation>

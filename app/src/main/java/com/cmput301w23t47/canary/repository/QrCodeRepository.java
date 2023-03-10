@@ -1,5 +1,7 @@
 package com.cmput301w23t47.canary.repository;
 
+import android.location.Location;
+
 import androidx.annotation.NonNull;
 
 import com.cmput301w23t47.canary.model.QrCode;
@@ -28,9 +30,11 @@ public class QrCodeRepository {
     }
 
     @Exclude
-    public QrCode getParsedQrCode() {
-        // TODO: Parse location
-        return new QrCode(hash, score, null, name);
+    public QrCode retrieveParsedQrCode() {
+        Location loc = new Location("");
+        loc.setLatitude(location.getLatitude());
+        loc.setLongitude(location.getLongitude());
+        return new QrCode(hash, score, loc , name);
     }
 
     public static QrCodeRepository retrieveQrCodeRepo(QrCode qrCode) {
@@ -64,6 +68,14 @@ public class QrCodeRepository {
     @Exclude
     public QrCode getQrCode() {
         return new QrCode(hash, score, null, name);
+    }
+
+    public GeoPoint getLocation() {
+        return location;
+    }
+
+    public void setLocation(GeoPoint location) {
+        this.location = location;
     }
 
     @NonNull
