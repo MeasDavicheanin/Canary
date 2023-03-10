@@ -136,7 +136,6 @@ public class FirestoreController {
                                 Log.d(TAG, "Player document already exists");
                             } else {
                                 Map<String, Object> playerData = new HashMap<>();
-                                playerData.put("UniquePlayerID", installationId);
                                 playerData.put("username", player.getUsername());
                                 playerData.put("firstName" , player.getFirstName());
                                 playerData.put("lastName", player.getLastName());

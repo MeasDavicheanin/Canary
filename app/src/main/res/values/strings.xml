@@ -17,4 +17,10 @@
     <string name="hello_first_fragment">Hello first fragment</string>
     <string name="qr_exists_message">The added QR code was scanned previously</string>
     <string name="qr_exists_title">QR Already Exists</string>
+    <string name="welcome_to_canary">Welcome to Canary</string>
+    <string name="create_profile">Create Profile</string>
+    <string name="username_create_profile">Username*</string>
+    <string name="first_name_create_profile">First Name*</string>
+    <string name="last_name_create_profile">Last Name*</string>
+    <string name="contact_create_profile">Contact*</string>
 </resources>
