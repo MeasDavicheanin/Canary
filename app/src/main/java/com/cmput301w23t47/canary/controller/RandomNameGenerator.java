@@ -1,10 +1,10 @@
-package com.cmput301w23t47.canary.model;
+package com.cmput301w23t47.canary.controller;
 
 import com.github.javafaker.Faker;
 
 import java.util.Random;
 
-public class GenWords{
+public class RandomNameGenerator {
     Faker faker = new Faker();
     private String combinedWords=randomGenName();
 

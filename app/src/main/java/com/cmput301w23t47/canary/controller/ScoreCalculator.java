@@ -8,10 +8,15 @@ import com.cmput301w23t47.canary.model.QrCode;
 public class ScoreCalculator {
     /**
      * Calculates the score for the given QR
-     * @param qrCode (QRCode): The qr code to find the score of
+     * @param qrHash (String): the hash of the qr
      * @return the calculated score
      */
-    static long calculateScore(QrCode qrCode) {
-        return 0L;
+    public static long calculateScore(String qrHash) {
+        // TODO: Get a valid calculation scheme for score
+        long score = 0;
+        for (int i = 0; i < qrHash.length(); i++) {
+            score += qrHash.charAt(i);
+        }
+        return score % 47 + 53;
     }
 }

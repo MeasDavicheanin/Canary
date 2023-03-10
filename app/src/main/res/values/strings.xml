@@ -7,6 +7,31 @@
     <string name="by_highest_scoring_qr">By Highest Scoring QR</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_add_qr">AddQrActivity</string>
+    <!-- Strings used for fragments for navigation -->
+    <string name="first_fragment_label">First Fragment</string>
+    <string name="second_fragment_label">Second Fragment</string>
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+
+    <string name="hello_first_fragment">Hello first fragment</string>
+    <string name="qr_exists_message">The added QR code was scanned previously</string>
+    <string name="qr_exists_title">QR Already Exists</string>
+    <string name="welcome_to_canary">Welcome to Canary</string>
+    <string name="create_profile">Create Profile</string>
+    <string name="username_create_profile">Username*</string>
+    <string name="first_name_create_profile">First Name*</string>
+    <string name="last_name_create_profile">Last Name*</string>
+    <string name="contact_create_profile">Contact*</string>
+    <string name="view_other_players">View Other Players</string>
+    <string name="blank">_ _ _</string>
+    <string name="snapshot">Snapshot</string>
+    <string name="score">Score</string>
+    <string name="qrs_scanned">QRs Scanned</string>
+    <string name="highest_qr">Highest QR</string>
+    <string name="lowest_qr">Lowest QR</string>
+    <string name="title_activity_test">TestActivity</string>
+    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
 
 
     <!-- Intent extras -->

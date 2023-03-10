@@ -9,6 +9,10 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+import androidx.navigation.ui.AppBarConfiguration;
+import androidx.navigation.ui.NavigationUI;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -49,14 +53,14 @@ import com.google.firebase.auth.FirebaseAuth;
  * Main Acitvity
  * @author Meharpreet Singh Nanda
  */
+public class MainActivity extends AppCompatActivity {
 public class MainActivity extends AppCompatActivity implements
 //        UpdatePlayerCallback,
         //View.OnClickListener,
         NavbarController.NavigateToPage {
 
     private ActivityMainBinding binding;
-    int i = 0;
-
+    private AppBarConfiguration appBarConfiguration;
 
     private HomeFragment homeFragment;
     private LeaderboardFragment leaderboardFragment;
@@ -79,6 +83,9 @@ public class MainActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
+
+
         init(savedInstanceState);
     }
 
@@ -86,7 +93,6 @@ public class MainActivity extends AppCompatActivity implements
      * Initialization for activity
      */
     private void init(Bundle savedInstanceState) {
-        initFragmentStack();
         initNavbar();
     }
 
@@ -109,54 +115,24 @@ public class MainActivity extends AppCompatActivity implements
 
     /**
      * Initializes the navbar
+     * Initializes the navbar (bottom and top)
      */
     private void initNavbar() {
-        // add listener for navbar
-        binding.bottomNavigationLayout.bottomNavigation.setOnItemSelectedListener(item -> {
-            NavbarController.handleSelection(item, this);
-            return true;
-        });
-        // ignore if option reselected
-        binding.bottomNavigationLayout.bottomNavigation.setOnItemReselectedListener(item -> {});
-        // configure selected option; calls the itemSelectedCallback function
-        binding.bottomNavigationLayout.bottomNavigation.setSelectedItemId(R.id.page_home);
-    }
+        // Bottom navigation
+        NavController navController = Navigation.findNavController(this, R.id.fragment_container_view_main);
+        NavigationUI.setupWithNavController(binding.bottomNavigationLayout.bottomNavigation, navController);
 
-    /**
-     * Navigates to the leaderboard page
-     */
-    @Override
-    public void navigateToHome() {
-        getSupportFragmentManager().beginTransaction()
-                .setReorderingAllowed(true)
-                .hide(activeFragment)
-                .show(homeFragment)
-                .commit();
-        activeFragment = homeFragment;
-    }
-
-
-    @Override
-    public void navigateToSearch() {
-
-    }
-
-    /**
-     * Navigates to the leaderboard page
-     */
-    @Override
-    public void navigateToLeaderboard() {
-        getSupportFragmentManager().beginTransaction()
-                .setReorderingAllowed(true)
-                .hide(activeFragment)
-                .show(leaderboardFragment)
-                .commit();
-        activeFragment = leaderboardFragment;
+        // top navigation
+        setSupportActionBar(binding.toolbar);
+        appBarConfiguration = new AppBarConfiguration.Builder(navController.getGraph()).build();
+        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
     }
 
     @Override
-    public void navigateToPlayers() {
-
+    public boolean onSupportNavigateUp() {
+        NavController navController = Navigation.findNavController(this, R.id.fragment_container_view_main);
+        return NavigationUI.navigateUp(navController, appBarConfiguration)
+                || super.onSupportNavigateUp();
     }
 
     @Override

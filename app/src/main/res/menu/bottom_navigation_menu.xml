@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:id="@+id/page_home"
+        android:id="@+id/homeFragment"
         android:enabled="true"
         android:icon="@drawable/home_icon"
         android:title="Home"/>
@@ -11,7 +11,7 @@
         android:icon="@drawable/globe_icon"
         android:title="Search"/>
     <item
-        android:id="@+id/page_rank"
+        android:id="@+id/leaderboardFragment"
         android:enabled="true"
         android:icon="@drawable/chart_icon"
         android:title="Rank"/>
@@ -21,7 +21,7 @@
         android:icon="@drawable/group_players_icon"
         android:title="Players"/>
     <item
-            android:id="@+id/page_profile"
+            android:id="@+id/playerProfileFragment"
         android:enabled="true"
         android:icon="@drawable/profile_icon"
         android:title="Profile"/>

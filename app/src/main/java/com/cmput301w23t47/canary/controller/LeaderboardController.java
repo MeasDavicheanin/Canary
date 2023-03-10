@@ -4,7 +4,6 @@ import com.cmput301w23t47.canary.model.LeaderboardPlayer;
 import com.cmput301w23t47.canary.repository.PlayerRepository;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 
 /**
@@ -21,7 +20,7 @@ public class LeaderboardController {
     ) {
         ArrayList<LeaderboardPlayer> playerList = new ArrayList<>();
         for (PlayerRepository playerRepo : playerRepoList) {
-            playerList.add(playerRepo.getLeaderboardPlayer());
+            playerList.add(playerRepo.retrieveLeaderboardPlayer());
         }
         return playerList;
     }

@@ -6,6 +6,7 @@
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
+
     <uses-permission android:name="android.permission.CAMERA" />
     <!--
 This allows access to the precise device location
@@ -24,6 +25,15 @@ This allows access to the precise device location
         android:supportsRtl="true"
         android:theme="@style/Theme.Canary"
         tools:targetApi="31">
+        <activity
+            android:name=".view.activity.AddQrActivity"
+            android:exported="false"
+            android:label="@string/title_activity_add_qr"
+            android:theme="@style/Theme.Canary.NoActionBar">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
         <activity
             android:name=".MapScreenTemp"
             android:exported="false" />
@@ -52,8 +62,16 @@ This allows access to the precise device location
                 android:value="" />
         </activity>
         <activity
+            android:name=".view.activity.CaptureSnapshotActivity"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
             android:name=".MainActivity"
-            android:exported="true">
+            android:exported="true"
+            android:theme="@style/Theme.Canary.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
