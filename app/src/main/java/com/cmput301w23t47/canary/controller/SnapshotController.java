@@ -18,7 +18,7 @@ public class SnapshotController {
      */
     public static String getBase64Image(Bitmap image) {
         ByteArrayOutputStream outStream = new ByteArrayOutputStream();
-        image.compress(Bitmap.CompressFormat.PNG, 200, outStream);
+        image.compress(Bitmap.CompressFormat.PNG, 100, outStream);
         image.recycle();
         return Base64.getEncoder().encodeToString(outStream.toByteArray());
     }

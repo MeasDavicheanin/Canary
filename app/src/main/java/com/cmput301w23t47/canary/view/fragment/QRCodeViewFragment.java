@@ -120,7 +120,7 @@ public class QRCodeViewFragment extends Fragment implements GetPlayerQrCallback,
     private void init() {
         showLoadingBar();
         String qrHash = QRCodeViewFragmentArgs.fromBundle(getArguments()).getQrHash();
-        firestorePlayerController.getPlayerQr(qrHash, MainActivity.playerUsername, this);
+        firestorePlayerController.getPlayerQr(qrHash, this);
     }
 
     @Override

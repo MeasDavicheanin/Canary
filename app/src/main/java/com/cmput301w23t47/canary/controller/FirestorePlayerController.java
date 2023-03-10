@@ -1,7 +1,6 @@
 package com.cmput301w23t47.canary.controller;
 
 import android.os.Handler;
-import android.util.Log;
 
 import com.cmput301w23t47.canary.callback.DoesResourceExistCallback;
 import com.cmput301w23t47.canary.callback.GetPlayerCallback;
@@ -29,13 +28,13 @@ public class FirestorePlayerController extends FirestoreController{
     /**
      * Determines whether the player has the given qr
      * @param qrHash the hash of the qr
-     * @param username the username of the player
      * @param resExistCallback the callback for returning the response
      */
-    public void doesPlayerHaveQr(String qrHash, String username, DoesResourceExistCallback resExistCallback) {
+    public void doesCurrentPlayerHaveQr(String qrHash, DoesResourceExistCallback resExistCallback) {
         Handler handler = new Handler();
         new Thread(() -> {
-            boolean playerHasQr = doesPlayerHaveQr(qrHash, username);
+            String playerDocId = identifyPlayer();
+            boolean playerHasQr = doesPlayerHaveQr(qrHash, playerDocId);
             // call the callback when the result is available
             handler.post(() -> {
                 resExistCallback.doesResourceExists(playerHasQr);
@@ -46,10 +45,9 @@ public class FirestorePlayerController extends FirestoreController{
     /**
      * Determines whether the player has the given qr
      * @param qrHash the hash of the qr
-     * @param username the username of the player
-     * @return true if player has the username
+     * @return true if player has the qr
      */
-    protected boolean doesPlayerHaveQr(String qrHash, String username) {
+    protected boolean doesPlayerHaveQr(String qrHash, String playerDocId) {
         // determine if the qr resource exist with the given hash
         Task<QuerySnapshot> qrCodeQuery = qrCodes.whereEqualTo("hash", qrHash).get();
         waitForQuery(qrCodeQuery);
@@ -60,26 +58,26 @@ public class FirestorePlayerController extends FirestoreController{
         DocumentReference qrDocRef = qrCodeQuery.getResult().getDocuments().get(0).getReference();
 
         // get the player model
-        PlayerRepository playerRepo = getPlayerRepo(username);
+        PlayerRepository playerRepo = getPlayerRepo(playerDocId);
         return playerRepo.containsQrRef(qrDocRef);
     }
 
     /**
      * Adds the given qr to the player's model
      * @param playerQrCode the qr to add
-     * @param username the username of the player
      * @param callback the callback to inform when operation completes
      */
-    public void addQrToPlayer(PlayerQrCode playerQrCode, String username, OperationStatusCallback callback) {
+    public void addQrToCurrentPlayer(PlayerQrCode playerQrCode, OperationStatusCallback callback) {
         Handler handler = new Handler();
         new Thread(() -> {
-            PlayerRepository playerRepo = getPlayerRepo(username);
+            String playerDocId = identifyPlayer();
+            PlayerRepository playerRepo = getPlayerRepo(playerDocId);
             playerRepo.addQrToPlayerStats(playerQrCode);
             QrCodeRepository qrCodeRepository = QrCodeRepository.retrieveQrCodeRepo(playerQrCode.getQrCode());
             DocumentReference qrReference = getReferenceToQrOrCreate(qrCodeRepository);
             DocumentReference snapshotReference = null;
             if (playerQrCode.getSnapshot() != null) {
-                snapshotReference = persistSnapshot(playerQrCode.getSnapshot().getBitmap(), username);
+                snapshotReference = persistSnapshot(playerQrCode.getSnapshot().getBitmap(), playerDocId);
             }
             playerRepo.getQrCodes().add(new PlayerQrCodeRepository(qrReference, snapshotReference,
                     new Timestamp(playerQrCode.getScanDate()), playerQrCode.retrieveScore()));
@@ -98,13 +96,13 @@ public class FirestorePlayerController extends FirestoreController{
     /**
      * Get the PlayerQr object
      * @param qrHash the hash of the qr
-     * @param username the username of the player
      * @param callback the callback to return the result
      */
-    public void getPlayerQr(String qrHash, String username, GetPlayerQrCallback callback) {
+    public void getPlayerQr(String qrHash, GetPlayerQrCallback callback) {
         Handler handler = new Handler();
         new Thread(() -> {
-            PlayerRepository playerRepo = getPlayerRepo(username);
+            String playerDocId = identifyPlayer();
+            PlayerRepository playerRepo = getPlayerRepo(playerDocId);
             Task<QuerySnapshot> qrCodeQuery = qrCodes.whereEqualTo("hash", qrHash).get();
             waitForQuery(qrCodeQuery);
             if (qrCodeQuery.getResult().isEmpty()) {
