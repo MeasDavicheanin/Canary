@@ -51,4 +51,8 @@ public class WorldQRLIST {
     public void setQrList(ArrayList<QRcode> qrList) {
         this.qrList = qrList;
     }
+
+    public void getSize() {
+        qrList.size();
+    }
 }

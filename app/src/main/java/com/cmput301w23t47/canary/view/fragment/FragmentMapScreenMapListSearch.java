@@ -23,6 +23,8 @@ import android.Manifest;
 
 //import com.cmput301w23t47.canary.Manifest;
 import com.cmput301w23t47.canary.R;
+import com.cmput301w23t47.canary.model.UserLocation;
+import com.cmput301w23t47.canary.model.WorldQRLIST;
 import com.cmput301w23t47.canary.view.adapter.Map_Adapter_RecyclerViews;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
@@ -52,7 +54,7 @@ public class FragmentMapScreenMapListSearch extends Fragment implements OnMapRea
     //purposefully using a 0 for the no limit so that if you read 0 then you know that there is no limit
     private String[] mSearchRange = {"200m", "500m", "1km", "2km", "5km", "NO LIMIT" };
     private ArrayAdapter<String> mSearchRangeAdapter;
-
+    private UserLocation mUserLocation;
     private int mSearchRangeDouble;
     private String mSearchSpecifiedRange;
     private AutoCompleteTextView mSearchBarRange;
@@ -62,6 +64,8 @@ public class FragmentMapScreenMapListSearch extends Fragment implements OnMapRea
 
     private Map_Adapter_RecyclerViews mMapAdapterRecyclerViews;
 
+    // this should initialize a list
+    private WorldQRLIST mWorldQRLIST= new WorldQRLIST();
 
     public static FragmentMapScreenMapListSearch newInstance() {
         return new FragmentMapScreenMapListSearch();
@@ -92,6 +96,7 @@ public class FragmentMapScreenMapListSearch extends Fragment implements OnMapRea
         mSearchBarRange = (AutoCompleteTextView) getActivity().findViewById(R.id.map_search_range_dropdown_menu);
         mSearchSpecifiedRange = mSearchBarRange.getText().toString();
 
+
         switch(mSearchSpecifiedRange){
             case "200m":
                 mSearchRangeDouble = 200;
@@ -118,7 +123,7 @@ public class FragmentMapScreenMapListSearch extends Fragment implements OnMapRea
 
 
         for(int i = 0; i < mglobalQRList.length; i++){
-            if(mglobalQRList[i].getDistance(    playerLocation      ) <= mSearchRangeDouble || mSearchRangeDouble == 10000){
+            if(mglobalQRList[i].getDistance(          ) <= mSearchRangeDouble || mSearchRangeDouble == 10000){
                 //add to the list
             }
 
