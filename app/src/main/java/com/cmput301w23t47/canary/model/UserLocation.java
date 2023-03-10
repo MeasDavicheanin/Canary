@@ -1,5 +1,7 @@
 package com.cmput301w23t47.canary.model;
 
+import android.location.Location;
+
 import com.google.firebase.firestore.GeoPoint;
 import com.google.firebase.firestore.ServerTimestamp;
 import com.google.type.Date;
@@ -11,12 +13,12 @@ import com.google.type.Date;
  */
 public class UserLocation {
     private Player user;
-    private GeoPoint geo_point;
+    private Location loca;
     private @ServerTimestamp Date timestamp;
 
-    public UserLocation(Player user, GeoPoint geo_point, Date timestamp) {
+    public UserLocation(Player user,Location loca, Date timestamp) {
         this.user = user;
-        this.geo_point = geo_point;
+        this.loca = loca;
         this.timestamp = timestamp;
     }
 
@@ -32,12 +34,12 @@ public class UserLocation {
         this.user = user;
     }
 
-    public GeoPoint getGeo_point() {
-        return geo_point;
+    public Location getLocation() {
+        return loca;
     }
 
-    public void setGeo_point(GeoPoint geo_point) {
-        this.geo_point = geo_point;
+    public void setLocation(Location loca) {
+        this.loca = loca;
     }
 
     public Date getTimestamp() {
@@ -52,7 +54,7 @@ public class UserLocation {
     public String toString() {
         return "UserLocation{" +
                 "user=" + user +
-                ", geo_point=" + geo_point +
+                ", loca=" + loca +
                 ", timestamp=" + timestamp +
                 '}';
     }

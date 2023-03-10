@@ -2,13 +2,13 @@ package com.cmput301w23t47.canary.model;
 
 import com.google.firebase.firestore.GeoPoint;
 
-public class QRcode {
+public class Qrcodem {
     private String qrHash;
     private GeoPoint location;
     private String name;
     private int score;
 
-    public QRcode(String qrHash, GeoPoint location, String name, int score) {
+    public Qrcodem(String qrHash, GeoPoint location, String name, int score) {
         this.qrHash = qrHash;
         this.location = location;
         this.name = name;

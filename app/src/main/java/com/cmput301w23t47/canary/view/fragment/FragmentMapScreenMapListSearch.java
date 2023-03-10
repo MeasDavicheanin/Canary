@@ -20,9 +20,11 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Spinner;
 import android.widget.Toast;
 import android.Manifest;
+import android.location.Location;
 
 //import com.cmput301w23t47.canary.Manifest;
 import com.cmput301w23t47.canary.R;
+import com.cmput301w23t47.canary.model.Qrcodem;
 import com.cmput301w23t47.canary.model.UserLocation;
 import com.cmput301w23t47.canary.model.WorldQRLIST;
 import com.cmput301w23t47.canary.view.adapter.Map_Adapter_RecyclerViews;
@@ -62,10 +64,17 @@ public class FragmentMapScreenMapListSearch extends Fragment implements OnMapRea
     // this isn't needed just pull the qr code global list.
     // private ArrayList<User> mMapList = new ArrayList<>();
 
+
+    private double distance;
+    private double LatituteQrCodeLocation;
+    private double LongitudeQrCodeLocation;
+    private Location QRCodeLocation;
+
+
     private Map_Adapter_RecyclerViews mMapAdapterRecyclerViews;
 
     // this should initialize a list
-    private WorldQRLIST mWorldQRLIST= new WorldQRLIST();
+    private ArrayList<Qrcodem> mglobalQRList = new WorldQRLIST().getQrList();
 
     public static FragmentMapScreenMapListSearch newInstance() {
         return new FragmentMapScreenMapListSearch();
@@ -122,9 +131,16 @@ public class FragmentMapScreenMapListSearch extends Fragment implements OnMapRea
         }
 
 
-        for(int i = 0; i < mglobalQRList.length; i++){
-            if(mglobalQRList[i].getDistance(          ) <= mSearchRangeDouble || mSearchRangeDouble == 10000){
-                //add to the list
+        for(int i = 0; i < mglobalQRList.size(); i++){
+
+            LatituteQrCodeLocation = mglobalQRList.get(i).getLocation().getLatitude();
+            LongitudeQrCodeLocation = mglobalQRList.get(i).getLocation().getLongitude();
+            QRCodeLocation.setLatitude(LatituteQrCodeLocation);
+            QRCodeLocation.setLongitude(LongitudeQrCodeLocation);
+
+            distance = mUserLocation.getLocation().distanceTo(QRCodeLocation);
+            if(distance <= mSearchRangeDouble || mSearchRangeDouble == 10000){
+                mMapAdapterRecyclerViews.addQRCode(mglobalQRList.get(i));
             }
 
         }

@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 
+import com.cmput301w23t47.canary.model.Qrcodem;
 import com.cmput301w23t47.canary.view.fragment.FragmentMapScreenMapListSearch;
 
 import java.util.ArrayList;
@@ -21,14 +22,14 @@ import java.util.ArrayList;
  * displays this in the format of a list
  * the xml file which determines how elements are stored is map_list_element_placement
  */
-public class Map_Adapter_RecyclerViews extends RecyclerView.Adapter<FragmentMapScreenMapListSearch>{
+public class Map_Adapter_RecyclerViews extends RecyclerView.Adapter<Map_Adapter_RecyclerViews.ViewHolder>{
     private static final String TAG = "MapQRLocationListAdapter";
 
     Context context;
-    private ArrayList<QRCodeVMElement> mqrCodes = new ArrayList<>();
+    private ArrayList<Qrcodem> mqrCodes = new ArrayList<>();
     private MapRecyclerClickListener mmapQRLocationListAdapterClickListener;
 
-    public Map_Adapter_RecyclerViews(ArrayList<QRCodeVMElement> qrcodes, MapRecyclerClickListener mapRecyclerClickListener) {
+    public Map_Adapter_RecyclerViews(ArrayList<Qrcodem> qrcodes, MapRecyclerClickListener mapRecyclerClickListener) {
         this.mqrCodes = qrcodes;
         mmapQRLocationListAdapterClickListener = mapRecyclerClickListener;
     }
@@ -43,12 +44,10 @@ public class Map_Adapter_RecyclerViews extends RecyclerView.Adapter<FragmentMapS
     }
 
     @Override
-    public void onBindViewHolder(@android.support.annotation.NonNull @NonNull FragmentMapScreenMapListSearch mapInteractiveQRViewHolder, int i) {
-        //Need to gget the proper data from the firebase
-        mapInteractiveQRViewHolder.qrname.setText(mqrCodes.get(i).getQRname());
-        mapInteractiveQRViewHolder.qrdate.setText(mqrCodes.get(i).getQRdate());
-        mapInteractiveQRViewHolder.qrpoint.setText(mqrCodes.get(i).getQrPoints());
-        mapInteractiveQRViewHolder.qrimage.setImageResource(mqrCodes.get(i).getPlayerPicture());
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+
+        ((ViewHolder)holder).qrname.setText(mqrCodes.get(position).getName());
+        ((ViewHolder)holder).qrpoint.setText(mqrCodes.get(position).getScore());
     }
 
 
@@ -58,8 +57,8 @@ public class Map_Adapter_RecyclerViews extends RecyclerView.Adapter<FragmentMapS
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        TextView qrname,qrdate,qrpoint;
-        ImageView qrimage;
+        TextView qrname,qrpoint;
+
         MapRecyclerClickListener clickListener;
 
         public ViewHolder(View itemView, MapRecyclerClickListener clickListener) {
@@ -67,10 +66,8 @@ public class Map_Adapter_RecyclerViews extends RecyclerView.Adapter<FragmentMapS
 
             // get the text views
             qrname = itemView.findViewById(R.id.qr_name_list);
-            qrdate = itemView.findViewById(R.id.qr_date_found_list);
             qrpoint = itemView.findViewById(R.id.qr_point_total_list);
             // get the image view
-            qrimage = itemView.findViewById(R.id.qr_image_list);
 
             this.clickListener = clickListener;
             itemView.setOnClickListener(this);
@@ -84,6 +81,12 @@ public class Map_Adapter_RecyclerViews extends RecyclerView.Adapter<FragmentMapS
 
     public interface MapRecyclerClickListener {
         public void onMapSelected(int position);
+    }
+
+
+    public void addQRCode(Qrcodem qrCode) {
+        mqrCodes.add(qrCode);
+        notifyDataSetChanged();
     }
 }
 /*

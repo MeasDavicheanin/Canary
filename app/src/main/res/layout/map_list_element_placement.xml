@@ -4,26 +4,15 @@
     android:layout_marginTop="10dp"
     android:layout_height="wrap_content">
 
-    <ImageView
-        android:id="@+id/qr_image_list"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:layout_marginRight="10dp" />
 
     <TextView
         android:id="@+id/qr_name_list"
-        android:layout_width="219dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_toEndOf="@+id/qr_image_list"
-        android:text="TextView" />
-
-    <TextView
-        android:id="@+id/qr_date_found_list"
-        android:layout_width="224dp"
-        android:layout_height="29dp"
-        android:layout_below="@+id/qr_name_list"
-        android:layout_toEndOf="@+id/qr_image_list"
-        android:text="TextView" />
+        android:layout_marginEnd="11dp"
+        android:layout_toStartOf="@+id/qr_point_total_list"
+        android:text="TextView"
+        android:textSize="24dp" />
 
     <TextView
         android:id="@+id/qr_point_total_list"

@@ -187,7 +187,7 @@ public class MainActivity extends AppCompatActivity implements
     private void getPlayerDetails(){
         if(mUserLocation == null){
             mUserLocation = new UserLocation();
-            DocumentReference PlayerRef = mDb.collection(getString(R.string.collection_Players))
+            DocumentReference PlayerRef = mDb.collection("Player")
                     .document(FirebaseAuth.getInstance().getUid());
 
             PlayerRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -222,32 +222,37 @@ public class MainActivity extends AppCompatActivity implements
                     GeoPoint geoPoint = new GeoPoint(location.getLatitude(), location.getLongitude());
                     mUserLocation.setGeo_point(geoPoint);
                     mUserLocation.setTimestamp(null);
-                    savePlayerLocation();
+                    //savePlayerLocation();
                 }
             }
         });
 
     }
 
-    private void savePlayerLocation(){
 
-        if(mUserLocation != null){
-            DocumentReference locationRef = mDb
-                    .collection(getString(R.string.collection_Player_locations))
-                    .document(FirebaseAuth.getInstance().getUid());
-
-            locationRef.set(mUserLocation).addOnCompleteListener(new OnCompleteListener<Void>() {
-                @Override
-                public void onComplete(@NonNull Task<Void> task) {
-                    if(task.isSuccessful()){
-                        Log.d(TAG, "savePlayerLocation: \ninserted Player location into database." +
-                                "\n latitude: " + mUserLocation.getGeo_point().getLatitude() +
-                                "\n longitude: " + mUserLocation.getGeo_point().getLongitude());
-                    }
-                }
-            });
-        }
-    }
+    /*
+     AGAINST PRIVACY POLICY
+     DO NOT USE
+     */
+//    private void savePlayerLocation(){
+//
+//        if(mUserLocation != null){
+//            DocumentReference locationRef = mDb
+//                    .collection(getString(R.string.collection_Player_locations))
+//                    .document(FirebaseAuth.getInstance().getUid());
+//
+//            locationRef.set(mUserLocation).addOnCompleteListener(new OnCompleteListener<Void>() {
+//                @Override
+//                public void onComplete(@NonNull Task<Void> task) {
+//                    if(task.isSuccessful()){
+//                        Log.d(TAG, "savePlayerLocation: \ninserted Player location into database." +
+//                                "\n latitude: " + mUserLocation.getGeo_point().getLatitude() +
+//                                "\n longitude: " + mUserLocation.getGeo_point().getLongitude());
+//                    }
+//                }
+//            });
+//        }
+//    }
 
     /**
      * check if the user has accepted the map permissions
