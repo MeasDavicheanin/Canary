@@ -220,7 +220,7 @@ public class MainActivity extends AppCompatActivity implements
                 if (task.isSuccessful()) {
                     Location location = task.getResult();
                     GeoPoint geoPoint = new GeoPoint(location.getLatitude(), location.getLongitude());
-                    mUserLocation.setGeo_point(geoPoint);
+                    mUserLocation.setGeoPoint(geoPoint);
                     mUserLocation.setTimestamp(null);
                     //savePlayerLocation();
                 }

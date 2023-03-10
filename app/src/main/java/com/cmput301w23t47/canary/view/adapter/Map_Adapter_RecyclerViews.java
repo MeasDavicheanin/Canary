@@ -29,9 +29,8 @@ public class Map_Adapter_RecyclerViews extends RecyclerView.Adapter<Map_Adapter_
     private ArrayList<Qrcodem> mqrCodes = new ArrayList<>();
     private MapRecyclerClickListener mmapQRLocationListAdapterClickListener;
 
-    public Map_Adapter_RecyclerViews(ArrayList<Qrcodem> qrcodes, MapRecyclerClickListener mapRecyclerClickListener) {
+    public Map_Adapter_RecyclerViews(ArrayList<Qrcodem> qrcodes) {
         this.mqrCodes = qrcodes;
-        mmapQRLocationListAdapterClickListener = mapRecyclerClickListener;
     }
 
     //could use help dont know what the error is here
@@ -88,6 +87,7 @@ public class Map_Adapter_RecyclerViews extends RecyclerView.Adapter<Map_Adapter_
         mqrCodes.add(qrCode);
         notifyDataSetChanged();
     }
+
 }
 /*
 map_list_element_placement.xml

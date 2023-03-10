@@ -17,7 +17,8 @@ public class WorldQRLIST {
     private Qrcodem firebaseQRcode;
 
     public WorldQRLIST() {
-        qrList = new ArrayList<Qrcodem>();
+        this.qrList = new ArrayList<Qrcodem>();
+         initCloud();
     }
 
     //Check make sure correct QR code is added
@@ -65,6 +66,12 @@ public class WorldQRLIST {
 
     public String getQrPointStr(int index) {
         return Integer.toString(qrList.get(index).getScore());
+    }
+    
+    public void RECALCULATE() {
+        qrList.clear();
+        initCloud();
+        
     }
 
 
