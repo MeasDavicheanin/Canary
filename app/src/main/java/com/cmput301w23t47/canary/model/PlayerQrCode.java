@@ -7,9 +7,9 @@ import android.location.Location;
  */
 public class PlayerQrCode {
     // Player who scanned the QR
-    private Player player = new Player("name", "date", "class");
+    private Player player;
     // QR Code scanned
-    private QrCode qrCode = new QrCode("namee", 23, null, "hello");
+    private QrCode qrCode;
 
     // Snapshot of the QR
     private Snapshot snapshot;
