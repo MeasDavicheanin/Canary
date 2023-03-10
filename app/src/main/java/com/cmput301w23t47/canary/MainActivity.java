@@ -12,6 +12,7 @@ import android.os.Bundle;
 import com.cmput301w23t47.canary.databinding.ActivityMainBinding;
 import com.cmput301w23t47.canary.view.fragment.HomeFragment;
 import com.cmput301w23t47.canary.view.fragment.LeaderboardFragment;
+import com.cmput301w23t47.canary.view.fragment.SearchFragment;
 
 
 /**
@@ -21,7 +22,6 @@ import com.cmput301w23t47.canary.view.fragment.LeaderboardFragment;
 public class MainActivity extends AppCompatActivity {
     private ActivityMainBinding binding;
     private AppBarConfiguration appBarConfiguration;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
