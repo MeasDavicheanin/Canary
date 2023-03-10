@@ -2,31 +2,27 @@ package com.cmput301w23t47.canary.model;
 
 import android.location.Location;
 
+import java.util.Date;
+
+
 /**
  * Class for the QR Code scanned by the Player
  */
 public class PlayerQrCode {
-    // Player who scanned the QR
-    private Player player;
     // QR Code scanned
     private QrCode qrCode;
-
     // Snapshot of the QR
     private Snapshot snapshot;
+    // the date when qr was scanned by player
+    private Date scanDate;
+    // whether the location of qr is shared
+    private boolean locationShared;
 
     public PlayerQrCode() {}
 
-    public PlayerQrCode(Player player, QrCode qrCode) {
-        this.player = player;
+    public PlayerQrCode(QrCode qrCode, Date date) {
         this.qrCode = qrCode;
-    }
-
-    public Player getPlayer() {
-        return player;
-    }
-
-    public void setPlayer(Player player) {
-        this.player = player;
+        this.scanDate = date;
     }
 
     public QrCode getQrCode() {
@@ -48,4 +44,28 @@ public class PlayerQrCode {
     public String getName() {return qrCode.getName();}
 
     public Location getLocation() {return qrCode.getLocation();}
+
+    public Date getScanDate() {
+        return scanDate;
+    }
+
+    public void setScanDate(Date scanDate) {
+        this.scanDate = scanDate;
+    }
+
+    public boolean isLocationShared() {
+        return locationShared;
+    }
+
+    public void setLocationShared(boolean locationShared) {
+        this.locationShared = locationShared;
+    }
+
+    /**
+     * Gets the score for the qr
+     * @return the score of the qr
+     */
+    public long retrieveScore() {
+        return qrCode.getScore();
+    }
 }

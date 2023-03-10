@@ -6,6 +6,7 @@ import com.cmput301w23t47.canary.model.LeaderboardPlayer;
 import com.cmput301w23t47.canary.model.Player;
 import com.cmput301w23t47.canary.model.PlayerQrCode;
 import com.google.firebase.firestore.DocumentId;
+import com.google.firebase.firestore.DocumentReference;
 
 import java.util.ArrayList;
 import java.util.Locale;
@@ -35,11 +36,11 @@ public class PlayerRepository {
         qrCodes = new ArrayList<>();
     }
 
-    public Player getParsedPlayer() {
+    public Player retrieveParsedPlayer() {
         Player player = new Player(username, firstName, lastName);
         ArrayList<PlayerQrCode> playerQrCodes = new ArrayList<>();
         for (PlayerQrCodeRepository qrRepo : qrCodes) {
-            playerQrCodes.add(qrRepo.getParsedPlayerQrCode());
+            playerQrCodes.add(qrRepo.retrieveParsedPlayerQrCode());
         }
         player.setQrCodes(playerQrCodes);
         return player;
@@ -101,7 +102,7 @@ public class PlayerRepository {
         this.maxScoreQr = maxScoreQr;
     }
 
-    public LeaderboardPlayer getLeaderboardPlayer() {
+    public LeaderboardPlayer retrieveLeaderboardPlayer() {
         return new LeaderboardPlayer(username, score, maxScoreQr);
     }
 
@@ -115,5 +116,58 @@ public class PlayerRepository {
         player.setUsername(username);
         player.setFirstName(firstName);
         player.setLastName(lastName);
+    }
+
+    /**
+     * Determines if the player repo contains the reference to the given qr
+     * @param qrRef the reference to compare
+     * @return true if it contains the reference
+     */
+    public boolean containsQrRef(DocumentReference qrRef) {
+        for (PlayerQrCodeRepository qrRepo : qrCodes) {
+            if (qrRepo.getQrCode().equals(qrRef)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Adds the qr to the player stats
+     * @param playerQrCode the qr added
+     */
+    public void addQrToPlayerStats(PlayerQrCode playerQrCode) {
+        score += playerQrCode.getQrCode().getScore();
+        maxScoreQr = Math.max(maxScoreQr, playerQrCode.getQrCode().getScore());
+    }
+
+    /**
+     * Update the stats after updating
+     * @param playerQrCode
+     */
+    public void updateStatsAfterRemoveQr(PlayerQrCode playerQrCode) {
+        long qrScore = playerQrCode.getQrCode().getScore();
+        score -= qrScore;
+        if (maxScoreQr == qrScore) {
+            // need to find new max qr
+            long locMaxScore = 0;
+            for (int i = 0; i < qrCodes.size(); i++) {
+                PlayerQrCodeRepository qrCodeRepository = qrCodes.get(i);
+                if (qrCodeRepository.getQrScore() > locMaxScore) {
+                    locMaxScore = qrCodeRepository.getQrScore();
+                }
+            }
+            maxScoreQr = locMaxScore;
+        }
+    }
+
+    /**
+     * Removes the qr at the given index
+     * @param qrIndex the index to remove
+     * @param playerQrCode the qr which is deleted
+     */
+    public void removeQrAt(int qrIndex, PlayerQrCode playerQrCode) {
+        qrCodes.remove(qrIndex);
+        updateStatsAfterRemoveQr(playerQrCode);
     }
 }

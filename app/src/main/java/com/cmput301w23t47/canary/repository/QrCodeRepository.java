@@ -1,10 +1,9 @@
 package com.cmput301w23t47.canary.repository;
 
-import android.location.Location;
-
 import androidx.annotation.NonNull;
 
 import com.cmput301w23t47.canary.model.QrCode;
+import com.google.firebase.firestore.Exclude;
 import com.google.firebase.firestore.GeoPoint;
 
 import java.util.Locale;
@@ -21,9 +20,21 @@ public class QrCodeRepository {
 
     public QrCodeRepository() {}
 
-    public QrCode getParsedQrCode() {
+    public QrCodeRepository(String hash, long score, GeoPoint location, String name) {
+        this.hash = hash;
+        this.score = score;
+        this.location = location;
+        this.name = name;
+    }
+
+    @Exclude
+    public QrCode retrieveParsedQrCode() {
         // TODO: Parse location
         return new QrCode(hash, score, null, name);
+    }
+
+    public static QrCodeRepository retrieveQrCodeRepo(QrCode qrCode) {
+        return new QrCodeRepository(qrCode.getHash(), qrCode.getScore(), new GeoPoint(0, 0), qrCode.getName());
     }
 
     public String getHash() {
@@ -50,8 +61,17 @@ public class QrCodeRepository {
         this.name = name;
     }
 
+    @Exclude
     public QrCode getQrCode() {
         return new QrCode(hash, score, null, name);
+    }
+
+    public GeoPoint getLocation() {
+        return location;
+    }
+
+    public void setLocation(GeoPoint location) {
+        this.location = location;
     }
 
     @NonNull

@@ -1,19 +1,13 @@
 package com.cmput301w23t47.canary;
 
-import androidx.activity.result.ActivityResultLauncher;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
+import androidx.navigation.ui.AppBarConfiguration;
 
 import android.os.Bundle;
 
-import com.cmput301w23t47.canary.callback.UpdatePlayerCallback;
 import com.cmput301w23t47.canary.controller.NavbarController;
-import com.cmput301w23t47.canary.controller.QrCodeUtil;
 import com.cmput301w23t47.canary.databinding.ActivityMainBinding;
-import com.cmput301w23t47.canary.model.Leaderboard;
-import com.cmput301w23t47.canary.model.Player;
-import com.cmput301w23t47.canary.view.contract.QrCodeContract;
 import com.cmput301w23t47.canary.view.fragment.HomeFragment;
 import com.cmput301w23t47.canary.view.fragment.LeaderboardFragment;
 import com.cmput301w23t47.canary.view.fragment.SearchFragment;
@@ -28,7 +22,7 @@ public class MainActivity extends AppCompatActivity implements
         NavbarController.NavigateToPage {
 
     private ActivityMainBinding binding;
-    int i = 0;
+    private AppBarConfiguration appBarConfiguration;
 
 
     private HomeFragment homeFragment;
@@ -37,13 +31,18 @@ public class MainActivity extends AppCompatActivity implements
     private Fragment activeFragment;
 
     // TODO: Get the actual username
-    private String playerUsername = "jamesk";
+    public static String playerUsername = "hpotter";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
+//        NavController navController = Navigation.findNavController(this, R.id.fragment_container_view_main);
+//        appBarConfiguration = new AppBarConfiguration.Builder(navController.getGraph()).build();
+//        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
+
         init(savedInstanceState);
     }
 
@@ -69,6 +68,8 @@ public class MainActivity extends AppCompatActivity implements
                 .add(R.id.fragment_container_view, homeFragment, HomeFragment.TAG)
                 .add(R.id.fragment_container_view, leaderboardFragment, LeaderboardFragment.TAG)
                 .add(R.id.fragment_container_view, searchFragment, SearchFragment.TAG)
+                .add(R.id.fragment_container_view_main, homeFragment, HomeFragment.TAG)
+                .add(R.id.fragment_container_view_main, leaderboardFragment, LeaderboardFragment.TAG)
                 .hide(leaderboardFragment)
                 .hide(homeFragment)
                 .commit();

@@ -1,12 +1,9 @@
 package com.cmput301w23t47.canary;
-import com.cmput301w23t47.canary.model.GenWords;
+import com.cmput301w23t47.canary.controller.RandomNameGenerator;
 
 
 import org.junit.Test;
 
-import static org.junit.Assert.*;
-
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -17,7 +14,7 @@ public class GenWordsTest {
         Set<String> words= new HashSet<String>();
        for (int i=0;i<20;i++)
        {
-           GenWords gen = new GenWords();
+           RandomNameGenerator gen = new RandomNameGenerator();
            String word=gen.getWord();
            if(words.contains(word)){
                throw new RuntimeException("Duplicate word");
