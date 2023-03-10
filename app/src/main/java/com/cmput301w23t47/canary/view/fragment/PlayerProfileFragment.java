@@ -97,6 +97,9 @@ public class PlayerProfileFragment extends Fragment implements
     }
 
     private void updateView() {
+        if (player == null) {
+            return;
+        }
         updatePlayerImage(this.player);
         binding.playerUsername.setText(player.getUsername());
         binding.playerScore.setText(Long.toString(player.getScore()));
