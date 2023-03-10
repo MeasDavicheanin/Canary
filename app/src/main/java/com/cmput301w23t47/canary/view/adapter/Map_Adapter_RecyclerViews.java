@@ -31,12 +31,20 @@ public class Map_Adapter_RecyclerViews extends RecyclerView.Adapter<Map_Adapter_
     private ArrayList<Qrcodem> mqrCodes = new ArrayList<>();
     private MapRecyclerClickListener mmapQRLocationListAdapterClickListener;
 
+    /**
+     * constructor for the adapter
+     * @param qrcodes the list of qr codes
+     * @param recyclerViewInterface the interface for the recycler view
+     */
     public Map_Adapter_RecyclerViews(ArrayList<Qrcodem> qrcodes, RecyclerViewInterface recyclerViewInterface) {
         this.mqrCodes = qrcodes;
         this.recyclerViewInterface = recyclerViewInterface;
     }
 
     //could use help dont know what the error is here
+    /**
+     * the view holder for the recycler view
+     */
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -47,9 +55,10 @@ public class Map_Adapter_RecyclerViews extends RecyclerView.Adapter<Map_Adapter_
     
     /**
      * sets the text for the qr name and qr point total
-     * this acts like a
-     * @param holder
-     * @param position
+     * this acts like an update function
+     * as well as a listen for if an item was clicked
+     * @param holder the view holder for the recycler view this is an item
+     * @param position the position of the item that was clicked
      */
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
@@ -59,16 +68,28 @@ public class Map_Adapter_RecyclerViews extends RecyclerView.Adapter<Map_Adapter_
     }
 
 
+    /**
+     * gets the size of the list
+     * @return the size of the list
+     */
     @Override
     public int getItemCount() {
         return mqrCodes.size();
     }
-
+    
+    /**
+     * sets the list of qr codes
+     */
     public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         TextView qrname,qrpoint;
 
         MapRecyclerClickListener clickListener;
-
+    
+        /**
+         * sets the text views of the items in the list
+         * @param itemView
+         * @param clickListener
+         */
         public ViewHolder(View itemView, MapRecyclerClickListener clickListener,RecyclerViewInterface recyclerViewInterface){
             super(itemView);
 
@@ -92,17 +113,29 @@ public class Map_Adapter_RecyclerViews extends RecyclerView.Adapter<Map_Adapter_
             });
         }
 
+        /**
+         * sets the click listener for the item
+         * @param v - the view that was clicked
+         */
         @Override
         public void onClick(View v) {
             clickListener.onMapSelected(getAdapterPosition());
         }
     }
 
+    /**
+     * sets the click listener for the recycler view
+     * interface - of a method that will
+     */
     public interface MapRecyclerClickListener {
         public void onMapSelected(int position);
     }
 
 
+    /**
+     * sets the click listener for the recycler view
+     * @param qrCode - a qr code you wish to be added to the list
+     */
     public void addQRCode(Qrcodem qrCode) {
         mqrCodes.add(qrCode);
         notifyDataSetChanged();

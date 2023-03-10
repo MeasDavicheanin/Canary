@@ -129,7 +129,7 @@ public class FragmentMapScreenMapListSearch extends Fragment implements OnMapRea
     @Override
     public void onItemClicked(int position){
         // Need to change the error with the qr activitiy
-        Intent intent = new Intent(getActivity(), (QRCODEACTIVITYIDONTKNOWWHERETHISIS) );
+        Intent intent = new Intent(getActivity(), QRCodeView.class );
         
         // if you want to send the whole qr code then use this one
         intent.putExtra(getString(R.string.intent_qr_code), mSearchResults.get(position));
@@ -199,14 +199,6 @@ public class FragmentMapScreenMapListSearch extends Fragment implements OnMapRea
         super.onLowMemory();
         mMapView.onLowMemory();
     }
-
-    public void qrrecycler(){
-
-    }
-    
-    
-    
-    
     
     //map methods
     private void setCameraView(){

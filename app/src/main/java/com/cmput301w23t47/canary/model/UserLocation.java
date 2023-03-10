@@ -109,6 +109,6 @@ public class UserLocation implements Parcelable {
     
     @Override
     public void writeToParcel(@NonNull Parcel dest, int flags) {
-    
+        dest.writeParcelable(user, flags);
     }
 }
