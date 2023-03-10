@@ -1,41 +1,52 @@
 package com.cmput301w23t47.canary.view.fragment;
 
+
+import android.app.appsearch.SearchResult;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
-import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.viewmodel.CreationExtras;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.cmput301w23t47.canary.R;
-import com.cmput301w23t47.canary.model.Leaderboard;
+import com.cmput301w23t47.canary.model.Player;
+import com.cmput301w23t47.canary.view.adapter.PlayerSeachAdapter;
+import com.google.android.material.search.SearchView;
 
-public class SearchFragment extends Fragment {
+import java.util.ArrayList;
+import java.util.List;
 
-    public static final String TAG = "SearchFragment";
-    private static final String progressBarTitle = "Loading search results";
-    private static final String progressBarMessage = "Should take only a moment...";
-    private Leaderboard leaderboard;
+public class SearchFragment extends Fragment{
+    private RecyclerView searchResult;
 
-    public SearchFragment() {}
+    private PlayerSeachAdapter playerSeachAdapter;
 
-    @NonNull
-    @Override
-    public CreationExtras getDefaultViewModelCreationExtras() {
-        return super.getDefaultViewModelCreationExtras();
+    private ArrayList<Player> playersArrayList;
+    public boolean onQueryTextChange(String newText) {
+        final List<Player> filteredModelList = filter(playersArrayList, newText);
+        playerSeachAdapter.setFilterList(filteredModelList);
+        return true;
     }
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_search, container, false);
+    public boolean onQueryTextSubmit(String query) {
+        return false;
     }
-    @Override
-    public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+    private List<Player>filter(List<Player> models, String query) {
+        query = query.toLowerCase();
+        final List<Player> filteredModelList = new ArrayList<>();
+        for (Player model : models) {
+            final String text = model.getUsername().toLowerCase();
+            if (text.contains(query)) {
+                filteredModelList.add(model);
+            }
+        }
+        return filteredModelList;
     }
-
 
 }

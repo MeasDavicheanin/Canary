@@ -65,9 +65,9 @@ public class MainActivity extends AppCompatActivity implements
         }
         getSupportFragmentManager().beginTransaction()
                 .setReorderingAllowed(true)
-                .add(R.id.fragment_container_view, homeFragment, HomeFragment.TAG)
-                .add(R.id.fragment_container_view, leaderboardFragment, LeaderboardFragment.TAG)
-                .add(R.id.fragment_container_view, searchFragment, SearchFragment.TAG)
+                .add(R.id.fragment_container_view_main, homeFragment, HomeFragment.TAG)
+                .add(R.id.fragment_container_view_main, leaderboardFragment, LeaderboardFragment.TAG)
+                .add(R.id.fragment_container_view_main, searchFragment, SearchFragment.TAG)
                 .add(R.id.fragment_container_view_main, homeFragment, HomeFragment.TAG)
                 .add(R.id.fragment_container_view_main, leaderboardFragment, LeaderboardFragment.TAG)
                 .hide(leaderboardFragment)
@@ -109,9 +109,13 @@ public class MainActivity extends AppCompatActivity implements
     public void navigateToSearch() {
         getSupportFragmentManager().beginTransaction()
                 .setReorderingAllowed(true)
-                .hide(activeFragment)
-                .show(searchFragment)
+                .add(R.id.fragment_container_view_main, homeFragment, homeFragment.TAG)
+                .add(R.id.fragment_container_view_main, leaderboardFragment,leaderboardFragment.TAG)
+                .add(R.id.fragment_container_view_main, searchFragment, SearchFragment.TAG)
+                .hide(leaderboardFragment)
+                .hide(homeFragment)
                 .commit();
+        activeFragment = homeFragment;
         activeFragment = searchFragment;
     }
 
