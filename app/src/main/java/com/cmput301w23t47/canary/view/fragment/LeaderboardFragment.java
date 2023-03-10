@@ -22,9 +22,7 @@ import java.util.ArrayList;
 import java.util.Locale;
 
 /**
- * A simple {@link Fragment} subclass.
- * Use the {@link LeaderboardFragment#newInstance} factory method to
- * create an instance of this fragment.
+ * Fragment for the leaderboard
  */
 public class LeaderboardFragment extends Fragment implements
         UpdateLeaderboardCallback {
@@ -36,26 +34,10 @@ public class LeaderboardFragment extends Fragment implements
     private String playerUsername = "";
 
     private FragmentLeaderboardBinding binding;
-    private ProgressDialog progressDialog;
     private FirestoreController firestoreController;
     private LeaderboardRankListAdapter leaderboardRankListAdapter;
 
     public LeaderboardFragment() {}
-
-    public LeaderboardFragment(String playerUsername) {
-        this.playerUsername = playerUsername;
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     * @return A new instance of fragment LeaderboardFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static LeaderboardFragment newInstance() {
-        LeaderboardFragment fragment = new LeaderboardFragment();
-        return fragment;
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -72,8 +54,8 @@ public class LeaderboardFragment extends Fragment implements
 
     private void init() {
         firestoreController = new FirestoreController();
-        progressDialog = new ProgressDialog(getContext());
         firestoreController.getLeaderboard(this);
+        showLoadingBar();
         leaderboardRankListAdapter = new LeaderboardRankListAdapter(getContext(), new ArrayList<>());
         binding.rankingList.setAdapter(leaderboardRankListAdapter);
     }
@@ -82,14 +64,8 @@ public class LeaderboardFragment extends Fragment implements
     public void onHiddenChanged(boolean hidden) {
         if (!hidden && leaderboard == null) {
             firestoreController.getLeaderboard(this);
-            initProgressBar();
+            showLoadingBar();
         }
-    }
-
-    private void initProgressBar() {
-        progressDialog.setTitle(progressBarTitle);
-        progressDialog.setMessage(progressBarMessage);
-        progressDialog.show();
     }
 
     @Override
@@ -101,7 +77,6 @@ public class LeaderboardFragment extends Fragment implements
     @Override
     public void updateLeaderboard(Leaderboard leaderboard) {
         this.leaderboard = leaderboard;
-        progressDialog.dismiss();
         fillLeaderboardInfo();
     }
 
@@ -125,6 +100,20 @@ public class LeaderboardFragment extends Fragment implements
         rankPlayers.clear();
         rankPlayers.addAll(leaderboard.getByScore());
         leaderboardRankListAdapter.notifyDataSetChanged();
+        hideLoadingBar();
     }
 
+    /**
+     * Shows the loading bar
+     */
+    private void showLoadingBar() {
+        binding.progressBarLayout.progressBarBox.setVisibility(View.VISIBLE);
+    }
+
+    /**
+     * Hides the loading bar
+     */
+    private void hideLoadingBar() {
+        binding.progressBarLayout.progressBarBox.setVisibility(View.GONE);
+    }
 }
