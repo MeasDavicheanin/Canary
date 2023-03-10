@@ -21,12 +21,15 @@
             <com.google.android.gms.maps.MapView
                 android:id="@+id/map_display"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="match_parent"
+                android:contentDescription="@string/speakable_map"
+                />
 
             <ImageButton
                 android:layout_width="35dp"
                 android:layout_height="35dp"
                 android:src="@drawable/ic_full_screen_black_24dp"
+                android:contentDescription="@string/speakable_map_image"
                 android:background="@color/White"
                 android:layout_alignParentRight="true"
                 android:layout_alignParentEnd="true"

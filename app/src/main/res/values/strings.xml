@@ -45,4 +45,8 @@
         <item>@string/search_range_nolim</item>
     </string-array>
 
+    <!--Speakable text-->
+    <string name="speakable_map">This is a Google Map That will run when you enter permissions</string>
+    <string name="speakable_map_image">When pressed change the size of the google map</string>
+
 </resources>
