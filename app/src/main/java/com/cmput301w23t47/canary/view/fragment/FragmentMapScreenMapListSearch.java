@@ -128,7 +128,7 @@ public class FragmentMapScreenMapListSearch extends Fragment implements OnMapRea
     //Change activity if item is clicked
     @Override
     public void onItemClicked(int position){
-        //
+        // Need to change the error with the qr activitiy
         Intent intent = new Intent(getActivity(), (QRCODEACTIVITYIDONTKNOWWHERETHISIS) );
         
         // if you want to send the whole qr code then use this one
