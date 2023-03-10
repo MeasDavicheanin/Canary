@@ -1,5 +1,7 @@
 package com.cmput301w23t47.canary.repository;
 
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 
 import com.cmput301w23t47.canary.model.LeaderboardPlayer;

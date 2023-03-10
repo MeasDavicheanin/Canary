@@ -32,6 +32,7 @@ public class QRCodeViewFragment extends Fragment implements GetPlayerQrCallback,
     private PlayerQrCode playerQrCode;
 
     private FragmentQrCodeViewBinding binding;
+    AlertDialog.Builder builder;
 
     private final FirestorePlayerController firestorePlayerController = new FirestorePlayerController();
 
@@ -128,6 +129,7 @@ public class QRCodeViewFragment extends Fragment implements GetPlayerQrCallback,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         binding = FragmentQrCodeViewBinding.inflate(inflater, container, false);
+        builder = new AlertDialog.Builder(getContext());
         initUi();
         return binding.getRoot();
     }
@@ -137,7 +139,12 @@ public class QRCodeViewFragment extends Fragment implements GetPlayerQrCallback,
      */
     private void initUi() {
         binding.qrDeleteIcon.setOnClickListener(view -> {
-            deleteQr();
+            builder.setMessage("Are you sure you want to delete this QR. This will update your score")
+                    .setTitle("Delete QR")
+                    .setCancelable(false)
+                    .setPositiveButton("Yes", (DialogInterface dialog, int id) -> {
+                        deleteQr();
+                    }).create().show();
         });
     }
 

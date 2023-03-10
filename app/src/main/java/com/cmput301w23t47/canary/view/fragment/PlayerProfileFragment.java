@@ -1,25 +1,20 @@
 package com.cmput301w23t47.canary.view.fragment;
 
-import android.app.ProgressDialog;
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
 import android.graphics.Color;
 import android.os.Bundle;
 
 import com.amulyakhare.textdrawable.TextDrawable;
 
 import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.cmput301w23t47.canary.callback.GetPlayerCallback;
-import com.cmput301w23t47.canary.controller.FirestoreController;
 import com.cmput301w23t47.canary.controller.FirestorePlayerController;
 import com.cmput301w23t47.canary.databinding.FragmentPlayerProfileBinding;
 import com.cmput301w23t47.canary.model.Player;
-import com.cmput301w23t47.canary.model.PlayerQrCode;
 import com.cmput301w23t47.canary.view.adapter.QRCodeListAdapter;
 
 import java.util.ArrayList;
@@ -28,9 +23,10 @@ import java.util.ArrayList;
 public class PlayerProfileFragment extends Fragment implements
         GetPlayerCallback {
 
+    public static final String TAG = "PlayerProfileFragment";
+
     private FragmentPlayerProfileBinding binding;
     private FirestorePlayerController firestorePlayerController = new FirestorePlayerController();
-    private ProgressDialog progressDialog;
     private Player player;
     private QRCodeListAdapter qrCodeListAdapter;
     private static final String progressBarTitle = "Loading Player Profile";
@@ -58,7 +54,7 @@ public class PlayerProfileFragment extends Fragment implements
     }
 
     private void init(){
-        progressDialog = new ProgressDialog(getContext());
+        showLoadingBar();
         firestorePlayerController.getCompleteCurrentPlayer(this);
         qrCodeListAdapter = new QRCodeListAdapter(getContext(), new ArrayList<>());
         binding.qrsScannedList.setAdapter(qrCodeListAdapter);
@@ -68,19 +64,14 @@ public class PlayerProfileFragment extends Fragment implements
     public void onHiddenChanged(boolean hidden){
         if(!hidden && player == null){
             firestorePlayerController.getCompleteCurrentPlayer(this);
-            initProgressBar();
+            showLoadingBar();
         }
-    }
-
-    private void initProgressBar() {
-        progressDialog.setTitle(progressBarTitle);
-        progressDialog.setMessage(progressBarMessage);
-        progressDialog.show();
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        player = null;
         binding = null;
     }
 
@@ -106,8 +97,9 @@ public class PlayerProfileFragment extends Fragment implements
         binding.playerQrsScanned.setText(Integer.toString(player.getQrCodes().size()));
         binding.highestQrScore.setText(Long.toString(player.getHighestQr()));
         binding.lowestQrScore.setText(Long.toString(player.getLowestQr()));
-        qrCodeListAdapter.setQrList(player.getQrCodes());
+        qrCodeListAdapter.setQrList(this.player.getQrCodes());
         qrCodeListAdapter.notifyDataSetChanged();
+        hideLoadingBar();
     }
 
 
@@ -115,5 +107,19 @@ public class PlayerProfileFragment extends Fragment implements
     public void getPlayer(Player player) {
         this.player = player;
         updateView();
+    }
+
+    /**
+     * Shows the loading bar
+     */
+    private void showLoadingBar() {
+        binding.progressBarBox.setVisibility(View.VISIBLE);
+    }
+
+    /**
+     * Hides the loading bar
+     */
+    private void hideLoadingBar() {
+        binding.progressBarBox.setVisibility(View.GONE);
     }
 }

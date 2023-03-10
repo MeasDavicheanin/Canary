@@ -41,6 +41,7 @@ public class PlayerQrCodeRepository {
     public void setParsedQrCode(QrCode qrCode, Snapshot locSnap) {
         this.parsedPlayerQrCode.setQrCode(qrCode);
         this.parsedPlayerQrCode.setSnapshot(locSnap);
+        this.parsedPlayerQrCode.setScanDate(scanDate.toDate());
     }
 
     @Exclude

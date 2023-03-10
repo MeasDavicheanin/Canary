@@ -1,6 +1,7 @@
 package com.cmput301w23t47.canary.controller;
 
 import android.os.Handler;
+import android.util.Log;
 
 import com.cmput301w23t47.canary.callback.DoesResourceExistCallback;
 import com.cmput301w23t47.canary.callback.GetPlayerCallback;
@@ -207,7 +208,6 @@ public class FirestorePlayerController extends FirestoreController{
     protected Player retrieveCompletePlayer(String playerDocId) {
         Task<DocumentSnapshot> playerTask = players.document(playerDocId).get();
         PlayerRepository playerRepository = waitForTask(playerTask, PlayerRepository.class);
-
         for (PlayerQrCodeRepository playerQrCodesRepo : playerRepository.getQrCodes()) {
             QrCodeRepository qrCodeRepo = waitForTask(playerQrCodesRepo.getQrCode().get(), QrCodeRepository.class);
             SnapshotRepository snapRepo = null;

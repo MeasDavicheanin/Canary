@@ -12,11 +12,11 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.cmput301w23t47.canary.R;
-import com.cmput301w23t47.canary.model.LeaderboardPlayer;
+import com.cmput301w23t47.canary.controller.QrCodeController;
 import com.cmput301w23t47.canary.model.PlayerQrCode;
-import com.cmput301w23t47.canary.model.QrCode;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 public class QRCodeListAdapter extends ArrayAdapter<PlayerQrCode> {
 
@@ -34,8 +34,15 @@ public class QRCodeListAdapter extends ArrayAdapter<PlayerQrCode> {
      * @param playerQrCodes the new qr list to set
      */
     public void setQrList(ArrayList<PlayerQrCode> playerQrCodes) {
-        playerQrCodes.clear();
-        playerQrCodes.addAll(playerQrCodes);
+        this.playerQrCodesList.clear();
+        this.playerQrCodesList.addAll(playerQrCodes);
+    }
+
+    private String getDisplayName(String qrName) {
+        if (qrName.length() <= 16) {
+            return qrName;
+        }
+        return String.format(Locale.CANADA, "%s...", qrName.substring(0, 13));
     }
 
 
@@ -44,7 +51,7 @@ public class QRCodeListAdapter extends ArrayAdapter<PlayerQrCode> {
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         View view;
         if (convertView == null) {
-            view = LayoutInflater.from(super.getContext()).inflate(R.layout.player_qr_code,parent,false);
+            view = LayoutInflater.from(super.getContext()).inflate(R.layout.content_player_qr_code_list_item,parent,false);
         }else{
             view = convertView;
         }
@@ -52,11 +59,11 @@ public class QRCodeListAdapter extends ArrayAdapter<PlayerQrCode> {
         ImageView qrCodeImage = view.findViewById(R.id.listQrCodeImage);
         // qrCodeImage.setImageBitmap(qr.getSnapshot()); TODO: fix this later
         TextView qrUsername = view.findViewById(R.id.listQrUsername);
-        qrUsername.setText(qr.getName());
+        qrUsername.setText(getDisplayName(qr.getName()));
         TextView qrCodeScore = view.findViewById(R.id.listQrCodeScore);
-        qrCodeScore.setText(Long.toString(qr.getQrCode().getScore()));
+        qrCodeScore.setText(String.format(Locale.CANADA, "%d", qr.retrieveScore()));
         TextView qrCodeScanDateTime = view.findViewById(R.id.listQrCodeScanDateTime);
-//        qrCodeScanDateTime.setText(); TODO: fix this later
+        qrCodeScanDateTime.setText(qr.retrieveDateString());
         return view;
     }
 }

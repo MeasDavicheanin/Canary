@@ -43,5 +43,9 @@
         android:id="@+id/playerProfileFragment"
         android:name="com.cmput301w23t47.canary.view.fragment.PlayerProfileFragment"
         android:label="fragment_player_profile"
-        tools:layout="@layout/fragment_player_profile" />
+        tools:layout="@layout/fragment_player_profile" >
+        <action
+            android:id="@+id/action_qrCodeViewFromPlayerProfile"
+            app:destination="@id/QRCodeView" />
+    </fragment>
 </navigation>
