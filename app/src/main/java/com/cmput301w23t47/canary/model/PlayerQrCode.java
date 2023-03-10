@@ -1,32 +1,71 @@
 package com.cmput301w23t47.canary.model;
-import com.github.javafaker.Faker;
 
-import java.util.ArrayList;
-import java.util.UUID;
+import android.location.Location;
+
+import java.util.Date;
+
+
 /**
  * Class for the QR Code scanned by the Player
  */
-public class PlayerQRCode {
-    // Player who scanned the QR
-    private Player player;
+public class PlayerQrCode {
     // QR Code scanned
-    private QRCode qrCode;
-    // Location of the QR
-    private Location location;
-    // name of the QR
-    private String name;
+    private QrCode qrCode;
     // Snapshot of the QR
     private Snapshot snapshot;
+    // the date when qr was scanned by player
+    private Date scanDate;
+    // whether the location of qr is shared
+    private boolean locationShared;
 
-    Faker faker = new Faker();
-    /**
-     * Constructor for the PlayerQRCode
-     * @param name
-     * @return randomGeneratedName
-     */
-    public String randomNameGen(String name){
-        ArrayList<String> fakerFunctions= new ArrayList<String>();
+    public PlayerQrCode() {}
 
+    public PlayerQrCode(QrCode qrCode, Date date) {
+        this.qrCode = qrCode;
+        this.scanDate = date;
     }
 
+    public QrCode getQrCode() {
+        return qrCode;
+    }
+
+    public void setQrCode(QrCode qrCode) {
+        this.qrCode = qrCode;
+    }
+
+    public Snapshot getSnapshot() {
+        return snapshot;
+    }
+
+    public void setSnapshot(Snapshot snapshot) {
+        this.snapshot = snapshot;
+    }
+
+    public String getName() {return qrCode.getName();}
+
+    public Location getLocation() {return qrCode.getLocation();}
+
+    public Date getScanDate() {
+        return scanDate;
+    }
+
+    public void setScanDate(Date scanDate) {
+        this.scanDate = scanDate;
+    }
+
+    public boolean isLocationShared() {
+        return locationShared;
+    }
+
+    public void setLocationShared(boolean locationShared) {
+        this.locationShared = locationShared;
+    }
+
+    /**
+     * Gets the score for the qr
+     * @return the score of the qr
+     */
+    public long retrieveScore() {
+        return qrCode.getScore();
+    }
 }

@@ -5,13 +5,11 @@ import android.util.Log;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
-import java.util.Arrays;
 
 /**
  * Util controller for interacting with the QR Code
  */
-public class QrCodeUtil {
+public class QrCodeController {
     /**
      * Gets the Hash for the QR
      * Uses the SHA-256 algorithm as the hashing algorithm
@@ -26,5 +24,14 @@ public class QrCodeUtil {
             err.printStackTrace();
             return new byte[0];
         }
+    }
+
+    public static String getHashStrForQr(String qrVal) {
+        byte[] qrHash = QrCodeController.getHashForQr(qrVal);
+        StringBuilder str = new StringBuilder();
+        for (int i = 0; i < qrHash.length; i++) {
+            str.append(qrHash[i]);
+        }
+        return str.toString();
     }
 }
