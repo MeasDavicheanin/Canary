@@ -127,4 +127,11 @@ public class Player {
         return lowest;
     }
 
+    /**
+     * Gets the string to draw for the player
+     * @return the first char of the username
+     */
+    public String retrieveStringToDraw() {
+        return String.valueOf(username.charAt(0));
+    }
 }

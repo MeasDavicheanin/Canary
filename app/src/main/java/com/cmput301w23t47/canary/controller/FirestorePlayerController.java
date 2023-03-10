@@ -9,6 +9,7 @@ import com.cmput301w23t47.canary.callback.OperationStatusCallback;
 import com.cmput301w23t47.canary.callback.GetPlayerQrCallback;
 import com.cmput301w23t47.canary.model.Player;
 import com.cmput301w23t47.canary.model.PlayerQrCode;
+import com.cmput301w23t47.canary.model.Snapshot;
 import com.cmput301w23t47.canary.repository.GetIndexArg;
 import com.cmput301w23t47.canary.repository.PlayerQrCodeRepository;
 import com.cmput301w23t47.canary.repository.PlayerRepository;
@@ -215,11 +216,12 @@ public class FirestorePlayerController extends FirestoreController{
         PlayerRepository playerRepository = waitForTask(playerTask, PlayerRepository.class);
         for (PlayerQrCodeRepository playerQrCodesRepo : playerRepository.getQrCodes()) {
             QrCodeRepository qrCodeRepo = waitForTask(playerQrCodesRepo.getQrCode().get(), QrCodeRepository.class);
-            SnapshotRepository snapRepo = null;
+            Snapshot snap = null;
             if (playerQrCodesRepo.getSnapshot() != null) {
-                snapRepo = waitForTask(playerQrCodesRepo.getSnapshot().get(), SnapshotRepository.class);
+                SnapshotRepository snapRepo = waitForTask(playerQrCodesRepo.getSnapshot().get(), SnapshotRepository.class);
+                snap = snapRepo.retrieveSnapshot();
             }
-            playerQrCodesRepo.setParsedQrCode(qrCodeRepo.retrieveParsedQrCode(), snapRepo.retrieveSnapshot());
+            playerQrCodesRepo.setParsedQrCode(qrCodeRepo.retrieveParsedQrCode(), snap);
         }
 
         // get Complete Player model

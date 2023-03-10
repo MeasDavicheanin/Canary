@@ -61,7 +61,7 @@ public class MainActivityTest {
         Instrumentation.ActivityResult resIntent = IntentTestUtil.getMockResultForScanQrCodeActivity();
         intending(hasComponent(ScanQRCodeActivity.class.getName()))
                 .respondWith(resIntent);
-        solo.clickOnView(solo.getView(R.id.scanQr));
+        solo.clickOnView(solo.getView(R.id.scan_qr));
     }
 
     /**

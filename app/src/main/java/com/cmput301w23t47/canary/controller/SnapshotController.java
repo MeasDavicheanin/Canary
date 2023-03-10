@@ -2,6 +2,9 @@ package com.cmput301w23t47.canary.controller;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
+
+import com.amulyakhare.textdrawable.TextDrawable;
 
 import java.io.ByteArrayOutputStream;
 import java.util.Base64;
@@ -31,5 +34,14 @@ public class SnapshotController {
     public static Bitmap getImage(String base64Image) {
         byte[] imageBytes = Base64.getDecoder().decode(base64Image);
         return BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length);
+    }
+
+    /**
+     * Gets the drawable icon that represents the given string
+     * @param str the string to draw
+     * @return the drawable form of the string
+     */
+    public static TextDrawable getDrawableForString(String str) {
+        return TextDrawable.builder().buildRound(str, Color.BLACK);
     }
 }

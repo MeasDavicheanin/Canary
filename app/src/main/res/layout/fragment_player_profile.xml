@@ -15,7 +15,6 @@
         android:layout_height="wrap_content"
         android:background="@color/light_gray"
         android:orientation="vertical"
-        tools:context=".view.fragment.PlayerProfileFragment"
         >
         <androidx.constraintlayout.widget.ConstraintLayout
             xmlns:android="http://schemas.android.com/apk/res/android"

@@ -63,6 +63,7 @@ public class PlayerRepository {
             playerQrCodes.add(qrRepo.retrieveParsedPlayerQrCode());
         }
         player.setQrCodes(playerQrCodes);
+        player.setScore(this.score);
         return player;
     }
 
