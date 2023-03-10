@@ -1,5 +1,6 @@
 package com.cmput301w23t47.canary.view.fragment;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.os.Bundle;
 
@@ -27,6 +28,7 @@ import java.util.Locale;
 public class LeaderboardFragment extends Fragment implements
         UpdateLeaderboardCallback {
     public static final String TAG = "LeaderboardFragment";
+    public static final String title = "Leaderboard";
     private static final String progressBarTitle = "Loading Leaderboards";
     private static final String progressBarMessage = "Should take only a moment...";
 
@@ -59,6 +61,7 @@ public class LeaderboardFragment extends Fragment implements
         leaderboardRankListAdapter = new LeaderboardRankListAdapter(getContext(), new ArrayList<>());
         binding.rankingList.setAdapter(leaderboardRankListAdapter);
     }
+
 
     @Override
     public void onHiddenChanged(boolean hidden) {
