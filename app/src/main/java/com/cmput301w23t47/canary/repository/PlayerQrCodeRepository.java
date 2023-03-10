@@ -2,6 +2,7 @@ package com.cmput301w23t47.canary.repository;
 
 import com.cmput301w23t47.canary.model.PlayerQrCode;
 import com.cmput301w23t47.canary.model.QrCode;
+import com.cmput301w23t47.canary.model.Snapshot;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.Exclude;
@@ -37,8 +38,9 @@ public class PlayerQrCodeRepository {
         this.qrScore = qrScore;
     }
 
-    public void setParsedQrCode(QrCode qrCode) {
+    public void setParsedQrCode(QrCode qrCode, Snapshot locSnap) {
         this.parsedPlayerQrCode.setQrCode(qrCode);
+        this.parsedPlayerQrCode.setSnapshot(locSnap);
     }
 
     @Exclude

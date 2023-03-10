@@ -8,6 +8,8 @@ import com.cmput301w23t47.canary.model.PlayerQrCode;
 import com.google.firebase.firestore.DocumentId;
 import com.google.firebase.firestore.DocumentReference;
 
+import org.checkerframework.checker.units.qual.A;
+
 import java.util.ArrayList;
 import java.util.Locale;
 
@@ -37,6 +39,19 @@ public class PlayerRepository {
     // Default Constructor
     public PlayerRepository() {
         qrCodes = new ArrayList<>();
+    }
+
+    /**
+     * Constructor to set all attributes
+     */
+    public PlayerRepository(String username, String firstName, String lastName, long score, long maxScoreQr, ArrayList<PlayerQrCodeRepository> qrCodes, long qrCodesSize) {
+        this.username = username;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.score = score;
+        this.maxScoreQr = maxScoreQr;
+        this.qrCodes = qrCodes;
+        this.qrCodesSize = qrCodesSize;
     }
 
     public Player retrieveParsedPlayer() {
@@ -180,5 +195,16 @@ public class PlayerRepository {
     public void removeQrAt(int qrIndex, PlayerQrCode playerQrCode) {
         qrCodes.remove(qrIndex);
         updateStatsAfterRemoveQr(playerQrCode);
+    }
+
+    /**
+     * Retrieves the PlayerRepo model for the player
+     * Note: The qr related information cannot be mapped directly
+     * @param player the player to map
+     * @return the PlayerRepo representation of the model
+     */
+    public static PlayerRepository retrievePlayerRepo(Player player) {
+        return new PlayerRepository(player.getUsername(), player.getFirstName(),
+                player.getLastName(), player.getScore(), 0, new ArrayList<>(), 0);
     }
 }

@@ -1,10 +1,13 @@
 package com.cmput301w23t47.canary.controller;
 
 import android.os.Handler;
+import android.util.Log;
 
 import com.cmput301w23t47.canary.callback.DoesResourceExistCallback;
+import com.cmput301w23t47.canary.callback.GetPlayerCallback;
 import com.cmput301w23t47.canary.callback.OperationStatusCallback;
 import com.cmput301w23t47.canary.callback.GetPlayerQrCallback;
+import com.cmput301w23t47.canary.model.Player;
 import com.cmput301w23t47.canary.model.PlayerQrCode;
 import com.cmput301w23t47.canary.repository.GetIndexArg;
 import com.cmput301w23t47.canary.repository.PlayerQrCodeRepository;
@@ -185,6 +188,59 @@ public class FirestorePlayerController extends FirestoreController{
             waitForUpdateTask(playerUpdateTask);
             firestoreLeaderboardController.updateLeaderboardIfRequired(playerRepo);
         }).start();
+    }
+
+    /**
+     * Gets the complete model for the current player
+     * @param callback the callback to return the response to
+     */
+    public void getCompleteCurrentPlayer(GetPlayerCallback callback) {
+        Handler handler = new Handler();
+        new Thread(() -> {
+            String playerDocId = identifyPlayer();
+            Player player = retrieveCompletePlayer(playerDocId);
+            // return result
+            handler.post(() -> {
+                callback.getPlayer(player);
+            });
+        }).start();
+    }
+
+    protected Player retrieveCompletePlayer(String playerDocId) {
+        Task<DocumentSnapshot> playerTask = players.document(playerDocId).get();
+        PlayerRepository playerRepository = waitForTask(playerTask, PlayerRepository.class);
+
+        for (PlayerQrCodeRepository playerQrCodesRepo : playerRepository.getQrCodes()) {
+            QrCodeRepository qrCodeRepo = waitForTask(playerQrCodesRepo.getQrCode().get(), QrCodeRepository.class);
+            SnapshotRepository snapRepo = null;
+            if (playerQrCodesRepo.getSnapshot() != null) {
+                snapRepo = waitForTask(playerQrCodesRepo.getSnapshot().get(), SnapshotRepository.class);
+            }
+            playerQrCodesRepo.setParsedQrCode(qrCodeRepo.retrieveParsedQrCode(), snapRepo.retrieveSnapshot());
+        }
+
+        // get Complete Player model
+        return playerRepository.retrieveParsedPlayer();
+    }
+
+    /**
+     * Creates the player
+     * @param player the player to save
+     */
+    public void createPlayer(Player player, OperationStatusCallback callback) {
+        Handler handler = new Handler();
+        new Thread(() -> {
+            String playerDocId = identifyPlayer();
+            PlayerRepository playerRepo = PlayerRepository.retrievePlayerRepo(player);
+            // save the player
+            Task<Void> saveTask = players.document(playerDocId).set(playerRepo);
+            waitForUpdateTask(saveTask);
+            handler.post(() -> {
+                callback.operationStatus(true);
+            });
+        }).start();
+
+
     }
 
     /**

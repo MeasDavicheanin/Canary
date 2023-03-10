@@ -29,6 +29,16 @@ public class QRCodeListAdapter extends ArrayAdapter<PlayerQrCode> {
 
     public ArrayList<PlayerQrCode> getPlayerQrCodesList() {return playerQrCodesList;}
 
+    /**
+     * Sets the qr list in the adapter
+     * @param playerQrCodes the new qr list to set
+     */
+    public void setQrList(ArrayList<PlayerQrCode> playerQrCodes) {
+        playerQrCodes.clear();
+        playerQrCodes.addAll(playerQrCodes);
+    }
+
+
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
