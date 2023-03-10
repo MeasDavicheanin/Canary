@@ -111,7 +111,7 @@ public class MainActivity extends AppCompatActivity implements
                 .setReorderingAllowed(true)
                 .add(R.id.fragment_container_view_main, homeFragment, homeFragment.TAG)
                 .add(R.id.fragment_container_view_main, leaderboardFragment,leaderboardFragment.TAG)
-                .add(R.id.fragment_container_view_main, searchFragment, SearchFragment.TAG)
+                .add(R.id.fragment_container_view_main, searchFragment, searchFragment.TAG)
                 .hide(leaderboardFragment)
                 .hide(homeFragment)
                 .commit();
