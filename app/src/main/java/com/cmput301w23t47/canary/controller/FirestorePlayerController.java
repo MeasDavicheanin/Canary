@@ -244,8 +244,24 @@ public class FirestorePlayerController extends FirestoreController{
                 callback.operationStatus(true);
             });
         }).start();
+    }
 
-
+    /**
+     * Determines whether the current player exists in db
+     * @param callback the callback to return the result
+     *                 called with true if player exists; false otherwise
+     */
+    public void doesCurrentPlayerExist(OperationStatusCallback callback) {
+        Handler handler = new Handler();
+        new Thread(() -> {
+            String playerDocId = identifyPlayer();
+            Log.d(TAG, "doesCurrentPlayerExist: " + playerDocId);
+            Task<DocumentSnapshot> playerTask = players.document(playerDocId).get();
+            waitForTask(playerTask);
+            handler.post(() -> {
+                callback.operationStatus(playerTask.getResult().exists());
+            });
+        }).start();
     }
 
     /**

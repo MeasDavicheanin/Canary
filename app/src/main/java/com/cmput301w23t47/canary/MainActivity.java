@@ -54,11 +54,7 @@ import com.google.firebase.auth.FirebaseAuth;
  * Main Acitvity
  * @author Meharpreet Singh Nanda
  */
-public class MainActivity extends AppCompatActivity implements
-//        UpdatePlayerCallback,
-        //View.OnClickListener,
-        NavbarController.NavigateToPage {
-    
+public class MainActivity extends AppCompatActivity {
     private ActivityMainBinding binding;
     private AppBarConfiguration appBarConfiguration;
     
@@ -78,6 +74,7 @@ public class MainActivity extends AppCompatActivity implements
     // TODO: Get the actual Playername
     private String playerPlayername = "jamesk";
     
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate( savedInstanceState );
@@ -96,24 +93,6 @@ public class MainActivity extends AppCompatActivity implements
     }
     
     /**
-     * Initializes the fragment stack
-     */
-    private void initFragmentStack() {
-        if ( homeFragment == null ) {
-            homeFragment = new HomeFragment();
-            leaderboardFragment = new LeaderboardFragment( playerPlayername );
-        }
-        getSupportFragmentManager().beginTransaction()
-              .setReorderingAllowed( true )
-              .add( R.id.fragment_container_view, homeFragment, HomeFragment.TAG )
-              .add( R.id.fragment_container_view, leaderboardFragment, LeaderboardFragment.TAG )
-              .hide( leaderboardFragment )
-              .commit();
-        activeFragment = homeFragment;
-    }
-    
-    /**
-     * Initializes the navbar
      * Initializes the navbar (bottom and top)
      */
     private void initNavbar() {
