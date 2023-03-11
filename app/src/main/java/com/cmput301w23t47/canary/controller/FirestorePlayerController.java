@@ -22,6 +22,8 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.util.ArrayList;
+
 /**
  * Firestore controller for interacting with Player model
  */
@@ -249,10 +251,23 @@ public class FirestorePlayerController extends FirestoreController{
 
     /**
      * Gets the list of players
-     * @param callback
+     * @param callback the callback to call when list available
      */
     public void getListOfPlayers(GetPlayerListCallback callback) {
-
+        Handler handler = new Handler();
+        new Thread(() -> {
+            Task<QuerySnapshot> playersTask = players.get();
+            waitForQuery(playersTask);
+            ArrayList<Player> playerList = new ArrayList<>();
+            // map all players to object
+            for (DocumentSnapshot playerDoc : playersTask.getResult().getDocuments()) {
+                playerList.add(playerDoc.toObject(PlayerRepository.class)
+                        .retrieveParsedPlayer());
+            }
+            handler.post(() -> {
+               callback.getPlayerList(playerList);
+            });
+        }).start();
     }
 
     /**

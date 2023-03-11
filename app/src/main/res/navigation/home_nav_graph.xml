@@ -68,4 +68,9 @@
             android:id="@+id/action_createProfileToHome"
             app:destination="@id/homeFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/playerSearchFragment"
+        android:name="com.cmput301w23t47.canary.view.fragment.PlayerSearchFragment"
+        android:label="Search Player"
+        tools:layout="@layout/fragment_player_search" />
 </navigation>
