@@ -113,11 +113,6 @@ public class MainActivity extends AppCompatActivity {
               || super.onSupportNavigateUp();
     }
     
-    @Override
-    public void navigateToProfile() {
-    
-    }
-    
     
     //Start of the permission code as well as the location code
     
