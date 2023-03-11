@@ -214,6 +214,21 @@ public class FirestorePlayerController extends FirestoreController{
         }).start();
     }
 
+    /**
+     * Gets the complete model for the foreign player
+     * @param callback the callback to return the response to
+     */
+    public void getCompleteForeignPlayer(String playerDocId, GetPlayerCallback callback) {
+        Handler handler = new Handler();
+        new Thread(() -> {
+            Player player = retrieveCompletePlayer(playerDocId);
+            // return result
+            handler.post(() -> {
+                callback.getPlayer(player);
+            });
+        }).start();
+    }
+
     protected Player retrieveCompletePlayer(String playerDocId) {
         Task<DocumentSnapshot> playerTask = players.document(playerDocId).get();
         PlayerRepository playerRepository = waitForTask(playerTask, PlayerRepository.class);

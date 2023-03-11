@@ -89,7 +89,7 @@ public class PlayerSearchFragment extends Fragment implements GetPlayerListCallb
      */
     private void navigateToSelectedPlayer(Player player) {
         PlayerSearchFragmentDirections.ActionAllPlayersToPlayerProfile action =
-                PlayerSearchFragmentDirections.actionAllPlayersToPlayerProfile(player.getUsername());
+                PlayerSearchFragmentDirections.actionAllPlayersToPlayerProfile(player.getUniquePlayerId());
         Navigation.findNavController(getView()).navigate(action);
     }
 
