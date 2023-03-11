@@ -8,6 +8,8 @@ import androidx.navigation.ui.NavigationUI;
 
 import android.os.Bundle;
 
+import com.cmput301w23t47.canary.databinding.ActivityMainBinding;
+
 
 /**
  * Main Acitvity
