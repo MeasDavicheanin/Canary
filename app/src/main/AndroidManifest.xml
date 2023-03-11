@@ -35,12 +35,6 @@ This allows access to the precise device location
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
-        <activity
-            android:name=".MapScreenTemp"
-            android:exported="false" />
-        <activity
-            android:name=".ActivityMapScreen"
-            android:exported="false" />
 
         <uses-library
             android:name="org.apache.http.legacy"
