@@ -42,11 +42,32 @@
     <fragment
         android:id="@+id/playerProfileFragment"
         android:name="com.cmput301w23t47.canary.view.fragment.PlayerProfileFragment"
-        android:label="Profile"
+        android:label="Player Profile"
         tools:layout="@layout/fragment_player_profile" >
         <action
             android:id="@+id/action_qrCodeViewFromPlayerProfile"
             app:destination="@id/QRCodeView" />
+        <argument
+            android:name="currentPlayer"
+            app:argType="boolean"
+            android:defaultValue="true" />
+        <argument
+            android:name="username"
+            app:argType="string"
+            android:defaultValue="NA" />
+    </fragment>
+    <fragment
+        android:id="@+id/anotherPlayerProfileFragment"
+        android:name="com.cmput301w23t47.canary.view.fragment.PlayerProfileFragment"
+        android:label="Player Profile"
+        tools:layout="@layout/fragment_player_profile">
+        <argument
+            android:name="username"
+            app:argType="string" />
+        <argument
+            android:name="currentPlayer"
+            app:argType="boolean"
+            android:defaultValue="false" />
     </fragment>
     <fragment
         android:id="@+id/splashFragment"
@@ -72,5 +93,10 @@
         android:id="@+id/playerSearchFragment"
         android:name="com.cmput301w23t47.canary.view.fragment.PlayerSearchFragment"
         android:label="Search Player"
-        tools:layout="@layout/fragment_player_search" />
+        tools:layout="@layout/fragment_player_search" >
+
+        <action
+            android:id="@+id/action_allPlayersToPlayerProfile"
+            app:destination="@id/anotherPlayerProfileFragment" />
+    </fragment>
 </navigation>

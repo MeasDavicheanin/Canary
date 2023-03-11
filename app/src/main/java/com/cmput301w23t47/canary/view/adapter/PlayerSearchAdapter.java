@@ -8,6 +8,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.cmput301w23t47.canary.R;
+import com.cmput301w23t47.canary.callback.GetIndexCallback;
+import com.cmput301w23t47.canary.callback.GetPlayerCallback;
 import com.cmput301w23t47.canary.model.Player;
 
 import java.util.ArrayList;
@@ -16,11 +18,17 @@ import java.util.Locale;
 
 public class PlayerSearchAdapter extends RecyclerView.Adapter<PlayerSearchAdapter.ViewHolder>{
     private ArrayList<Player> players;
+    private GetIndexCallback callback;
     //constructor
-    public PlayerSearchAdapter(ArrayList<Player> players) {
+    public PlayerSearchAdapter(ArrayList<Player> players, GetIndexCallback callback) {
         this.players = players;
+        this.callback = callback;
     }
 
+    /**
+     * Updates the list view
+     * @param filteredList the new list to display
+     */
     public void filterList(ArrayList<Player> filteredList) {
         players = filteredList;
         notifyDataSetChanged();
@@ -30,7 +38,7 @@ public class PlayerSearchAdapter extends RecyclerView.Adapter<PlayerSearchAdapte
     @Override
     public PlayerSearchAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.player_search_item, parent, false);
-        return new ViewHolder(view);
+        return new ViewHolder(view, callback);
     }
 
     @Override
@@ -61,14 +69,29 @@ public class PlayerSearchAdapter extends RecyclerView.Adapter<PlayerSearchAdapte
         notifyDataSetChanged();
     }
 
+    /**
+     * Gets the item at the given position
+     * @param pos the position to get the item at
+     * @return the player object at that position
+     */
+    public Player getItemAt(int pos) {
+        if (pos >= players.size()) {
+            return null;
+        }
+        return players.get(pos);
+    }
+
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         private final TextView playerName;
         private final TextView playerScore;
 
-        public ViewHolder(@NonNull View itemView) {
+        public ViewHolder(@NonNull View itemView, GetIndexCallback getIndexCallback) {
             super(itemView);
             playerName=itemView.findViewById(R.id.player_list_username);
+            itemView.setOnClickListener(view -> {
+                getIndexCallback.getIndex(getAdapterPosition());
+            });
             playerScore=itemView.findViewById(R.id.player_list_score);
         }
     }

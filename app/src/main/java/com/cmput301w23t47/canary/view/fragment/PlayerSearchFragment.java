@@ -2,15 +2,22 @@ package com.cmput301w23t47.canary.view.fragment;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.cmput301w23t47.canary.R;
+import com.cmput301w23t47.canary.callback.GetIndexCallback;
+import com.cmput301w23t47.canary.callback.GetPlayerCallback;
 import com.cmput301w23t47.canary.callback.GetPlayerListCallback;
 import com.cmput301w23t47.canary.controller.FirestorePlayerController;
 import com.cmput301w23t47.canary.databinding.FragmentPlayerSearchBinding;
@@ -22,7 +29,8 @@ import java.util.ArrayList;
 /**
  * The fragment for searching the player
  */
-public class PlayerSearchFragment extends Fragment implements GetPlayerListCallback {
+public class PlayerSearchFragment extends Fragment implements GetPlayerListCallback,
+        GetIndexCallback {
     public PlayerSearchFragment() {
     }
 
@@ -50,15 +58,39 @@ public class PlayerSearchFragment extends Fragment implements GetPlayerListCallb
      * Initializes the view
      */
     private void init() {
-        searchAdapter = new PlayerSearchAdapter(players);
+        searchAdapter = new PlayerSearchAdapter(players, this);
         binding.searchResultList.setAdapter(searchAdapter);
         binding.searchResultList.setHasFixedSize(true);
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(binding.searchResultList.getContext(),
                 DividerItemDecoration.VERTICAL);
         dividerItemDecoration.setDrawable(ContextCompat.getDrawable(getContext(), R.drawable.divider_shape));
         binding.searchResultList.addItemDecoration(dividerItemDecoration);
+        setOnClickListeners();
         firestorePlayerController.getListOfPlayers(this);
         showLoadingBar();
+    }
+
+    /**
+     * Sets the click listeners to the views
+     */
+    private void setOnClickListeners() {
+        binding.searchResultList.setOnClickListener(view -> {
+            Log.d("TAG", "setOnClickListeners: Clicked");
+            int itemPos = binding.searchResultList.getChildLayoutPosition(view);
+            Player selectedPlayer = searchAdapter.getItemAt(itemPos);
+            if (selectedPlayer != null) {
+                navigateToSelectedPlayer(selectedPlayer);
+            }
+        });
+    }
+
+    /**
+     * Navigates to the selected player
+     */
+    private void navigateToSelectedPlayer(Player player) {
+        PlayerSearchFragmentDirections.ActionAllPlayersToPlayerProfile action =
+                PlayerSearchFragmentDirections.actionAllPlayersToPlayerProfile(player.getUsername());
+        Navigation.findNavController(getView()).navigate(action);
     }
 
         @Override
@@ -102,5 +134,13 @@ public class PlayerSearchFragment extends Fragment implements GetPlayerListCallb
      */
     private void hideLoadingBar() {
         binding.progressBarBox.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void getIndex(int ind) {
+        Player selPlayer = searchAdapter.getItemAt(ind);
+        if (selPlayer != null) {
+            navigateToSelectedPlayer(selPlayer);
+        }
     }
 }
