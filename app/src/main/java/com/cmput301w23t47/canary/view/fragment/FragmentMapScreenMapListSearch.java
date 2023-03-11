@@ -43,6 +43,11 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 
@@ -56,7 +61,7 @@ import static com.cmput301w23t47.canary.Constants.MAPVIEW_BUNDLE_KEY;
  *
  *
  */
-public class FragmentMapScreenMapListSearch extends Fragment implements OnMapReadyCallback, View.OnClickListener, RecyclerViewInterface {
+public class FragmentMapScreenMapListSearch extends Fragment implements OnMapReadyCallback, View.OnClickListener, RecyclerViewInterface{
 
     //constants
     private static final String TAG = "Map_Activity_Screen_map_and_list";
@@ -110,8 +115,13 @@ public class FragmentMapScreenMapListSearch extends Fragment implements OnMapRea
         return new FragmentMapScreenMapListSearch();
     }
     
-
-
+    
+    /**
+     * This is the first method that is called when the fragment is created
+     * it will get the basics started
+     * @param savedInstanceState If the fragment is being re-created from
+     * a previous saved state, this is the state.
+     */
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -128,7 +138,13 @@ public class FragmentMapScreenMapListSearch extends Fragment implements OnMapRea
 
     }
     
+    
     //Change activity if item is clicked
+    /**
+     * This method is called when an item in the recycler view is clicked
+     * should change the activity to the qr code view
+     * @param position the position of the item that was clicked
+     */
     @Override
     public void onItemClicked(int position){
         // Need to change the error with the qr activitiy
@@ -146,6 +162,10 @@ public class FragmentMapScreenMapListSearch extends Fragment implements OnMapRea
         startActivity(intent);
     }
 
+      /**
+      * This is used to initialize the map , recycler view, dropdown menu
+      * and allow realtime updates
+      */
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -163,6 +183,10 @@ public class FragmentMapScreenMapListSearch extends Fragment implements OnMapRea
     }
 
 
+    /**
+     * This is used to initialize the map
+     * and allow realtime updates
+     */
     @Override
     public void onResume() {
         super.onResume();
@@ -189,7 +213,12 @@ public class FragmentMapScreenMapListSearch extends Fragment implements OnMapRea
         mMapView.onPause();
         super.onPause();
     }
-
+    
+    /**
+     * used to destroy the map
+     * when it is no longer needed likely on the exiting of the app
+     * this is used to make sure that the map is not updating
+     */
     @Override
     public void onDestroy() {
         mMapView.onDestroy();
@@ -197,6 +226,10 @@ public class FragmentMapScreenMapListSearch extends Fragment implements OnMapRea
         stopLocationUpdates();
     }
 
+    /**
+     * this is used to make sure that the map is not updating
+     * when the app is not in use
+     */
     @Override
     public void onLowMemory() {
         super.onLowMemory();
@@ -204,6 +237,12 @@ public class FragmentMapScreenMapListSearch extends Fragment implements OnMapRea
     }
     
     //map methods
+    
+    /**
+     * this is a way to bind the camera on the map
+     * this is used to make sure that the camera when first opens
+     * is centered on the user
+     */
     private void setCameraView(){
     
         double bottomBoundary = mUserPosition.getLatitude() - .1;
@@ -219,6 +258,12 @@ public class FragmentMapScreenMapListSearch extends Fragment implements OnMapRea
         mGoogleMap.moveCamera( CameraUpdateFactory.newLatLngBounds(mMapBoundary, 0));
     }
     
+    /**
+     * this is where the map is set up
+     * makes sure that we have all required permissions and then sets the map up
+     * also places the markers on the map
+     * @param map
+     */
     @Override
     public void onMapReady(GoogleMap map) {
         if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)
@@ -233,7 +278,7 @@ public class FragmentMapScreenMapListSearch extends Fragment implements OnMapRea
         for (int i = 0; i < mSearchResultsCopy.size(); i++) {
             map.addMarker(new MarkerOptions()
                   .position(new LatLng(mSearchResultsCopy.get(i).getLocation().getLatitude(), mSearchResultsCopy.get(i).getLocation().getLongitude()))
-                  .title( mSearchResults.get(i).getScoreString() ));
+                  .title( mSearchResultsCopy.get(i).getScoreString() ));
             
         }
         
@@ -242,6 +287,11 @@ public class FragmentMapScreenMapListSearch extends Fragment implements OnMapRea
         setCameraView();
     }
     
+    /**
+     * Saves the state of the map when the activity is paused.
+     *
+     * @param outState Bundle in which to place your saved state.
+     */
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
@@ -256,10 +306,9 @@ public class FragmentMapScreenMapListSearch extends Fragment implements OnMapRea
     }
     
     
-    
     //init methods
     /**
-     * This is a temporary proof of concept function
+     * This method is used to initialize the drop down menu items
      */
     public void initMapSearchRangeCheck(){
         mglobalQRList = new WorldQRLIST().getQrList();
@@ -312,12 +361,20 @@ public class FragmentMapScreenMapListSearch extends Fragment implements OnMapRea
         }
         
     }
+    /**
+     * Initialize the recycler view that will display the list of qr codes
+     * this will need to be changed to display the list of qr codes based on search range
+     */
     private void initMapListRecyclerView() {
         mMapAdapterRecyclerViews = new Map_Adapter_RecyclerViews(mSearchResults,this);
         mMapListRecyclerView.setAdapter(mMapAdapterRecyclerViews);
         mMapListRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
     }
     
+    /**
+     * Initialize the google map on the screen
+     * @param savedInstanceState
+     */
     private void initGoogleMap(Bundle savedInstanceState){
         // *** IMPORTANT ***
         // MapView requires that the Bundle you pass contain _ONLY_ MapView SDK
@@ -331,6 +388,11 @@ public class FragmentMapScreenMapListSearch extends Fragment implements OnMapRea
         
         mMapView.getMapAsync(this);
     }
+    
+    /**
+     * Show a dropdown menu of the search range options
+     * allows the user to select a range
+     */
     public void initDropDownMenuItems(){
         mSearchBar = (AutoCompleteTextView) getActivity().findViewById(R.id.map_search_range_dropdown_menu);
         mSearchRangeAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, mSearchRange);
@@ -345,33 +407,29 @@ public class FragmentMapScreenMapListSearch extends Fragment implements OnMapRea
         });
     }
     
-
-    
-    //clicking on a map marker
-    //not needed this would cause a marekr dialog to open not
-//    public void OnInfoClickListener(){
-//        mGoogleMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
-//            @Override
-//            public void onInfoWindowClick(Marker marker) {
-//                Log.d(TAG, "onInfoWindowClick: clicked on marker");
-//                Toast.makeText(getActivity(), "clicked on marker", Toast.LENGTH_SHORT).show();
-//            }
-//        });
-//    }
     
     
     // Real Time Updates
+    /**
+     * starts the runnable that retrieves the users location
+     * ie with this on the map will update your location as you move
+     */
     private void startUserLocationsRunnable(){
         Log.d(TAG, "startUserLocationsRunnable: starting runnable for retrieving updated locations.");
         mHandler.postDelayed(mRunnable = new Runnable() {
             @Override
             public void run() {
+                // this code might not need to be here but it is a good idea to have it here
                 initMapSearchRangeCheck();
                 mHandler.postDelayed(mRunnable, LOCATION_UPDATE_INTERVAL);
             }
         }, LOCATION_UPDATE_INTERVAL);
     }
     
+    /**
+     * stops the runnable that retrieves the users location
+     * ie with this off you could walk to the end of the country but the map wouldnt update your location
+     */
     private void stopLocationUpdates(){
         mHandler.removeCallbacks(mRunnable);
     }
@@ -379,6 +437,10 @@ public class FragmentMapScreenMapListSearch extends Fragment implements OnMapRea
     //change the size of the map
     
     
+    /**
+     * this method is called whenever the user clicks on the button to expand or contract the map
+     * @param v The view that was clicked.
+     */
     @Override
     public void onClick(View v) {
         switch(v.getId()){
@@ -396,6 +458,10 @@ public class FragmentMapScreenMapListSearch extends Fragment implements OnMapRea
         }
     }
     
+    /**
+     * This method expands the map and contracts the recycler view
+     * so that instead of the map and recycler sharing a screen the map is full screen
+     */
     private void expandMapAnimation(){
         ViewWeightAnimationWrapper mapAnimationWrapper = new ViewWeightAnimationWrapper(mMapContainer);
         ObjectAnimator mapAnimation = ObjectAnimator.ofFloat(mapAnimationWrapper,
@@ -415,6 +481,10 @@ public class FragmentMapScreenMapListSearch extends Fragment implements OnMapRea
         mapAnimation.start();
     }
     
+    /**
+     * This method contracts the map and expands the recycler view
+     * so that instead of the map being full screen it and the recycler view share a screen
+     */
     private void contractMapAnimation(){
         ViewWeightAnimationWrapper mapAnimationWrapper = new ViewWeightAnimationWrapper(mMapContainer);
         ObjectAnimator mapAnimation = ObjectAnimator.ofFloat(mapAnimationWrapper,

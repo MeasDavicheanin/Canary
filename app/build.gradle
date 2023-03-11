@@ -78,6 +78,7 @@ dependencies {
 
     //Google map Implementation
     implementation 'com.google.android.gms:play-services-maps:18.1.0'
+    implementation 'androidx.recyclerview:recyclerview:1.3.0'
     // I dont know if we need this
     // but implementing anyways only thing that is being suggested that I dont have
     //implementation 'com.google.android.gms:play-services-location:21.0.1'
