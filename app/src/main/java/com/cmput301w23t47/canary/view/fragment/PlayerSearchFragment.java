@@ -39,6 +39,7 @@ public class PlayerSearchFragment extends Fragment implements GetPlayerListCallb
     FirestorePlayerController firestorePlayerController = new FirestorePlayerController();
     PlayerSearchAdapter searchAdapter;
     ArrayList<Player> players = new ArrayList<>();
+    ArrayList<Player> filteredPlayers = new ArrayList<>();
 
 
     @Override
@@ -82,6 +83,37 @@ public class PlayerSearchFragment extends Fragment implements GetPlayerListCallb
                 navigateToSelectedPlayer(selectedPlayer);
             }
         });
+
+        binding.searchPlayerButton.setOnClickListener(view -> {
+            searchPlayerList(binding.searchPlayerText.getText().toString());
+        });
+    }
+
+    /**
+     * Shows all the players
+     */
+    private void showAllPlayers() {
+        binding.searchResultHeading.setText("All Players");
+        searchAdapter.updateList(players);
+    }
+
+    /**
+     * Searches the player list and updates the view
+     */
+    private void searchPlayerList(String searchText) {
+        if (searchText.equals("")) {
+            showAllPlayers();
+            return;
+        }
+        filteredPlayers.clear();
+        for (Player player : players) {
+            if (player.getUsername().contains(searchText)) {
+                filteredPlayers.add(player);
+            }
+        }
+        binding.searchResultHeading.setText(searchText);
+        binding.searchPlayerText.setText("");
+        searchAdapter.updateList(filteredPlayers);
     }
 
     /**
@@ -108,6 +140,8 @@ public class PlayerSearchFragment extends Fragment implements GetPlayerListCallb
     @Override
     public void getPlayerList(ArrayList<Player> players) {
         this.players = players;
+        filteredPlayers.clear();
+        filteredPlayers.addAll(players);
         updatePlayersList();
     }
 
@@ -118,7 +152,7 @@ public class PlayerSearchFragment extends Fragment implements GetPlayerListCallb
         if (this.players == null) {
             return;
         }
-        searchAdapter.updateList(players);
+        showAllPlayers();
         hideLoadingBar();
     }
 
