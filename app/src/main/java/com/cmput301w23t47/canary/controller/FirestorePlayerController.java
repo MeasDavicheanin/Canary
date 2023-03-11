@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.cmput301w23t47.canary.callback.DoesResourceExistCallback;
 import com.cmput301w23t47.canary.callback.GetPlayerCallback;
+import com.cmput301w23t47.canary.callback.GetPlayerListCallback;
 import com.cmput301w23t47.canary.callback.OperationStatusCallback;
 import com.cmput301w23t47.canary.callback.GetPlayerQrCallback;
 import com.cmput301w23t47.canary.model.Player;
@@ -244,6 +245,14 @@ public class FirestorePlayerController extends FirestoreController{
                 callback.operationStatus(true);
             });
         }).start();
+    }
+
+    /**
+     * Gets the list of players
+     * @param callback
+     */
+    public void getListOfPlayers(GetPlayerListCallback callback) {
+
     }
 
     /**

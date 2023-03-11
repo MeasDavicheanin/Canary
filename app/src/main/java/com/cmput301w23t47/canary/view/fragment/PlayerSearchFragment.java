@@ -10,7 +10,7 @@ import com.cmput301w23t47.canary.view.adapter.PlayerSeachAdapter;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SearchFragment extends Fragment{
+public class PlayerSearchFragment extends Fragment{
     public static final String TAG ="SearchFragment" ;
     private RecyclerView searchResult;
 
