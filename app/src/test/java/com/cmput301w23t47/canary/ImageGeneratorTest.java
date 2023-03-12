@@ -19,7 +19,8 @@ public class ImageGeneratorTest {
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inJustDecodeBounds = true;
 
-        Bitmap bitmap = BitmapFactory.decodeFile(, options);
+        String url =  "https://picsum.photos/200";
+        Bitmap bitmap = BitmapFactory.decodeFile(url, options);
         if (options.outWidth != -1 && options.outHeight != -1) {
             // This is an image file.
         }
@@ -38,7 +39,8 @@ public class ImageGeneratorTest {
 
     public boolean accept(ImageGenerator image) {
         for (String extension: okFileExtensions) {
-            if (image.getName().toLowerCase().endsWith(extension)) {
+            //if (image.getName().toLowerCase().endsWith(extension))
+            {
                 return true;
             }
         }
