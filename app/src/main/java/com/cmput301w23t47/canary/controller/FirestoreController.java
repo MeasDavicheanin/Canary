@@ -40,6 +40,9 @@ import java.util.concurrent.ExecutionException;
  */
 public class FirestoreController {
     public static boolean testMode = false;
+    private static String testPlayer = "fzDzmMoLTOCxpMD8fGjVms";
+    public static boolean firstTimeTester = false;
+    private static String firstTimeTestPlayer = "testPlayerFirst";
     protected static final FirebaseFirestore db = FirebaseFirestore.getInstance();
     protected static final CollectionReference players = db.collection("Player");
     protected final CollectionReference qrCodes = db.collection("QRCode");
@@ -202,7 +205,7 @@ public class FirestoreController {
      * Gets the unique id for the player
      */
     public static void identifyPlayer(OnSuccessListener<String> successListener, OnFailureListener failureListener) {
-        if(testMode) successListener.onSuccess("fzDzmMoLTOCxpMD8fGjVms");
+        if(testMode) successListener.onSuccess(testPlayer);
         else {
             FirebaseInstallations firebaseInstallations = FirebaseInstallations.getInstance();
             firebaseInstallations.getId().addOnSuccessListener(installationId -> {
@@ -228,7 +231,8 @@ public class FirestoreController {
      * @return the doc if for player
      */
     protected String identifyPlayer() {
-        if(testMode) return "fzDzmMoLTOCxpMD8fGjVms";
+        if(firstTimeTester) return firstTimeTestPlayer;
+        if(testMode) return testPlayer;
         FirebaseInstallations firebaseInstallations = FirebaseInstallations.getInstance();
         Task<String> idTask = firebaseInstallations.getId();
         waitForGeneralTask(idTask);
