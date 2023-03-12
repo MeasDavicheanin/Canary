@@ -1,7 +1,6 @@
 package com.cmput301w23t47.canary;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -10,9 +9,6 @@ import androidx.navigation.ui.NavigationUI;
 import android.os.Bundle;
 
 import com.cmput301w23t47.canary.databinding.ActivityMainBinding;
-import com.cmput301w23t47.canary.view.fragment.HomeFragment;
-import com.cmput301w23t47.canary.view.fragment.LeaderboardFragment;
-import com.cmput301w23t47.canary.view.fragment.SearchFragment;
 
 
 /**
