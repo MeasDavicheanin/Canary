@@ -3,18 +3,17 @@ package com.cmput301w23t47.canary.view.contract;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 
 import androidx.activity.result.contract.ActivityResultContract;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.cmput301w23t47.canary.view.activity.CaptureSnapshotActivity;
 import com.cmput301w23t47.canary.view.activity.ScanQRCodeActivity;
 
-/**
- * Contract for launching the QR Code activity
- */
-public class QrCodeContract extends ActivityResultContract<Object, String> {
-    static public final String RESPONSE_TAG = "QrCodeContractResp";
+public class SnapshotContract extends ActivityResultContract<Object, Bitmap> {
+    static public final String RESPONSE_TAG = "SnapshotContractResp";
 
     /**
      * Creates the intent for launching the application
@@ -22,7 +21,7 @@ public class QrCodeContract extends ActivityResultContract<Object, String> {
     @NonNull
     @Override
     public Intent createIntent(@NonNull Context context, Object o) {
-        return new Intent(context, ScanQRCodeActivity.class);
+        return new Intent(context, CaptureSnapshotActivity.class);
     }
 
     /**
@@ -30,9 +29,9 @@ public class QrCodeContract extends ActivityResultContract<Object, String> {
      * @return the result string
      */
     @Override
-    public String parseResult(int i, @Nullable Intent intent) {
+    public Bitmap parseResult(int i, @Nullable Intent intent) {
         if (i == Activity.RESULT_OK) {
-            return intent.getStringExtra(RESPONSE_TAG);
+            return (Bitmap) intent.getExtras().get(RESPONSE_TAG);
         }
         return null;
     }

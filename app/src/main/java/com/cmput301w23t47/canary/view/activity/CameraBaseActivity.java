@@ -45,23 +45,9 @@ import java.util.concurrent.ExecutorService;
  */
 abstract public class CameraBaseActivity extends AppCompatActivity {
     protected static final String[] CAM_PERMISSIONS = {Manifest.permission.CAMERA};
-
-    protected ActivityScanQrcodeBinding binding;
-
-    protected BarcodeScanner qrScanner;
-    protected ExecutorService cameraExecutor;
-
     protected int REQUEST_CODE_PERMISSIONS = 10;
 
     protected static final String TAG = "CameraBaseActivity";
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        binding = ActivityScanQrcodeBinding.inflate(getLayoutInflater());
-        setContentView(binding.getRoot());
-        init();
-    }
 
     abstract protected void init();
 

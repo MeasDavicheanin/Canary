@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="utf-8"?>
+    <androidx.constraintlayout.widget.ConstraintLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/playerConstraint"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="32dp"
+        android:layout_marginRight="32dp"
+        android:background="@drawable/upper_rounded_corners"
+        android:paddingBottom="32dp">
+
+        <LinearLayout
+            android:id="@+id/playerLayout"
+            android:layout_width="303dp"
+            android:layout_height="92dp"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="25dp"
+            android:layout_marginEnd="32dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:weightSum="1"
+            >
+
+            <ImageView
+                android:id="@+id/playerImage"
+                android:layout_width="74dp"
+                android:layout_height="76dp"
+                android:src="@drawable/person_icon"
+                android:background="@drawable/circular_image"
+                android:layout_weight="0.3"
+                />
+
+            <TextView
+                android:id="@+id/playerUsername"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:text="@string/blank"
+                android:textColor="@color/black"
+                android:textSize="26sp"
+                android:textStyle="bold"
+                android:layout_weight="0.6"
+                android:typeface="sans" />
+        </LinearLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/scoreLayout"
+            android:layout_width="138dp"
+            android:layout_height="77dp"
+            android:layout_marginTop="30dp"
+            android:background="@drawable/all_rounded_corners_lb"
+
+            app:layout_constraintBottom_toTopOf="@+id/highestQrLayout"
+            app:layout_constraintEnd_toEndOf="@+id/highestQrLayout"
+            app:layout_constraintStart_toStartOf="@+id/highestQrLayout"
+            app:layout_constraintTop_toBottomOf="@+id/playerLayout"
+            app:layout_constraintVertical_bias="0.0">
+
+            <TextView
+                android:id="@+id/scoreTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:text="@string/score"
+                android:textColor="@color/dark_gray"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/playerScore"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:text="@string/blank"
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/scoreTitle" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/qrScannedLayout"
+            android:layout_width="138dp"
+            android:layout_height="77dp"
+            android:layout_marginTop="30dp"
+            android:background="@drawable/all_rounded_corners_lb"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/scoreLayout"
+            app:layout_constraintTop_toBottomOf="@+id/playerLayout">
+
+            <TextView
+                android:id="@+id/qrScannedTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:text="@string/qrs_scanned"
+                android:textColor="@color/dark_gray"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/playerQrsScanned"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:text="@string/blank"
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/qrScannedTitle" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/highestQrLayout"
+            android:layout_width="138dp"
+            android:layout_height="77dp"
+
+            android:layout_marginStart="20dp"
+            android:layout_marginBottom="4dp"
+            android:background="@drawable/all_rounded_corners_lb"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
+
+            <TextView
+                android:id="@+id/highestQrTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:text="@string/highest_qr"
+                android:textColor="@color/dark_gray"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/highestQrScore"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:text="@string/blank"
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/highestQrTitle" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/lowestQrLayout"
+            android:layout_width="138dp"
+            android:layout_height="77dp"
+            android:layout_marginTop="21dp"
+            android:background="@drawable/all_rounded_corners_lb"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.51"
+            app:layout_constraintStart_toEndOf="@+id/highestQrLayout"
+            app:layout_constraintTop_toBottomOf="@+id/qrScannedLayout">
+
+            <TextView
+                android:id="@+id/lowestQrTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:text="@string/lowest_qr"
+                android:textColor="@color/dark_gray"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/lowestQrScore"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:text="@string/blank"
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/lowestQrTitle" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
