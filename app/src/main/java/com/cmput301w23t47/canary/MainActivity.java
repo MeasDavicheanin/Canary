@@ -47,13 +47,10 @@ public class MainActivity extends AppCompatActivity {
     private Fragment activeFragment;
     
     
-    //Map permissions - location,gps, and device location
-    //private FirebaseFirestore mDb;
-    //private FirebaseAuth mAuth;
+
     private static final String TAG = "MainActivity";
     private boolean mLocationPermissionGranted = false;
-//    private FusedLocationProviderClient mFusedLocationClient;
-//    private UserLocation mUserLocation;
+
     
     // TODO: Get the actual Playername
     private String playerPlayername = "jamesk";
@@ -281,6 +278,13 @@ public class MainActivity extends AppCompatActivity {
 // This is old code for determining the location of the user
 // deleted because it is in the wrong place
 // and on second thought irrelevent to our task
+
+//Map permissions - location,gps, and device location
+//private FirebaseFirestore mDb;
+//private FirebaseAuth mAuth;
+
+//    private FusedLocationProviderClient mFusedLocationClient;
+//    private UserLocation mUserLocation;
 
 //    public Location getUserLocation() {
 //

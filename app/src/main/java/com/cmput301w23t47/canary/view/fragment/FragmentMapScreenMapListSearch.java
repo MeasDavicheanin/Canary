@@ -1,11 +1,11 @@
 //gotten from https://github.com/mitchtabian/Google-Maps-2018/blob/c61f6359b470bdb3bb9cd32de8102b15087d79dd/app/src/main/java/com/codingwithmitch/googlemaps2018/ui/UserListFragment.java#L142
 package com.cmput301w23t47.canary.view.fragment;
 
-import static androidx.core.content.ContextCompat.getSystemService;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -17,6 +17,8 @@ import android.content.pm.PackageManager;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,15 +33,16 @@ import android.widget.Toast;
 import android.Manifest;
 import android.location.Location;
 
-import com.cmput301w23t47.canary.MainActivity;
 import com.cmput301w23t47.canary.R;
 import com.cmput301w23t47.canary.callback.RecyclerViewInterface;
 import com.cmput301w23t47.canary.model.Qrcodem;
-import com.cmput301w23t47.canary.model.UserLocation;
 import com.cmput301w23t47.canary.model.WorldQRLIST;
 import com.cmput301w23t47.canary.view.adapter.Map_Adapter_RecyclerViews;
 import com.cmput301w23t47.canary.view.adapter.ViewWeightAnimationWrapper;
 import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -50,8 +53,6 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.GeoPoint;
 
 import java.util.ArrayList;
 
@@ -69,8 +70,6 @@ public class FragmentMapScreenMapListSearch extends Fragment implements OnMapRea
 
     //constants
     private static final String TAG = "Map_Activity_Screen_map_and_list";
-    //update the location every 5 seconds
-    private static final int LOCATION_UPDATE_INTERVAL = 5000;
     private static final int MAP_LAYOUT_STATE_CONTRACTED =0;
       private static final int MAP_LAYOUT_STATE_EXPANDED =1;
       
@@ -80,7 +79,7 @@ public class FragmentMapScreenMapListSearch extends Fragment implements OnMapRea
     private ArrayList<Qrcodem> mglobalQRList = new WorldQRLIST().getQrList();
     //this is the list that holds the qr codes that are displayed
     private ArrayList<Qrcodem> mSearchResults = new ArrayList<>();
-    private ArrayList<Qrcodem> mSearchResultsCopy = new ArrayList<>();
+    private final ArrayList<Qrcodem> mSearchResultsCopy = new ArrayList<>();
 
     
     // recylerviews and lists
@@ -92,7 +91,7 @@ public class FragmentMapScreenMapListSearch extends Fragment implements OnMapRea
     //private Location mUserLocation;
     private AutoCompleteTextView mSearchBar;
     private ArrayAdapter<String> mSearchRangeAdapter;
-    private String[] mSearchRange = {"200m", "500m", "1km", "2km", "5km", "NO LIMIT" };
+    private final String[] mSearchRange = {"200m", "500m", "1km", "2km", "5km", "NO LIMIT" };
     private double distance;
     private double LatituteQrCodeLocation;
     private double LongitudeQrCodeLocation;
@@ -107,9 +106,9 @@ public class FragmentMapScreenMapListSearch extends Fragment implements OnMapRea
     private MapView mMapView;
     
     private LatLngBounds mMapBoundary;
-    private Location mUserPosition;
+    private Location mdevicePosition;
     //this is for the updates
-    private Handler mHandler = new Handler();
+    private final Handler mHandler = new Handler();
     private Runnable mRunnable;
     private RelativeLayout mMapContainer;
     private int mMapLayoutState = 0;
@@ -130,13 +129,14 @@ public class FragmentMapScreenMapListSearch extends Fragment implements OnMapRea
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //mUserPosition = getUserPositionFromMain();
+        //mdevicePosition = getUserPositionFromMain();
     
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(getActivity());
         if (getArguments() != null) {
             // this is supposed to be something else but I don't know what
             // I think it has something to do with our firestore
             mSearchResults = getArguments().getParcelableArrayList(getString(R.string.intent_recycler_list_map));
+            getCurrentDevicePosition();
             initDropDownMenuItems();
             initMapSearchRangeCheck();
          
@@ -178,7 +178,7 @@ public class FragmentMapScreenMapListSearch extends Fragment implements OnMapRea
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         
         //gets the userposition to being the found Location in the other class
-        //mUserPosition = getUserPositionFromMain();
+        //mdevicePosition = getUserPositionFromMain();
         
         // sets the view
         View view = inflater.inflate(R.layout.fragment_map_screen_map_and_list, container, false);
@@ -186,20 +186,19 @@ public class FragmentMapScreenMapListSearch extends Fragment implements OnMapRea
         mMapView = view.findViewById(R.id.map_display);
         mMapContainer = view.findViewById(R.id.map_container);
         
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(getActivity());
+        
         view.findViewById( R.id.btn_full_screen_map).setOnClickListener(this);
-
+        
+        getCurrentDevicePosition();
         initMapListRecyclerView();
         initGoogleMap(savedInstanceState);
-
-        setUserPosition();
+        
         
         return view;
     }
 
-//    public Location getUserPositionFromMain(){
-//        MainActivity activity = (MainActivity) getActivity();
-//        return activity.getUserLocation();
-//    }
+
 
     /**
      * This is used to initialize the map
@@ -259,19 +258,20 @@ public class FragmentMapScreenMapListSearch extends Fragment implements OnMapRea
     /**
      * this is a way to bind the camera on the map
      * this is used to make sure that the camera when first opens
-     * is centered on the user
+     * is centered on the user not elsewhere
      */
     private void setCameraView(){
+        Log.d(TAG, "setCameraView------------------------------------------------------------------------------------");
     
-        if(mUserPosition == null){
-            //retrieveUserLocation();
-           // mUserPosition = getUserPosition();
+        if(mdevicePosition == null){
+            
+            getCurrentDevicePosition();
         }
-        
-        double bottomBoundary = mUserPosition.getLatitude() - .1;
-        double leftBoundary = mUserPosition.getLongitude() - .1;
-        double topBoundary = mUserPosition.getLatitude() + .1;
-        double rightBoundary = mUserPosition.getLongitude() + .1;
+        Log.d(TAG, "setCameraView: setting camera position , lat: " + mdevicePosition.getLatitude() + " long: " + mdevicePosition.getLongitude() + "");
+        double bottomBoundary = mdevicePosition.getLatitude() - .1;
+        double leftBoundary = mdevicePosition.getLongitude() - .1;
+        double topBoundary = mdevicePosition.getLatitude() + .1;
+        double rightBoundary = mdevicePosition.getLongitude() + .1;
     
         mMapBoundary = new LatLngBounds(
               new LatLng(bottomBoundary, leftBoundary),
@@ -281,18 +281,84 @@ public class FragmentMapScreenMapListSearch extends Fragment implements OnMapRea
         mGoogleMap.moveCamera( CameraUpdateFactory.newLatLngBounds(mMapBoundary, 0));
     }
     
+    private void getCurrentDevicePosition() {
+        Log.d(TAG, "getCurrentDevicePosition------------------------------------------------------------------------------------");
+        // this is the conditional statement that checks if the user has given permission to use the location
+        if ( ContextCompat.checkSelfPermission( getActivity(), Manifest.permission.ACCESS_FINE_LOCATION ) == PackageManager.PERMISSION_GRANTED &&
+                ContextCompat.checkSelfPermission( getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION ) == PackageManager.PERMISSION_GRANTED ) {
+            Log.d( TAG, "getCurrentDevicePosition: PERMISSION GRANTED" );
+            //initialize location manager
+            LocationManager locationManager = ( LocationManager ) getActivity().getSystemService( Context.LOCATION_SERVICE );
+            
+            //check condition
+            if ( locationManager.isProviderEnabled( LocationManager.GPS_PROVIDER ) || locationManager.isProviderEnabled( LocationManager.NETWORK_PROVIDER ) ) {
+                Log.d( TAG, "getCurrentDevicePosition: GPS is enabled" );
+                //get last location
+                mFusedLocationClient.getLastLocation().addOnCompleteListener( new OnCompleteListener<Location>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Location> task) {
+                        Log.d( TAG, "onComplete: TASK STARTED");
+                        Log.d( TAG, "onComplete: TASK SUCCESFUL" );
+                        Location loca = ( Location ) task.getResult();
+                        
+                        if ( loca != null ) {
+                            Log.d( TAG, "onComplete: location found" );
+                            
+                            //mdevicePosition = ( Location ) loca;
+                            mdevicePosition.setLatitude( loca.getLatitude() );
+                            mdevicePosition.setLongitude( loca.getLongitude() );
+                            Log.d( TAG, "onComplete: latitude: " + mdevicePosition.getLatitude() );
+                            Log.d( TAG, "onComplete: longitude: " + mdevicePosition.getLongitude() );
+                        } else {
+                            Log.d( TAG, "onComplete: current location is null" );
+                            
+                            LocationRequest locationRequest = new LocationRequest()
+                                    .setPriority( LocationRequest.PRIORITY_HIGH_ACCURACY )
+                                    .setInterval( 10000 )
+                                    .setFastestInterval( 1000 )
+                                    .setNumUpdates( 1 );
+                            
+                            LocationCallback locationCallback = new LocationCallback() {
+                                @Override
+                                public void onLocationResult(LocationResult locationResult) {
+                                    
+                                    Location loca1 = locationResult.getLastLocation();
+                                    
+                                    mdevicePosition.setLatitude( loca1.getLatitude() );
+                                    mdevicePosition.setLongitude( loca1.getLongitude() );
+                                    
+                                    Log.d( TAG, "onComplete: latitude: " + mdevicePosition.getLatitude() );
+                                    Log.d( TAG, "onComplete: longitude: " + mdevicePosition.getLongitude() );
+                                }
+                            };
+                            if( ContextCompat.checkSelfPermission( getActivity(), Manifest.permission.ACCESS_FINE_LOCATION ) == PackageManager.PERMISSION_GRANTED &&
+                                    ContextCompat.checkSelfPermission( getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION ) == PackageManager.PERMISSION_GRANTED) {
+                                mFusedLocationClient.requestLocationUpdates( locationRequest, locationCallback, Looper.myLooper() );
+                            }
+                        }
+                    }
+                });
+            }else{
+                //when location service is not enable
+                //open location setting
+                startActivity( new Intent( Settings.ACTION_LOCATION_SOURCE_SETTINGS ).setFlags( Intent.FLAG_ACTIVITY_NEW_TASK ) );
+            }
+        }else{
+            //when location permission are not enable
+            //request location permission
+            ActivityCompat.requestPermissions( getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, 100 );
+        }
+        Log.d(TAG, "getCurrentDevicePosition: END");
+        Log.d(TAG, "getCurrentDevicePosition: mdevicePosition: " + mdevicePosition + " || mdevicePosition.getLatitude(): " + mdevicePosition.getLatitude() + " || mdevicePosition.getLongitude(): " + mdevicePosition.getLongitude());
+    }
+    
+    
+    
       /**
       * this is used to set the user position
        * this is used to get the devices's Location
       */
-    private void setUserPosition(){
-        if(mUserPosition == null){
-            //retrieveUserLocation();
-  //          mUserPosition = getUserPositionFromMain();
-        }
- //       mUserPosition = getUserPositionFromMain();
-        mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(mUserPosition.getLatitude(), mUserPosition.getLongitude()), 15f));
-    }
+
 //    private Location getUserPosition(){
 //    //this will be implemented from the tutorial
 //    }
@@ -323,6 +389,7 @@ public class FragmentMapScreenMapListSearch extends Fragment implements OnMapRea
         
         
         mGoogleMap = map;
+        getCurrentDevicePosition();
         setCameraView();
     }
     
@@ -350,6 +417,10 @@ public class FragmentMapScreenMapListSearch extends Fragment implements OnMapRea
      * This method is used to initialize the drop down menu items
      */
     public void initMapSearchRangeCheck(){
+        //get the device position so that we can set up the search
+        if(mdevicePosition == null)
+        getCurrentDevicePosition();
+        
         mglobalQRList = new WorldQRLIST().getQrList();
         mSearchBarRange = (AutoCompleteTextView) getActivity().findViewById(R.id.map_search_range_dropdown_menu);
         mSearchSpecifiedRange = mSearchBarRange.getText().toString();
@@ -387,7 +458,7 @@ public class FragmentMapScreenMapListSearch extends Fragment implements OnMapRea
             QRCodeLocation.setLatitude(LatituteQrCodeLocation);
             QRCodeLocation.setLongitude(LongitudeQrCodeLocation);
             
-            distance = mUserPosition.distanceTo(QRCodeLocation);
+            distance = mdevicePosition.distanceTo(QRCodeLocation);
             if(distance <= mSearchRangeDouble || mSearchRangeDouble == 10000){
                 
                 mSearchResultsCopy.add(mglobalQRList.get(i));
@@ -448,63 +519,7 @@ public class FragmentMapScreenMapListSearch extends Fragment implements OnMapRea
     
     
     
-    // Real Time Updates
-    /**
-     * starts the runnable that retrieves the users location
-     * ie with this on the map will update your location as you move
-     */
-//    private void startUserLocationsRunnable(){
-//        Log.d(TAG, "startUserLocationsRunnable: starting runnable for retrieving updated locations.");
-//        mHandler.postDelayed(mRunnable = new Runnable() {
-//            @Override
-//            public void run() {
-//                // this code might not need to be here but it is a good idea to have it here
-//                // this will take the qr locations and update them ( I think)
-//                initMapSearchRangeCheck();
-//                retrieveUserLocation();
-//                mHandler.postDelayed(mRunnable, LOCATION_UPDATE_INTERVAL);
-//            }
-//        }, LOCATION_UPDATE_INTERVAL);
-//    }
-//
-//    private void retrieveUserLocation(){
-//        Log.d( TAG, "retrieveUsserLocation: called." );
-//
-//
-//        if ( ActivityCompat.checkSelfPermission( FragmentMapScreenMapListSearch.this.getActivity(), Manifest.permission.ACCESS_FINE_LOCATION ) != PackageManager.PERMISSION_GRANTED ) {
-//            Log.d(TAG, "retrieveUserLocation: permission not granted");
-//            return;
-//        }
-//
-//        //code wont work if the fused location client is null
-//        if(mFusedLocationClient != null) {
-//            //does as expected which is get the last known location
-//            mFusedLocationClient.getLastLocation().addOnCompleteListener( new OnCompleteListener<Location>() {
-//                @Override
-//                public void onComplete(@NonNull Task<Location> task) {
-//                    if ( task.isSuccessful() ) {
-//                        Location location = task.getResult();
-//                        mUserPosition.setGeoPoint( new GeoPoint( location.getLatitude(), location.getLongitude() ) );
-//                        mUserPosition.setTimestamp( null );
-//                        //savePlayerLocation();
-//                    }
-//                }
-//            } );
-//        }
-//        else{
-//            Log.d(TAG, "retrieveUserLocation: mFusedLocationClient is null");
-//        }
-//
-//    }
-//
-//    /**
-//     * stops the runnable that retrieves the users location
-//     * ie with this off you could walk to the end of the country but the map wouldnt update your location
-//     */
-//    private void stopLocationUpdates(){
-//        mHandler.removeCallbacks(mRunnable);
-//    }
-//
+
     //change the size of the map
     
     
@@ -578,70 +593,74 @@ public class FragmentMapScreenMapListSearch extends Fragment implements OnMapRea
     
 
 }
-/*
-this needs to be implemented in other activities doesn't matter which one so long as they are asked first
-Warning need to implement things like:
-    getting the location of the user
-    permissions for location
-    getting the location of the QR code
 
+
+
+//This is old code that can be deleted when being merged with the main branch
+
+//    public Location getUserPositionFromMain(){
+//        MainActivity activity = (MainActivity) getActivity();
+//        return activity.getUserLocation();
+//    }
+
+
+// Real Time Updates
+
+//update the location every 5 seconds
+//private static final int LOCATION_UPDATE_INTERVAL = 5000;
+/**
+ * starts the runnable that retrieves the users location
+ * ie with this on the map will update your location as you move
  */
-
-
-
-
-/*
-FRAGMENT NAME:
-Map_Activity_Screen_map_and_list_view
-
-<?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/White">
-
-    <LinearLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:weightSum="100"
-        android:background="@color/White">
-
-        <android.support.v7.widget.RecyclerView
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="50"
-            android:id="@+id/QR_list_recycler_view">
-
-        </android.support.v7.widget.RecyclerView>
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="50"
-            android:id="@+id/map_container">
-
-            <com.google.android.gms.maps.MapView
-                xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:id="@+id/map_display" />
-        </RelativeLayout>
-
-
-    </LinearLayout>
-
-    <ProgressBar
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/progressBar"
-        android:layout_centerInParent="true"
-        android:visibility="gone"/>
-
-</RelativeLayout>
-
-
-
- */
+//    private void startUserLocationsRunnable(){
+//        Log.d(TAG, "startUserLocationsRunnable: starting runnable for retrieving updated locations.");
+//        mHandler.postDelayed(mRunnable = new Runnable() {
+//            @Override
+//            public void run() {
+//                // this code might not need to be here but it is a good idea to have it here
+//                // this will take the qr locations and update them ( I think)
+//                initMapSearchRangeCheck();
+//                retrieveUserLocation();
+//                mHandler.postDelayed(mRunnable, LOCATION_UPDATE_INTERVAL);
+//            }
+//        }, LOCATION_UPDATE_INTERVAL);
+//    }
+//
+//    private void retrieveUserLocation(){
+//        Log.d( TAG, "retrieveUsserLocation: called." );
+//
+//
+//        if ( ActivityCompat.checkSelfPermission( FragmentMapScreenMapListSearch.this.getActivity(), Manifest.permission.ACCESS_FINE_LOCATION ) != PackageManager.PERMISSION_GRANTED ) {
+//            Log.d(TAG, "retrieveUserLocation: permission not granted");
+//            return;
+//        }
+//
+//        //code wont work if the fused location client is null
+//        if(mFusedLocationClient != null) {
+//            //does as expected which is get the last known location
+//            mFusedLocationClient.getLastLocation().addOnCompleteListener( new OnCompleteListener<Location>() {
+//                @Override
+//                public void onComplete(@NonNull Task<Location> task) {
+//                    if ( task.isSuccessful() ) {
+//                        Location location = task.getResult();
+//                        mdevicePosition.setGeoPoint( new GeoPoint( location.getLatitude(), location.getLongitude() ) );
+//                        mdevicePosition.setTimestamp( null );
+//                        //savePlayerLocation();
+//                    }
+//                }
+//            } );
+//        }
+//        else{
+//            Log.d(TAG, "retrieveUserLocation: mFusedLocationClient is null");
+//        }
+//
+//    }
+//
+//    /**
+//     * stops the runnable that retrieves the users location
+//     * ie with this off you could walk to the end of the country but the map wouldnt update your location
+//     */
+//    private void stopLocationUpdates(){
+//        mHandler.removeCallbacks(mRunnable);
+//    }
+//
