@@ -113,7 +113,7 @@ public class FragmentMapScreenMapListSearch extends Fragment implements OnMapRea
     private RelativeLayout mMapContainer;
     private int mMapLayoutState = 0;
     private FusedLocationProviderClient mFusedLocationClient;
-    
+    private LocationCallback locationCallback;
     
     public static FragmentMapScreenMapListSearch newInstance() {
         return new FragmentMapScreenMapListSearch();
@@ -132,6 +132,22 @@ public class FragmentMapScreenMapListSearch extends Fragment implements OnMapRea
         //mdevicePosition = getUserPositionFromMain();
     
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(getActivity());
+        
+        locationCallback = new LocationCallback() {
+            @Override
+            public void onLocationResult(LocationResult locationResult) {
+                if (locationResult == null) {
+                    return;
+                }
+                for (Location location : locationResult.getLocations()) {
+                    // Update UI with location data
+                    // ...
+                    mdevicePosition = location;
+                    Log.d(TAG, "onLocationResult: " + mdevicePosition);
+                }
+            }
+        };
+        
         if (getArguments() != null) {
             // this is supposed to be something else but I don't know what
             // I think it has something to do with our firestore
@@ -323,6 +339,7 @@ public class FragmentMapScreenMapListSearch extends Fragment implements OnMapRea
                                 public void onLocationResult(LocationResult locationResult) {
                                     
                                     Location loca1 = locationResult.getLastLocation();
+                                    
                                     
                                     mdevicePosition.setLatitude( loca1.getLatitude() );
                                     mdevicePosition.setLongitude( loca1.getLongitude() );
