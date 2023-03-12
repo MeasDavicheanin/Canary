@@ -20,32 +20,18 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
-import android.Manifest;
-
 
 import com.cmput301w23t47.canary.databinding.ActivityMainBinding;
-import com.cmput301w23t47.canary.model.Player;
-import com.cmput301w23t47.canary.model.UserLocation;
 import com.cmput301w23t47.canary.view.fragment.HomeFragment;
 import com.cmput301w23t47.canary.view.fragment.LeaderboardFragment;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
-import com.google.android.gms.location.FusedLocationProviderClient;
 
-import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.GeoPoint;
 
 
 /**
@@ -62,12 +48,12 @@ public class MainActivity extends AppCompatActivity {
     
     
     //Map permissions - location,gps, and device location
-    private FirebaseFirestore mDb;
-    private FirebaseAuth mAuth;
+    //private FirebaseFirestore mDb;
+    //private FirebaseAuth mAuth;
     private static final String TAG = "MainActivity";
     private boolean mLocationPermissionGranted = false;
-    private FusedLocationProviderClient mFusedLocationClient;
-    private UserLocation mUserLocation;
+//    private FusedLocationProviderClient mFusedLocationClient;
+//    private UserLocation mUserLocation;
     
     // TODO: Get the actual Playername
     private String playerPlayername = "jamesk";
@@ -79,8 +65,8 @@ public class MainActivity extends AppCompatActivity {
         binding = ActivityMainBinding.inflate( getLayoutInflater() );
         setContentView( binding.getRoot() );
         
-        mFusedLocationClient = LocationServices.getFusedLocationProviderClient( this );
-        mDb = FirebaseFirestore.getInstance();
+        //mFusedLocationClient = LocationServices.getFusedLocationProviderClient( this );
+        //mDb = FirebaseFirestore.getInstance();
         
         init( savedInstanceState );
     }
@@ -114,7 +100,7 @@ public class MainActivity extends AppCompatActivity {
     }
     
     
-    //Start of the permission code as well as the location code
+    //Start of the permission code
     
     /**
      * Checks if the device has the correct services to run the map
@@ -123,9 +109,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         if ( checkMapServices() ) {
-            if ( mLocationPermissionGranted ) {
-                getPlayerDetails();
-            } else {
+            if ( mLocationPermissionGranted != true) {
                 getLocationPermission();
             }
         }
@@ -138,80 +122,6 @@ public class MainActivity extends AppCompatActivity {
      * if the user is not logged in then just get the last known location
      * storing it in an empty class
      */
-    private void getPlayerDetails() {
-        //get the current user from the database
-        if ( mUserLocation == null ) {
-            mUserLocation = new UserLocation();
-            
-            if(FirebaseAuth.getInstance().getCurrentUser() != null) {
-                DocumentReference PlayerRef = mDb.collection( "Player" )
-                      .document( FirebaseAuth.getInstance().getUid() );
-    
-                PlayerRef.get().addOnCompleteListener( new OnCompleteListener<DocumentSnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                        if ( task.isSuccessful() ) {
-                            Log.d( TAG, "onComplete: successfully set the Player client." );
-                            Player Player = task.getResult().toObject( Player.class );
-                            mUserLocation.setPlayer( Player );
-                            getLastKnownLocation();
-                        }
-                    }
-                } );
-            }else{
-                  //if the user is not logged in then just get the last known location
-                // this makes the app work for the emulator
-                // but also makes it kind of pointless to use the UserLocation class
-                  getLastKnownLocation();
-            }
-        } else {
-            getLastKnownLocation();
-        }
-    }
-    
-      /**
-      * Gets the last known location of the user
-      * this is done by storing and then getting the last known location
-       */
-    private void getLastKnownLocation() {
-        Log.d( TAG, "getLastKnownLocation: called." );
-        
-        
-        if ( ActivityCompat.checkSelfPermission( this, Manifest.permission.ACCESS_FINE_LOCATION ) != PackageManager.PERMISSION_GRANTED ) {
-            return;
-        }
-        
-        //code wont work if the fused location client is null
-        if(mFusedLocationClient != null) {
-            //does as expected which is get the last known location
-            mFusedLocationClient.getLastLocation().addOnCompleteListener( new OnCompleteListener<Location>() {
-                @Override
-                public void onComplete(@NonNull Task<Location> task) {
-                    if ( task.isSuccessful() ) {
-                        Location location = task.getResult();
-                        mUserLocation.setGeoPoint( new GeoPoint( location.getLatitude(), location.getLongitude() ) );
-                        mUserLocation.setTimestamp( null );
-                        //savePlayerLocation();
-                    }
-                }
-            } );
-        } else {
-            //should do the same thing as the code above just slower
-            Log.d( TAG, "getLastKnownLocation: mFusedLocationClient is null" );
-            // this is the location manager it is a system service that is used to get the location
-            LocationManager locationManager = (LocationManager) getSystemService( Context.LOCATION_SERVICE );
-            //turn that location into a location object
-            Location location = locationManager.getLastKnownLocation( LocationManager.GPS_PROVIDER );
-            Log.d( TAG, "LocationManager: " + location.getLatitude() + " " + location.getLongitude());
-            //set the location of the user
-            mUserLocation.setGeoPoint( new GeoPoint( location.getLatitude(), location.getLongitude() ) );
-            Log.d( TAG, "getLastKnownLocation: " + mUserLocation.getGeoPoint().getLatitude() + " " + mUserLocation.getGeoPoint().getLongitude() );
-        }
-        
-        
-    }
-
-    
     
     /**
      * check if the user has accepted the map permissions
@@ -273,8 +183,6 @@ public class MainActivity extends AppCompatActivity {
               android.Manifest.permission.ACCESS_FINE_LOCATION )
               == PackageManager.PERMISSION_GRANTED ) {
             mLocationPermissionGranted = true;
-            //getChatrooms();
-            getPlayerDetails();
         } else {
             ActivityCompat.requestPermissions( this,
                   new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
@@ -358,10 +266,7 @@ public class MainActivity extends AppCompatActivity {
         Log.d( TAG, "onActivityResult: called." );
         switch ( requestCode ) {
             case PERMISSIONS_REQUEST_ENABLE_GPS: {
-                if ( mLocationPermissionGranted ) {
-                    //getChatrooms();
-                    getPlayerDetails();
-                } else {
+                if ( mLocationPermissionGranted != true ) {
                     getLocationPermission();
                 }
             }
@@ -370,4 +275,92 @@ public class MainActivity extends AppCompatActivity {
     }
     
 }
+
+
+
+// This is old code for determining the location of the user
+// deleted because it is in the wrong place
+// and on second thought irrelevent to our task
+
+//    public Location getUserLocation() {
+//
+//        if ( mUserLocation != null ) {
+//            return mUserLocation.getLocation();
+//        }
+//        return getLastKnownLocation();
+//
+//    }
+//    private void getPlayerDetails() {
+//        //get the current user from the database
+//        if ( mUserLocation == null ) {
+//            mUserLocation = new UserLocation();
+//
+//            if(FirebaseAuth.getInstance().getCurrentUser() != null) {
+//                DocumentReference PlayerRef = mDb.collection( "Player" )
+//                      .document( FirebaseAuth.getInstance().getUid() );
+//
+//                PlayerRef.get().addOnCompleteListener( new OnCompleteListener<DocumentSnapshot>() {
+//                    @Override
+//                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+//                        if ( task.isSuccessful() ) {
+//                            Log.d( TAG, "onComplete: successfully set the Player client." );
+//                            Player Player = task.getResult().toObject( Player.class );
+//                            mUserLocation.setPlayer( Player );
+//                            getLastKnownLocation();
+//                        }
+//                    }
+//                } );
+//            }else{
+//                  //if the user is not logged in then just get the last known location
+//                // this makes the app work for the emulator
+//                // but also makes it kind of pointless to use the UserLocation class
+//                  getLastKnownLocation();
+//            }
+//        } else {
+//            getLastKnownLocation();
+//        }
+//    }
+//
+//      /**
+//      * Gets the last known location of the user
+//      * this is done by storing and then getting the last known location
+//       */
+//    private Location getLastKnownLocation() {
+//        Log.d( TAG, "getLastKnownLocation: called." );
+//
+//
+//        if ( ActivityCompat.checkSelfPermission( this, Manifest.permission.ACCESS_FINE_LOCATION ) != PackageManager.PERMISSION_GRANTED ) {
+//            return null;
+//        }
+//
+//        //code wont work if the fused location client is null
+//        if(mFusedLocationClient != null) {
+//            Log.d( TAG, "getLastKnownLocation: mFusedLocationClient is not null");
+//            //does as expected which is get the last known location
+//            mFusedLocationClient.getLastLocation().addOnCompleteListener( new OnCompleteListener<Location>() {
+//                @Override
+//                public void onComplete(@NonNull Task<Location> task) {
+//                    if ( task.isSuccessful() ) {
+//                        Location location = task.getResult();
+//                        mUserLocation.setGeoPoint( new GeoPoint( location.getLatitude(), location.getLongitude() ) );
+//                        mUserLocation.setTimestamp( null );
+//                        //savePlayerLocation();
+//                    }
+//                }
+//            } );
+//        } else {
+//            //should do the same thing as the code above just slower
+//            Log.d( TAG, "getLastKnownLocation: mFusedLocationClient is null" );
+//            // this is the location manager it is a system service that is used to get the location
+//            LocationManager locationManager = (LocationManager) getSystemService( Context.LOCATION_SERVICE );
+//            //turn that location into a location object
+//            Location location = locationManager.getLastKnownLocation( LocationManager.GPS_PROVIDER );
+//            Log.d( TAG, "LocationManager: " + location.getLatitude() + " " + location.getLongitude());
+//            //set the location of the user
+//            mUserLocation.setGeoPoint( new GeoPoint( location.getLatitude(), location.getLongitude() ) );
+//            Log.d( TAG, "getLastKnownLocation: " + mUserLocation.getGeoPoint().getLatitude() + " " + mUserLocation.getGeoPoint().getLongitude() );
+//        }
+//
+//        return mUserLocation.getLocation();
+//    }
 
