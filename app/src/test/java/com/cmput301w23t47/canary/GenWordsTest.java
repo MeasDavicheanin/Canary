@@ -4,9 +4,6 @@ import com.cmput301w23t47.canary.model.GenWords;
 
 import org.junit.Test;
 
-import static org.junit.Assert.*;
-
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
