@@ -51,7 +51,10 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 
 import java.util.ArrayList;
 
@@ -103,6 +106,7 @@ public class FragmentMapScreenMapListSearch extends Fragment implements OnMapRea
     
     
     //Map
+    private Boolean REQUESTING_LOCATION_UPDATES_KEY = false;
     private GoogleMap mGoogleMap;
     private MapView mMapView;
     
@@ -116,6 +120,7 @@ public class FragmentMapScreenMapListSearch extends Fragment implements OnMapRea
     private FusedLocationProviderClient mFusedLocationClient;
     private LocationCallback locationCallback;
     private LocationRequest locationRequest;
+    private int LocationRequestCode = 1000;
     
     
     public static FragmentMapScreenMapListSearch newInstance() {
@@ -135,6 +140,11 @@ public class FragmentMapScreenMapListSearch extends Fragment implements OnMapRea
         //mdevicePosition = getUserPositionFromMain();
     
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(getActivity());
+        
+        locationRequest = LocationRequest.create();
+        locationRequest.setInterval(10000);
+        locationRequest.setFastestInterval(5000);
+        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
         
         // somebody said that it couldn't get location because it didn't have this
         // I think this is called a cache but it doesn't matter didn't work anyways
@@ -158,7 +168,7 @@ public class FragmentMapScreenMapListSearch extends Fragment implements OnMapRea
             // this is supposed to be something else but I don't know what
             // I think it has something to do with our firestore
             mSearchResults = getArguments().getParcelableArrayList(getString(R.string.intent_recycler_list_map));
-            getCurrentLocation();
+            getLastLocation();
             initDropDownMenuItems();
             initMapSearchRangeCheck();
          
@@ -212,7 +222,7 @@ public class FragmentMapScreenMapListSearch extends Fragment implements OnMapRea
         
         view.findViewById( R.id.btn_full_screen_map).setOnClickListener(this);
         
-        getCurrentLocation();
+        getLastLocation();
         initMapListRecyclerView();
         initGoogleMap(savedInstanceState);
         
@@ -247,6 +257,14 @@ public class FragmentMapScreenMapListSearch extends Fragment implements OnMapRea
     @Override
     public void onStart() {
         super.onStart();
+        
+        if(ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED){
+            getLastLocation();
+        }else{
+            requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LocationRequestCode);
+        }
+        
+        
         mMapView.onStart();
     }
 
@@ -301,7 +319,7 @@ public class FragmentMapScreenMapListSearch extends Fragment implements OnMapRea
     
         if(mdevicePosition == null){
             
-            getCurrentLocation();
+            getLastLocation();
         }
         Log.d(TAG, "setCameraView: setting camera position , lat: " + mdevicePosition.getLatitude() + " long: " + mdevicePosition.getLongitude() + "");
         double bottomBoundary = mdevicePosition.getLatitude() - .1;
@@ -317,7 +335,9 @@ public class FragmentMapScreenMapListSearch extends Fragment implements OnMapRea
         mGoogleMap.moveCamera( CameraUpdateFactory.newLatLngBounds(mMapBoundary, 0));
     }
     
-    private void getCurrentLocation() {
+
+    
+    private void getLastLocation() {
         Log.d(TAG, "getCurrentDevicePosition------------------------------------------------------------------------------------");
         // this is the conditional statement that checks if the user has given permission to use the location
         if ( ContextCompat.checkSelfPermission( getActivity(), Manifest.permission.ACCESS_FINE_LOCATION ) == PackageManager.PERMISSION_GRANTED &&
@@ -325,7 +345,7 @@ public class FragmentMapScreenMapListSearch extends Fragment implements OnMapRea
             Log.d( TAG, "getCurrentDevicePosition: PERMISSION GRANTED" );
             //initialize location manager
             LocationManager locationManager = ( LocationManager ) getActivity().getSystemService( Context.LOCATION_SERVICE );
-            
+
             //check condition
             if ( locationManager.isProviderEnabled( LocationManager.GPS_PROVIDER )
                     || locationManager.isProviderEnabled( LocationManager.NETWORK_PROVIDER ) ) {
@@ -333,14 +353,14 @@ public class FragmentMapScreenMapListSearch extends Fragment implements OnMapRea
                 //get last location
                 mFusedLocationClient.getLastLocation().addOnSuccessListener( new OnSuccessListener<Location>()   {
                     @Override
-                    public void onSuccess(@NonNull Location location) {
-                        Log.d( TAG, "onComplete: TASK STARTED");
+                    public void onSuccess(Location location) {
+                        Log.d( TAG, "onComplete: TASK STARTED" );
                         Log.d( TAG, "onComplete: TASK SUCCESFUL" );
-                        Location loca = location;
-                        
+                        Location loca = ( Location ) location;
+    
                         if ( loca != null ) {
                             Log.d( TAG, "onComplete: location found" );
-                            
+        
                             //mdevicePosition = ( Location ) loca;
                             mdevicePosition.setLatitude( loca.getLatitude() );
                             mdevicePosition.setLongitude( loca.getLongitude() );
@@ -348,32 +368,40 @@ public class FragmentMapScreenMapListSearch extends Fragment implements OnMapRea
                             Log.d( TAG, "onComplete: longitude: " + mdevicePosition.getLongitude() );
                         } else {
                             Log.d( TAG, "onComplete: current location is null" );
-                            
+        
                             LocationRequest locationRequest = new LocationRequest()
                                     .setPriority( LocationRequest.PRIORITY_HIGH_ACCURACY )
                                     .setInterval( 10000 )
                                     .setFastestInterval( 1000 )
                                     .setNumUpdates( 1 );
-                            
+        
                             LocationCallback locationCallback = new LocationCallback() {
                                 @Override
                                 public void onLocationResult(LocationResult locationResult) {
-                                    
+                
                                     Location loca1 = locationResult.getLastLocation();
-                                    
-                                    
+                
+                
                                     mdevicePosition.setLatitude( loca1.getLatitude() );
                                     mdevicePosition.setLongitude( loca1.getLongitude() );
-                                    
+                
                                     Log.d( TAG, "onComplete: latitude: " + mdevicePosition.getLatitude() );
                                     Log.d( TAG, "onComplete: longitude: " + mdevicePosition.getLongitude() );
                                 }
                             };
-                            if( ContextCompat.checkSelfPermission( getActivity(), Manifest.permission.ACCESS_FINE_LOCATION ) == PackageManager.PERMISSION_GRANTED &&
-                                    ContextCompat.checkSelfPermission( getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION ) == PackageManager.PERMISSION_GRANTED) {
+                            if ( ContextCompat.checkSelfPermission( getActivity(), Manifest.permission.ACCESS_FINE_LOCATION ) == PackageManager.PERMISSION_GRANTED &&
+                                    ContextCompat.checkSelfPermission( getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION ) == PackageManager.PERMISSION_GRANTED ) {
                                 mFusedLocationClient.requestLocationUpdates( locationRequest, locationCallback, Looper.myLooper() );
                             }
                         }
+                    }
+                });
+                mFusedLocationClient.getLastLocation().addOnFailureListener( new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.d( TAG, "onComplete: unable to get current location" );
+                        Toast.makeText( getActivity(), "unable to get current location", Toast.LENGTH_SHORT ).show();
+        
                     }
                 });
             }else{
@@ -390,16 +418,44 @@ public class FragmentMapScreenMapListSearch extends Fragment implements OnMapRea
         Log.d(TAG, "getCurrentDevicePosition: mdevicePosition: " + mdevicePosition + " || mdevicePosition.getLatitude(): " + mdevicePosition.getLatitude() + " || mdevicePosition.getLongitude(): " + mdevicePosition.getLongitude());
     }
     
+    /**
+     * this is used to make sure that the user has given permission to use the location
+     * if they have then the map is set up
+     * if they have not then the user is asked for permission
+     * @param requestCode
+     * @param permissions
+     * @param grantResults
+     */
+    private void onRequestPermissionResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult( requestCode, permissions, grantResults );
+        if ( requestCode == LocationRequestCode && (grantResults.length > 0 && (grantResults[0] + grantResults[1] == PackageManager.PERMISSION_GRANTED))) {
+            //when permission granted
+            //call method
+            getLastLocation();
+        } else {
+            //when permission denied
+            //display toast
+            Toast.makeText( getActivity(), "Permission denied", Toast.LENGTH_SHORT ).show();
+        }
+    }
+    private void askForPermission(String permission, Integer requestCode) {
+        if ( ContextCompat.checkSelfPermission( getActivity(), permission ) != PackageManager.PERMISSION_GRANTED ) {
     
+            // Should we show an explanation?
+            if ( ActivityCompat.shouldShowRequestPermissionRationale( getActivity(), permission ) ) {
     
-      /**
-      * this is used to set the user position
-       * this is used to get the devices's Location
-      */
-
-//    private Location getUserPosition(){
-//    //this will be implemented from the tutorial
-//    }
+                //This is called if user has denied the permission before
+                //In this case I am just asking the permission again
+                ActivityCompat.requestPermissions( getActivity(), new String[]{permission}, requestCode );
+    
+            } else {
+    
+                ActivityCompat.requestPermissions( getActivity(), new String[]{permission}, requestCode );
+            }
+        } else {
+            Toast.makeText( getActivity(), "" + permission + " is already granted.", Toast.LENGTH_SHORT ).show();
+        }
+    }
     
     /**
      * this is where the map is set up
@@ -416,18 +472,17 @@ public class FragmentMapScreenMapListSearch extends Fragment implements OnMapRea
             return;
         }
         map.setMyLocationEnabled(true);
-        
+        initMapSearchRangeCheck();
         //this is where to set the list of the users location
+        //run through all of the markers
         for (int i = 0; i < mSearchResultsCopy.size(); i++) {
             map.addMarker(new MarkerOptions()
                   .position(new LatLng(mSearchResultsCopy.get(i).getLocation().getLatitude(), mSearchResultsCopy.get(i).getLocation().getLongitude()))
                   .title( mSearchResultsCopy.get(i).getScoreString() ));
             
         }
-        
-        
         mGoogleMap = map;
-        getCurrentLocation();
+        getLastLocation();
         setCameraView();
     }
     
@@ -438,8 +493,6 @@ public class FragmentMapScreenMapListSearch extends Fragment implements OnMapRea
      */
     @Override
     public void onSaveInstanceState(Bundle outState) {
-        outState.putBoolean(REQUESTING_LOCATION_UPDATES_KEY,
-              RequestingLocationUpdates);
         super.onSaveInstanceState(outState);
         
         Bundle mapViewBundle = outState.getBundle(MAPVIEW_BUNDLE_KEY);
@@ -459,7 +512,7 @@ public class FragmentMapScreenMapListSearch extends Fragment implements OnMapRea
     public void initMapSearchRangeCheck(){
         //get the device position so that we can set up the search
         if(mdevicePosition == null)
-        getCurrentLocation();
+        getLastLocation();
         
         mglobalQRList = new WorldQRLIST().getQrList();
         mSearchBarRange = (AutoCompleteTextView) getActivity().findViewById(R.id.map_search_range_dropdown_menu);
