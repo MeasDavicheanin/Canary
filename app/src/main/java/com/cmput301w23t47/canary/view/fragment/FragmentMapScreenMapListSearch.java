@@ -261,7 +261,7 @@ public class FragmentMapScreenMapListSearch extends Fragment implements OnMapRea
         if(ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED){
             getLastLocation();
         }else{
-            requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LocationRequestCode);
+            askForPermission();
         }
         
         
@@ -350,8 +350,10 @@ public class FragmentMapScreenMapListSearch extends Fragment implements OnMapRea
             if ( locationManager.isProviderEnabled( LocationManager.GPS_PROVIDER )
                     || locationManager.isProviderEnabled( LocationManager.NETWORK_PROVIDER ) ) {
                 Log.d( TAG, "getCurrentDevicePosition: GPS is enabled" );
+                
+                Task<Location> locationTask = mFusedLocationClient.getLastLocation();
                 //get last location
-                mFusedLocationClient.getLastLocation().addOnSuccessListener( new OnSuccessListener<Location>()   {
+                locationTask.addOnSuccessListener( new OnSuccessListener<Location>()   {
                     @Override
                     public void onSuccess(Location location) {
                         Log.d( TAG, "onComplete: TASK STARTED" );
@@ -396,7 +398,7 @@ public class FragmentMapScreenMapListSearch extends Fragment implements OnMapRea
                         }
                     }
                 });
-                mFusedLocationClient.getLastLocation().addOnFailureListener( new OnFailureListener() {
+                locationTask.addOnFailureListener( new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         Log.d( TAG, "onComplete: unable to get current location" );
@@ -438,22 +440,22 @@ public class FragmentMapScreenMapListSearch extends Fragment implements OnMapRea
             Toast.makeText( getActivity(), "Permission denied", Toast.LENGTH_SHORT ).show();
         }
     }
-    private void askForPermission(String permission, Integer requestCode) {
-        if ( ContextCompat.checkSelfPermission( getActivity(), permission ) != PackageManager.PERMISSION_GRANTED ) {
+    private void askForPermission() {
+        if ( ContextCompat.checkSelfPermission( getActivity(), Manifest.permission.ACCESS_FINE_LOCATION ) != PackageManager.PERMISSION_GRANTED ) {
     
             // Should we show an explanation?
-            if ( ActivityCompat.shouldShowRequestPermissionRationale( getActivity(), permission ) ) {
+            if ( ActivityCompat.shouldShowRequestPermissionRationale( getActivity(), Manifest.permission.ACCESS_FINE_LOCATION ) ) {
     
                 //This is called if user has denied the permission before
                 //In this case I am just asking the permission again
-                ActivityCompat.requestPermissions( getActivity(), new String[]{permission}, requestCode );
+                ActivityCompat.requestPermissions( getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LocationRequestCode );
     
             } else {
     
-                ActivityCompat.requestPermissions( getActivity(), new String[]{permission}, requestCode );
+                ActivityCompat.requestPermissions( getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LocationRequestCode );
             }
         } else {
-            Toast.makeText( getActivity(), "" + permission + " is already granted.", Toast.LENGTH_SHORT ).show();
+            Toast.makeText( getActivity(), "" + Manifest.permission.ACCESS_FINE_LOCATION + " is already granted.", Toast.LENGTH_SHORT ).show();
         }
     }
     
@@ -686,74 +688,3 @@ public class FragmentMapScreenMapListSearch extends Fragment implements OnMapRea
     
 
 }
-
-
-
-//This is old code that can be deleted when being merged with the main branch
-
-//    public Location getUserPositionFromMain(){
-//        MainActivity activity = (MainActivity) getActivity();
-//        return activity.getUserLocation();
-//    }
-
-
-// Real Time Updates
-
-//update the location every 5 seconds
-//private static final int LOCATION_UPDATE_INTERVAL = 5000;
-/**
- * starts the runnable that retrieves the users location
- * ie with this on the map will update your location as you move
- */
-//    private void startUserLocationsRunnable(){
-//        Log.d(TAG, "startUserLocationsRunnable: starting runnable for retrieving updated locations.");
-//        mHandler.postDelayed(mRunnable = new Runnable() {
-//            @Override
-//            public void run() {
-//                // this code might not need to be here but it is a good idea to have it here
-//                // this will take the qr locations and update them ( I think)
-//                initMapSearchRangeCheck();
-//                retrieveUserLocation();
-//                mHandler.postDelayed(mRunnable, LOCATION_UPDATE_INTERVAL);
-//            }
-//        }, LOCATION_UPDATE_INTERVAL);
-//    }
-//
-//    private void retrieveUserLocation(){
-//        Log.d( TAG, "retrieveUsserLocation: called." );
-//
-//
-//        if ( ActivityCompat.checkSelfPermission( FragmentMapScreenMapListSearch.this.getActivity(), Manifest.permission.ACCESS_FINE_LOCATION ) != PackageManager.PERMISSION_GRANTED ) {
-//            Log.d(TAG, "retrieveUserLocation: permission not granted");
-//            return;
-//        }
-//
-//        //code wont work if the fused location client is null
-//        if(mFusedLocationClient != null) {
-//            //does as expected which is get the last known location
-//            mFusedLocationClient.getLastLocation().addOnCompleteListener( new OnCompleteListener<Location>() {
-//                @Override
-//                public void onComplete(@NonNull Task<Location> task) {
-//                    if ( task.isSuccessful() ) {
-//                        Location location = task.getResult();
-//                        mdevicePosition.setGeoPoint( new GeoPoint( location.getLatitude(), location.getLongitude() ) );
-//                        mdevicePosition.setTimestamp( null );
-//                        //savePlayerLocation();
-//                    }
-//                }
-//            } );
-//        }
-//        else{
-//            Log.d(TAG, "retrieveUserLocation: mFusedLocationClient is null");
-//        }
-//
-//    }
-//
-//    /**
-//     * stops the runnable that retrieves the users location
-//     * ie with this off you could walk to the end of the country but the map wouldnt update your location
-//     */
-//    private void stopLocationUpdates(){
-//        mHandler.removeCallbacks(mRunnable);
-//    }
-//
